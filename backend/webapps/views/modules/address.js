@@ -43,7 +43,7 @@ define(["views/modules/base"],function(base){
 				view:"list",
 				height:250,
 				template:"<div class='strong_text'>#name#</div><div class='light_text'>#address#</div>",
-				type:{height:80,width:500},
+				type:{height:65,width:500},
 				select:true,
 				on:{"onItemClick":function(id, e, node){
 					var item = this.getItem(id);

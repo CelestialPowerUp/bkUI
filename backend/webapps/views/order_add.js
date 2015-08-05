@@ -12,6 +12,7 @@ define(["models/order",
 	var search_address = function(){
 		var address = $$("address").getValue();
 		if(address==null||address==""){
+			refresh_user_address($$("car_user_id").getValue());
 			return;
 		}
 		base.getLocation(address,function(data){
@@ -23,6 +24,7 @@ define(["models/order",
 					item.longitude=21.1;
 					item.name=address;
 					item.address="--";
+					obj.help = "";
 					$$("pick_address").add(item);
 				}
 				for(var i=0;i<data.results.length;i++){
@@ -31,6 +33,7 @@ define(["models/order",
 					obj.longitude=data.results[i]['location']['lng'];
 					obj.name=data.results[i].name;
 					obj.address=data.results[i].address;
+					obj.help = "";
 					$$("pick_address").add(obj);
 				}
 			}
@@ -42,6 +45,7 @@ define(["models/order",
 		$$("coupon_data_view").clearAll();
 		$$("order_product_datas").clearAll();
 		$$("pick_time").clearAll();
+		$$("pick_address").clearAll();
 	};
 
 	var update_car_model_list = function(user_id){
@@ -67,6 +71,21 @@ define(["models/order",
 		});
 	};
 
+	var refresh_user_address = function(user_id){
+		$$("pick_address").clearAll();
+		base.getReq("addresses.json?user_id="+user_id,function(addresses){
+			for(var i=0;i<addresses.length;i++){
+				var obj = {};
+				obj.latitude=addresses[i]['latitude'];
+				obj.longitude=addresses[i]['longitude'];
+				obj.name=addresses[i]['name'];
+				obj.address=addresses[i]['address'];
+				obj.help = "我的地址";
+				$$("pick_address").add(obj);
+			}
+		});
+	};
+
 	var update_user_info = function(){
 		base.getReq("meta_user/"+$$("phone_number").getValue(),function(data){
 			webix.message("用户信息获取成功");
@@ -82,6 +101,9 @@ define(["models/order",
 
 			//获取优惠券信息
 			update_coupons_list(data['user_id']);
+
+			//获取用户地址
+			refresh_user_address(data['user_id']);
 
 			//检测绑定openid
 			check_openid(data.user_id);
@@ -296,7 +318,7 @@ define(["models/order",
 				width:300,
 				height:50,
 				template:"<div>"+
-				  "<div class='big_strong_text'>总价：￥#total_price#　　　　已优惠：￥-#free_price#</div>"+"</div>",
+				  "<div class='big_strong_text'>总价：￥#total_price#　　　已优惠：￥-#free_price#</div>"+"</div>",
 				data:{total_price: 0, free_price: 0}
 		     },
 
@@ -408,8 +430,8 @@ define(["models/order",
         		id:"pick_address",
         		view:"list",
         		height:250,
-        		template:"<div class='strong_text'>#name#</div><div class='light_text'>#address#</div>",
-        		type:{height:80,width:500},
+        		template:"<div class='strong_text'>#name#(#help#)</div><div class='light_text'>#address#</div>",
+        		type:{height:65,width:500},
         		select:true,
         		on:{"onItemClick":function(id, e, node){
         			var item = this.getItem(id);
@@ -560,7 +582,7 @@ define(["models/order",
 		$$("phone_number").setValue(phone);
 		check_user_info();
 	};
-	
+
 	var layout = {
 			cols:[
             {},
