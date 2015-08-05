@@ -28,12 +28,15 @@ define(["models/order",
 					$$("pick_address").add(item);
 				}
 				for(var i=0;i<data.results.length;i++){
+					if(typeof (data.results[i]['location']) === 'undefined'){
+						continue;
+					}
 					var obj = {};
 					obj.latitude=data.results[i]['location']['lat'];
 					obj.longitude=data.results[i]['location']['lng'];
 					obj.name=data.results[i].name;
 					obj.address=data.results[i].address;
-					obj.help = "";
+					obj.help = "新地址";
 					$$("pick_address").add(obj);
 				}
 			}
@@ -164,7 +167,7 @@ define(["models/order",
   				{id:"guoqin", value: "国青"},
   				{id:"alipay", value: "支付宝"}
   			]},
-			{view:"label",label:"接车管家"},
+			/*{view:"label",label:"接车管家"},
 			{view: "richselect", name: "current_keeper_id",id:"current_keeper_id",options:[],placeholder:"选择接车管家",width:250,
 				on:{"onAfterRender":function(){
 					base.getReq("car_keepers.json",function(data) {
@@ -178,7 +181,7 @@ define(["models/order",
 						}
 					});
 				}}
-			},
+			},*/
 			{view:"label",label:"销售渠道"},
 			{view: "richselect", name: "sale_person_id",id:"sale_person_id",options:[],placeholder:"选择销售渠道",width:250,
 				on:{"onAfterRender":function(){
@@ -375,7 +378,7 @@ define(["models/order",
         		type:{height:80,width:250},
         		select:true,
 				on:{"onItemClick":function(id, e, node){
-					var item = this.getItem(id);
+					/*var item = this.getItem(id);
 					if(item.pick_time){
 						//获取冲突数据
 						var param = "pick_time="+item.pick_time;
@@ -399,7 +402,7 @@ define(["models/order",
 								}
 							});
 						}
-					}
+					}*/
 				}}
     		},{
 				id:"pick_time_tip",

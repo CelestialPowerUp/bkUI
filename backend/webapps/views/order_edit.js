@@ -31,6 +31,74 @@ define(["views/modules/base",
 			$$("sale_person_id").refresh();
 		});
 	}
+
+	var get_check_keeper_param = function(){
+		var form = $$("order_base_data").getValues();
+		var param = {};
+		param.order_id = form.id;
+		param.user_id = form.current_keeper_id;
+		param.start_time=base.format_time(form.pick_start_time);
+		param.end_time = base.format_time(form.pick_end_time);
+		return param;
+	}
+
+	var get_check_keeper_conflict_param = function(){
+		var form = $$("order_base_data").getValues();
+		var param = {};
+		param.order_id = form.id;
+		param.current_keeper_id = form.current_keeper_id;
+		param.pick_start_time=base.format_time(form.pick_start_time);
+		param.pick_end_time = base.format_time(form.pick_end_time);
+		return param;
+	}
+
+
+	var check_conflict_order = function(){
+		var param = get_check_keeper_conflict_param();
+		var param_str = "";
+		for(var p in param){
+			if(typeof(p)==='function'){
+				continue;
+			}
+			if(param[p] === null || param[p]===''){
+				return;
+			}
+			param_str += (param_str.length>0?"&":"")+p+"="+param[p];
+		}
+		base.postReq("/v2/api/order/keeper_conflict",param,function(data){
+			if(data && data.length>0){
+				$$("pick_time_tip").show();
+				$$("pick_time_tip").clearAll();
+				webix.message({ type:"error",expire:5000,text:"管家当天时间冲突，请谨慎下单。"});
+				for(var a=0;a<data.length;a++){
+					var item = {};
+					item.customer_info=data[a]['customer_phone_number']+"  "+data[a]['customer_name'];
+					item.pick_time_info = data[a]['pick_time_segment'];
+					$$("pick_time_tip").add(item);
+				}
+			}else{
+				$$("pick_time_tip").hide();
+				$$("pick_time_tip").clearAll();
+			}
+		});
+	}
+
+	var check_leave_keeper = function(){
+		var param = get_check_keeper_param();
+		for(var p in param){
+			if(typeof(p)==='function'){
+				continue;
+			}
+			if(param[p] === null || param[p]===''){
+				return;
+			}
+		}
+		base.postReq("user/is_leave.json",param,function(data){
+			if(data.length>0){
+				base.$msg.error("该管家在服务时间内已经请假，请选择其他管家");
+			}
+		});
+	}
 	
 	var customer_base_info_ui = {
 			type:"space",
@@ -57,47 +125,46 @@ define(["views/modules/base",
                            			]},
                    			{view: "text", name: "car_id",id:"car_id",label:"车辆",value:"", hidden: true,width:250},
 							{view: "text", name: "model_type",id:"model_type",label:"车模型",value:"", hidden: true,width:250},
-                   			{view: "richselect", name: "current_keeper_id",id:"current_keeper_id",label:"接车管家",options:[],placeholder:"选择接车管家",width:350,
-    		          			on:{
-									"onAfterRender":function(){
-
-									},
-									"onChange":function(current_keeper_id){
-										//获取冲突数据
-										if(old_pick_time && current_keeper_id!=old_current_keeper_id){
-											var param = "pick_time="+old_pick_time;
-											var currentKeeperId = $$("current_keeper_id").getValue();
-											if(currentKeeperId && currentKeeperId!=''){
-												param = param + "&current_keeper_id="+currentKeeperId;
-												base.getReq("order/keeper_conflict.json?"+param,function(data){
-													if(data && data.length>0){
-														$$("pick_time_tip").show();
-														$$("pick_time_tip").clearAll();
-														webix.message({ type:"error",expire:5000,text:"管家当天时间冲突，请谨慎下单。"});
-														for(var a=0;a<data.length;a++){
-															var item = {};
-															item.customer_info=data[a]['customer_phone_number']+"  "+data[a]['customer_name'];
-															item.pick_time_info = data[a]['pick_time_segment'];
-															$$("pick_time_tip").add(item);
-														}
-													}else{
-														$$("pick_time_tip").hide();
-														$$("pick_time_tip").clearAll();
-													}
-												});
-											}
-										}
-
-									}
-								}
-                   			},
 							{view: "richselect", name: "sale_person_id",id:"sale_person_id",label:"销售渠道",options:[],placeholder:"选择销售渠道",width:350,
 								on:{"onAfterRender":function(){
 
 								}}
 							},
-							{view:"datepicker", timepicker:true, label:"接车时间：", name:"take_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350},
-							{view:"datepicker", timepicker:true, label:"还车时间：", name:"give_back_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350},
+                   			{view: "richselect", name: "current_keeper_id",id:"current_keeper_id",label:"接车管家",options:[],placeholder:"选择接车管家",width:350,
+    		          			on:{
+									"onChange":function(){
+										//检测管家是否请假
+										check_leave_keeper();
+										//获取冲突数据
+										check_conflict_order();
+									}
+								}
+                   			},
+							{
+								margin:10,
+								cols:[
+								{view:"datepicker", timepicker:true, label:"预计接车时间：", name:"pick_start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350,
+									on:{
+										"onChange":function(){
+											//检测管家是否请假
+											check_leave_keeper();
+											//获取冲突数据
+											check_conflict_order();
+										}
+									}
+								},
+								{view:"datepicker", timepicker:true, label:"--", name:"pick_end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
+									on:{
+										"onChange":function(){
+											//检测管家是否请假
+											check_leave_keeper();
+											//获取冲突数据
+											check_conflict_order();
+										}
+									}
+								},
+							]},
+							/*{view:"datepicker", timepicker:true, label:"还车时间：", name:"give_back_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350},*/
                    			{view:"textarea",name:"comment",label:"客户备注",placeholder:"客户备注",disabled:true},
                    			{view:"textarea",name:"product_comment",label:"商品备注",placeholder:"商品备注",disabled:true},
                    			{view:"textarea",name:"operator_comment",label:"客服备注",placeholder:"客服备注",width:500},
@@ -482,8 +549,10 @@ define(["views/modules/base",
 				{view:"button",label:"提交订单修改",width:120,click:function(){
 				//基本信息
 				var order = $$("order_base_data").getValues();
-				order.take_time = base.format_time(order.take_time);
-				order.give_back_time = base.format_time(order.give_back_time);
+				/*order.take_time = base.format_time(order.take_time);
+				order.give_back_time = base.format_time(order.give_back_time);*/
+				order.pick_start_time=base.format_time(order.pick_start_time);
+				order.pick_end_time = base.format_time(order.pick_end_time);
 				//供应商信息
 				var suppliers = $$("supplier_table").serialize();
 				order.supplier_ids = [];
