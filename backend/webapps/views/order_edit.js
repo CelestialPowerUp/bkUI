@@ -696,8 +696,10 @@ define(["views/modules/base",
 		data['comment'] = order.comment;
 		data['operator_comment'] = order.operator_comment;
 		data['product_comment'] = order.product_comment;
-		data['take_time'] = base.$show_time(order.take_time);
-		data['give_back_time'] = base.$show_time(order.give_back_time);
+		/*data['take_time'] = base.$show_time(order.take_time);
+		data['give_back_time'] = base.$show_time(order.give_back_time);*/
+		data['pick_start_time'] = base.$show_time_sec(order.pick_start_time);
+		data['pick_end_time'] = base.$show_time_sec(order.pick_end_time);
 		if(order.coupon!=null ){
 			data['coupon_id'] = order.coupon.id;
 		}

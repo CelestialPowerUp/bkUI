@@ -8,14 +8,13 @@ define([
 	"helpers/locale",
 	"helpers/theme",
 	"libs/rollbar",
-	"views/modules/base"
-], function(core, menu, locale, theme, tracker,base){
+	"libs/webix/codebase/i18n/zh"
+], function(core, menu, locale, theme, tracker){
 
 	webix.codebase = document.location.href.split("#")[0].replace("index.html","")+"libs/webix/";
-
+	webix.i18n.setLocale("zh-CN");
 	if(!webix.env.touch && webix.ui.scrollSize && webix.CustomScroll)
 		webix.CustomScroll.init();
-
 
 	if (webix.production)
 		tracker.init({
