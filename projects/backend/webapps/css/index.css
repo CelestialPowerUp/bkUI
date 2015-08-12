@@ -1,0 +1,139 @@
+.strong_text{
+    font-weight: 800;
+    white-space: nowrap;
+    padding-top: 8px;
+    font-size: 15px;
+}
+.big_strong_text{
+    font-weight: 700;
+    white-space: nowrap;
+    padding-top: 8px;
+    padding-left: 8px;
+    font-size: 25px;
+}
+.light_text{
+    font-weight: 500;
+    line-height:25px;
+    padding-top: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.links{
+    color:#777777;
+    cursor:pointer;
+    font-size:15px;
+    color:blue;
+}
+.views{
+    cursor:pointer;
+    color:blue;
+}
+.edit{
+    cursor:pointer;
+    font-size:15px;
+    color:blue;
+}
+.delete{
+    color:#777777;
+    cursor:pointer;
+    font-size:15px;
+    color:blue;
+}
+.complate{
+    color:#777777;
+    cursor:pointer;
+    font-size:15px;
+    color:blue;
+}
+.pick{
+    color:#777777;
+    cursor:pointer;
+    font-size:15px;
+    color:blue;
+}
+.login_window{
+    background: black;
+    alpha:255;
+}
+.myhover{
+    background: #F0DCB6;
+}
+
+.content {
+    width:100%;
+    height:100%;
+}
+.image .webix_template{
+    padding: 0px;
+}
+.nav_list .webix_dataview_item{
+    background-color: #aaa;
+    border-color: #bbb;
+}
+.nav_list .webix_dataview_item.webix_selected{
+    background-color: #eee;
+}
+
+.webix_table_radio.checked{
+    background:green;
+    width:16px; height:16px; margin-top:8px;
+}
+.webix_table_radio.notchecked{
+    background:orange;
+    width:16px; height:16px; margin-top:8px;
+}
+
+.checked{
+    color:green;
+    font-weight: bold; cursor:pointer;
+}
+.notchecked{
+    color:red;
+    font-weight:bold; cursor: pointer;
+}
+
+.text_button{
+    font-weight:bold;
+    background-color:white;
+    color:#3498db;
+    border-radius:3px;
+}
+
+.webix_info div{
+    padding: 10px;
+}
+.webix_notify div{
+    background-color:#FF8831;
+    color: white;
+}
+
+.row_button1{
+    color: #fff;
+    font: 400 14px/1.5 "Microsoft Yahei",Arial;
+    border-radius: 15px 15px 15px 15px;
+
+    background-color: rgba(53, 153, 186, 0.8);
+    display: inline-block;
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+    padding: 0 15px;
+    margin: 0 5px;
+    cursor:pointer;
+    text-decoration:none;
+    transition: all 0.2s ease 0s;
+}
+.row_button1:hover{
+    border-radius: 0;
+    background-color: #2a8dae;
+    border-left: 4px solid #107495;
+}
+
+.webix_cell{
+    word-wrap:break-word;
+}
+
+.strongtext{
+    font-weight:bold;color: #000000;
+}

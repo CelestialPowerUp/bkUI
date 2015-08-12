@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+
+    <script type="text/javascript" src="http://www.cloopen.com/js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="http://www.cloopen.com/js/voip/swfobject.js"></script>
+    <script type="text/javascript" src="http://www.cloopen.com/js/voip/Cloopen_sandbox.js"> </script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+
+            var voipUsername = "84422500000013";
+            var voipPassword = "8V2fXTrk";
+            /*call start*/
+            /*设置为debug模式*/
+            Cloopen.debug();
+
+            function test(){
+                alert(111);
+            }
+
+            /*设置为强制登录模式*/
+            Cloopen.forceLogin();
+            //以voip账号和密码登录的方式初始化
+            Cloopen.initByUser('ivrflash'//swf对应的id
+                    ,initCallBack//初始化时自定义fun
+                    ,notifyCallBack//显示通知的自定义fun
+                    ,voipUsername//voip子账号
+                    ,voipPassword//voip子账号密码
+            );
+            /*未连接状态*/
+            Cloopen.when_idle(function(){
+                console.log("未连接...");
+            });
+            /*正在连接服务器中状态*/
+            Cloopen.when_connecting(function(){
+                console.log("连接中...");
+            });
+            /*已经注册登录状态，通话结束也返回此状态*/
+            Cloopen.when_connected(function(){
+                console.log("登录状态...");
+            });
+            /*Cloopen初始化成功后的自定义函数*/
+            function initCallBack(){
+                console.log(arguments);
+                console.log("初始化...");
+            }
+            /*Cloopen显示事件回调通知的自定义函数*/
+            function notifyCallBack(doFun,msg){
+                console.log(msg);
+            }
+            /*座席准备就绪*/
+            Cloopen.when_connected(function(){
+                console.log("准备就绪");
+                /*$("#isCallinAccept").show();
+                 $("#callinInfo").hide();
+                 $("#callin").hide();
+
+                 $("#callOutBtn").show();
+                 $("#calloutInfo").hide()*/;
+            });
+            /*通话中*/
+            Cloopen.when_active(function(){
+                console.log("通话中");
+                /*if($("#isCalloutTime").val()=='1'){//座席外呼
+                 $("#calloutNow").show();
+                 $("#calloutNowTime").show();
+                 //stopCount();
+                 //timedCount();
+                 $("#isCalloutTime").val("0");
+                 }*/
+            });
+            function callinHandler(){
+                var agentid = window.appViewModel.userData().agent.agentid;
+                //第一步去callcenter查询来电号码及呼入类型
+                var callnum = '';//呼入号码
+                var calltype = '';//呼入类型
+                var calltypevalue = '1';//呼入类型值
+                $.ajaxSetup({
+                    async: false
+                });
+                $.ajax({
+                    type : "get",
+                    async : false,
+                    url : window.appViewModel.apiRoot + "/callService/findCallByAgent?agentid="+agentid,
+                    cache : false, //默认值true
+                    success : function(json){
+                        callnum = json.callnum;
+                        calltype = json.calltype;
+                        calltypevalue = json.calltypevalue;
+                        $("#callin").show();
+                        $("#callinnum").html(callnum);
+                        $("#callintype").html("呼入类型:"+calltype);
+
+                        //第二步去CRM查询号码对应的客户信息(姓名、性别)
+                        $.ajax({
+                            type : "get",
+                            async : false,
+                            url : window.appViewModel.apiRoot + "/carusers/findby/phonenumber/"+callnum,
+                            cache : false, //默认值true
+                            success : function(data){
+                                var name = data.name;
+                                var sex = data.gender;
+                                if(name){
+                                    $("#callinName").text(name);
+                                }
+                                if(sex == 'Male'){
+                                    sex = "先生";
+                                }else if(sex == 'Female'){
+                                    sex = "女士";
+                                }else if(sex == 'Secret'){
+                                    sex = "保密";
+                                }else{
+                                    sex = "";
+                                }
+                                $("#callinSex").text(sex);
+
+                                //第三步 根据呼入类型打开对应页面
+                                if(calltypevalue=="1"){//预约
+                                    Present.App.setHashBang('/carserviceorders/create');
+                                }
+                                if(calltypevalue=="3"){//订单查询
+                                    //查询该用户订单数量
+                                    $.ajax({
+                                        url: window.appViewModel.apiRoot + "/carserviceorder/orders/phone/" + callnum,
+                                        cache: false,
+                                        type: 'GET'
+                                    }).done(function (data) {
+                                        if(data){//订单详情
+                                            Present.App.setHashBang("/carserviceorders/"+data);
+                                        }else{//跳到列表(可能为空)
+                                            Present.App.setHashBang("/carserviceorders/phone/"+callnum+"/1");
+                                        }
+                                    }).fail(function () {
+                                        alert("查询失败。");
+                                    });
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+            /*有呼入*/
+            Cloopen.when_inbound(function(){
+                $("#callinVoice").attr("src","../content/callInTip.mp3");
+                $("#callinVoice").attr("autoplay","autoplay");
+
+                //如果值为1是座席外呼则直接接通
+                var isCallout = $("#isCallout").val();
+                if(isCallout=='1'){
+                    Cloopen.accept();
+                    $("#isCallout").val("0");
+                }else{//呼入
+                    setTimeout(function(){
+                        callinHandler();
+                    },2000);
+                }
+            });
+
+            //呼叫置忙/闲
+            self.setAgentState = function () {
+                var obj = $(arguments[1].target);
+                var txt =$("#agentStateShowValue").val();
+                var agentid = window.appViewModel.userData().agent.agentid;
+                var state = "true";
+                if(txt == 1){
+                    state = "false";
+                }
+                $.ajax({
+                    type : "get",
+                    async : false,
+                    url : self.apiRoot + "/agentstate/setAgentState", //实际上访问时产生的地址为: ajax.ashx?callbackfun=jsonpCallback&id=10
+                    data : {
+                        agentid:agentid,
+                        state:state
+                    },
+                    cache : false, //默认值true
+                    dataType : "jsonp",
+                    jsonp: "callbackparam",//传递给请求处理程序或页面的，用以获得jsonp回调函数名的参数名(默认为:callback)
+                    success : function(json){
+                    }
+                });
+                agentStateReset();
+            };
+            function agentStateReset(){
+                var agentid = window.appViewModel.userData().agent.agentid;
+                $.ajax({
+                    url: window.appViewModel.apiRoot + "/crmCall/getAgentState?agentid=" + agentid,
+                    cache: false,
+                    type: 'GET'
+                }).done(function (data) {
+                    if(data!=-1 && data!=1){//座席忙
+                        $("#setAgentState").text("呼叫置闲");
+                        $("#agentStateShow").css("background-color","red");
+                        $("#agentStateShowValue").val(0);
+                        $("#callout").hide();
+                        $("#isCallOutBtn").text("拨号呼叫");
+                    }
+                    if(data==1){
+                        $("#setAgentState").text("呼叫置忙");
+                        $("#agentStateShow").css("background-color","green");
+                        $("#agentStateShowValue").val(1);
+                        return true;
+                    }
+                }).fail(function () {
+                    console.log("查询座席"+agentid+"状态失败!")
+                });
+            };
+            /*座席外呼*/
+            self.agentCallOut = function () {
+                agentStateReset();
+                var flag = $("#agentStateShowValue").val();
+                var txt = $("#isCallOutBtn").text();
+                if( txt == '拨号呼叫'){
+                    if(flag =='1'){
+                        $("#isCallOutBtn").text("取消拨号");
+                        $("#callout").show();
+                    }else{
+                        alert("座席忙，无法外呼!");
+                    }
+                }else{
+                    var isClose = confirm("确定关闭窗口吗？");
+                    if(isClose){
+                        $("#callout").hide();
+                        $("#isCallOutBtn").text("拨号呼叫");
+                    }
+                }
+            };
+            /*定时重登陆-保持在线状态*/
+            setInterval(function(){
+                $.ajax({
+                    url: window.appViewModel.apiRoot + "/operators/account",
+                    cache: false,
+                    type: 'GET'
+                }).done(function (data) {
+
+                }).fail(function () {
+                    alert("登陆超时，请重新登陆!");
+                    Present.App.setHashBang("/account/signin");
+                });
+            },1000*60*10);
+            /*call end*/
+        });
+    </script>
+</head>
+<body>
+<div id="ivrflash" style="display:block;">
+    <a href="http://www.adobe.com/go/getflashplayer" alt="Get Adobe Flash player">Get Adobe Flash player</a>
+</div>
+</body>
+</html>

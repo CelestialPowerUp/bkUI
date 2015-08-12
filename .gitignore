@@ -1,0 +1,18 @@
+projects/ycar_api_2/RestStack.Accounts/target/reststack.accounts-1.0-SNAPSHOT.jar
+projects/ycar_api_2/RestStack.Common/target/reststack.common-1.0-SNAPSHOT.jar
+projects/ycar_api_2/RestStack.Core/target/reststack.core-1.0-SNAPSHOT.jar
+projects/ycar_api_2/RestStack.Accounts/target/maven-archiver/pom.properties
+projects/ycar_api_2/RestStack.Common/target/maven-archiver/pom.properties
+projects/ycar_api_2/RestStack.Core/target/maven-archiver/pom.properties
+projects/ycar_api_2/RestStack.Web/src/main/webapp/WEB-INF/lib/rt.jar
+projects/backend/.idea/.name
+projects/backend/.idea/backend.iml
+projects/backend/.idea/misc.xml
+projects/backend/.idea/modules.xml
+projects/backend/.idea/vcs.xml
+projects/backend/.idea/workspace.xml
+projects/backend/.idea/encodings.xml
+projects/ycar_api_2/RestStack.Accounts/reststack.accounts (2).iml
+projects/ycar_api_2/RestStack.CarServices/RestStack.CarServices.iml
+projects/ycar_api_2/RestStack.Web/RestStack.Web.iml
+projects/ycar_wechat/new/node_modules/grunt-contrib-watch/node_modules/gaze/node_modules/globule/node_modules/minimatch/test/defaults.js

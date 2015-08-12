@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<!-- Webix Library -->
+	<script type="text/javascript" src="libs/webix/codebase/webix.js"></script>
+	<script type="text/javascript" src="libs/qiniu/plupload.full.min.js"></script>
+	<script type="text/javascript" src="libs/qiniu/qiniu.js"></script>
+	<script type="text/javascript" src="libs/jquery.min.js"></script>
+	<!-- <link rel="stylesheet" href="libs/webix/codebase/webix.css"> -->
+	<link rel="stylesheet" href="libs/webix/codebase/skins/clouds.css">
+	<link rel="stylesheet/less" href="assets/theme.siberia.less">
+	<!-- The app's logic -->
+	<script type="text/javascript" data-main="open_app" src="libs/require.js"></script>
+
+	<script type="text/javascript">
+		require.config({
+			paths: { text:"libs/text" }
+		});
+	</script>
+
+	 <!-- Development only -->
+	 <script type="text/javascript" src="libs/less.min.js"></script>
+	 <style type="text/css">
+	 	.strong_text{
+		 	font-weight: 800;
+	  		white-space: nowrap;
+	  		padding-top: 8px;
+	  		font-size: 15px;
+	 	}
+	 	.big_strong_text{
+		 	font-weight: 700;
+	  		white-space: nowrap;
+	  		padding-top: 8px;
+	  		padding-left: 8px;
+	  		font-size: 25px;
+	 	}
+	 	.light_text{
+	 		font-weight: 500;
+	  		line-height:25px;
+	  		padding-top: 8px;
+	  		font-size: 13px;
+	  		font-weight: 600;
+	 	}
+	 	.myhover{
+			background: #F0DCB6;
+		}
+		button.webixtype_base{
+			background: #0d8bf2;
+			color: #FFFFFF;
+			text-align: center;
+			line-height: 12px;
+		}
+
+	 </style>
+</head>
+<body>
+	<audio id="myaudio" src="assets/audio/order.mp3" controls="controls" loop="false" hidden="true"/>
+</body>
+</html>
