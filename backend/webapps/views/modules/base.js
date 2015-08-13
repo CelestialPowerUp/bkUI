@@ -7,11 +7,10 @@ define(["../forms/login"],function(login){
 		webix.ui(login.$ui).show();
         $$("login_win").getBody().focus();
 	}
-
 	var filter_url = function(url){
 		return url.indexOf("/api/")>0?url:api_root+url;
 	}
-	
+
 	var postForm = function(url,param,callBack,failureBack){
 		$.ajax({
             type:"POST",
@@ -74,13 +73,18 @@ define(["../forms/login"],function(login){
 		});
 	};
 	
-	var postReq = function(url,param,callBack,failureBack){
+	var postReq = function(url,param,callBack,failureBack,notAsync){
+		var async = true;
+		if(notAsync){
+			async = false;
+		}
 		$.ajax({
             type:"POST",
             dataType:"json",
             contentType: "application/json",
             timeout:15*1000,
             url: filter_url(url),
+			async:async,
             data:JSON.stringify(param),
             beforeSend: function (request)
             {
@@ -107,13 +111,17 @@ define(["../forms/login"],function(login){
             }
 		});
 	};
-	
-	var getReq = function(url,callBack,failureBack){
+	var getReq = function(url,callBack,failureBack,notAsync){
+		var async = true;
+		if(notAsync){
+			async = false;
+		}
 		$.ajax({
 			type:"GET",
 			dataType:"json",
 			timeout:15*1000,
 			url: filter_url(url),
+			async:async,
 			beforeSend: function (request)
 			{
 				request.setRequestHeader("API-Client-Device-Type", 'web');
@@ -393,7 +401,110 @@ define(["../forms/login"],function(login){
 	};
 	
 	check_upload_token();
+
+	var isPhoneNumber = function(value){
+		var reg = /^1[34578][0-9]{9}$/;
+		if(!reg.test(value)){
+			return false;
+		}
+		return true;
+	}
 	
+	check_upload_token();
+
+	//座席登陆
+	var agentLogin = function(){
+		var user_id = getUserId();
+		if(!user_id){
+			webix.message({ type:"error",expire:5000,text:"座席登陆失败"});
+		}
+		var url = "ivr/agent?user_id="+user_id;
+		getReq(url,function(data){
+			webix.storage.local.put("agent_token",data.agent_token);
+			webix.storage.local.put("agent_id",data.agent_id);
+			window.location.reload(true);
+		},function(){},true);
+	};
+
+	//获取用户座席信息
+	var getAgentToken = function(){
+		var agentToken = webix.storage.local.get("agent_token");
+		if(agentToken){
+			return agentToken;
+		}
+		var user_id = getUserId();
+		var url = "ivr/agent?user_id="+user_id;
+		getReq(url,function(data){
+			webix.storage.local.put("agent_token",data.agent_token);
+			return webix.storage.local.get("agent_token");
+		},function(){},true);
+	};
+	//获取座席ID
+	var getAgentId = function(){
+		var agentId = webix.storage.local.get("agent_id");
+		if(agentId){
+			return agentId;
+		}
+		var user_id = getUserId();
+		var url = "ivr/agent?user_id="+user_id;
+		getReq(url,function(data){
+			webix.storage.local.put("agent_id",data.agent_id);
+			return webix.storage.local.get("agent_id");
+		},function(){},true);
+	};
+
+	//查询座席当前状态
+	var getAgentState = function(){
+		var agentId = getAgentId();
+		var agentState = -1;
+		if(!agentId){
+			webix.message({ type:"error",expire:5000,text:"座席状态获取失败：座席ID不存在"});
+			return agentState;
+		}
+		var url = "ivr/agent/state/"+agentId;
+		getReq(url,function(data){
+			agentState = data;
+		},function(){},true);
+
+		return agentState;
+	};
+
+	//查询座席当前状态
+	var setAgentState = function(agentStateParam){
+		var agentId = getAgentId();
+		var agentState = 1;
+		if(agentStateParam == 0){
+			agentState = agentStateParam;
+		}
+		if(!agentId){
+			webix.message({ type:"error",expire:5000,text:"座席状态获取失败：座席ID不存在"});
+			return agentState;
+		}
+
+		var result = false;
+		var param = {};
+		param.agent_id = agentId;
+		param.agent_state = agentState;
+		var url = "ivr/agent/state/update";
+		postReq(url,param,function(data){
+			result = true;
+		},function(){},true);
+
+		return result;
+	};
+
+	//根据手机号获取用户信息
+	var getUserInfoByPhone = function(phone){
+		var result = null;
+		if(phone){
+			var url = "meta_user/"+phone;
+			getReq(url,function(data){
+				result = data;
+			},function(){},true);
+		}
+		return result;
+	};
+
 	return {
 		postReq:postReq,
 		getReq:getReq,
@@ -413,7 +524,13 @@ define(["../forms/login"],function(login){
 		$show_time:show_time,
 		$show_time_sec:show_time_sec,
 		str_isEmpty:str_isEmpty,
-		$value_weight:value_weight
+		$value_weight:value_weight,
+		isPhoneNumber:isPhoneNumber,
+		getAgentToken:getAgentToken,
+		getAgentId:getAgentId,
+		getAgentState:getAgentState,
+		setAgentState:setAgentState,
+		agentLogin:agentLogin,
+		getUserInfoByPhone:getUserInfoByPhone
 	};
-
 });

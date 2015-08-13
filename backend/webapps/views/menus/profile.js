@@ -22,7 +22,11 @@ return {
 			var user_info = webix.storage.local.get("user_info");
 			console.log(user_info);
 			base.postForm("/login_out",{phone_number:user_info.phone_number},function(){
-				webix.storage.local.remove("user_info")
+				webix.storage.local.remove("user_info");
+				//删除座席信息
+				webix.storage.local.remove("agent_token");
+				webix.storage.local.remove("agent_id");
+
 				window.location.reload(true);
 			});
 		}}

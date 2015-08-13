@@ -9,6 +9,9 @@ define(['require'],function(require){
 				base.$request_upload_token();
 				$$("login_win").close();
 				window.location.reload(true);
+
+				//座席登陆
+				base.agentLogin();
 			});
 		}
 		else
