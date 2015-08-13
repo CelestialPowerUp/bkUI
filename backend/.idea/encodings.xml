@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
-    <file url="file://$PROJECT_DIR$/webapps/jsmvc.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/app.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/activity_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/api_list.js" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/webapps/views/ckeditor.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/coupon_send.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/channel_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_form.js" charset="UTF-8" />
@@ -18,5 +17,6 @@
     <file url="file://$PROJECT_DIR$/webapps/views/statistic_panel.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/store_ware_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/system_user_list.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/user_leave_list.js" charset="UTF-8" />
   </component>
 </project>
