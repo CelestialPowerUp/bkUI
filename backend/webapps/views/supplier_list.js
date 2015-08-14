@@ -89,7 +89,6 @@ define(["views/modules/base",
     var refresh_table = function(){
         $$("table_list").clearAll();
         base.getReq("/v2/api/meta_supplier_list.json?page="+cur_page+"&size=15",function(data){
-            console.log(data);
             $$("table_list").clearAll();
             $$("table_list").parse(data.items);
             table_page.$update_page_items("table_page_list",data);

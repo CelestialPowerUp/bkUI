@@ -7,7 +7,7 @@ webix.protoUI({
 		this.map = null;
 		this.$ready.push(this.render);
 	},
-	render:function(){
+	/*render:function(){
         if(typeof BMap=="undefined"||typeof BMap.Map=="undefined"){
             var name = "webix_callback_"+webix.uid();
             window[name] = webix.bind(function(){
@@ -21,6 +21,22 @@ webix.protoUI({
         }
         else
             this._initMap();
+	},*/
+
+	render:function(){
+		var name = "webix_callback_"+webix.uid();
+		window[name] = webix.bind(function(){
+			this._initMap.call(this,true);
+		},this);
+		var node = document.getElementById("baidu_api_script");
+		if(node!==null){
+			document.getElementsByTagName("head")[0].removeChild(node);
+		}
+		var script = document.createElement("script");
+		script.type = "text/javascript";
+		script.id="baidu_api_script",
+		script.src = "//api.map.baidu.com/api?v=2.0&ak=WVAXZ05oyNRXS5egLImmentg&callback="+name;
+		document.getElementsByTagName("head")[0].appendChild(script);
 	},
     _initMap:function(define){
         var c = this.config;
@@ -53,8 +69,5 @@ webix.protoUI({
 		webix.ui.view.prototype.$setSize.apply(this, arguments);
 		/*if(this.map)
 			BMap.Map.event.trigger(this.map, "resize");*/
-	},
-	create_point:function(point){
-		return new BMap.Point(point[0], point[1]);
 	}
 }, webix.ui.view);
