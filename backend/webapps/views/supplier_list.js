@@ -19,6 +19,11 @@ define(["views/modules/base",
             var item = $$("table_list").getItem(id);
             //编辑服务商
             this.$scope.show("/supplier_edit:id="+item.supplier_id);
+        },
+        "fa-list-ul":function(e, id, node){
+            var item = $$("table_list").getItem(id);
+            //编辑服务商
+            this.$scope.show("/supplier_product_list:id="+item.supplier_id);
         }
     };
 
@@ -40,7 +45,6 @@ define(["views/modules/base",
             return result;
         }},
         {id:"layoff", header:"状态",width:80,fillspace:false,template:function(obj){
-            console.log(obj);
             if(obj.layoff === false){
                 return "<span class='status status1'>接单中</span>";
             }else{
@@ -62,15 +66,12 @@ define(["views/modules/base",
         onClick:on_event
     }
 
-    var check = function(check){
-        return '<span class="webix_icon_btn fa-check-square-o list_icon" style="max-width:32px;"></span>'
-    };
-
     var filter_ui = {
         margin:15,
         cols:[
             { view: "button", type: "iconButton", icon: "plus", label: "添加服务商", width: 135, click: function(){
                 //todo
+                this.$scope.show("/supplier_edit");
             }},
             {}
         ]

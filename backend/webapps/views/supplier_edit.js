@@ -124,12 +124,29 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
         }
     };
 
+    var filer_ui = {
+        cols:[
+            { view: "button", type: "iconButton", icon: "backward", label: "返回列表", width: 120, click: function(){
+                //todo
+                this.$scope.show("/supplier_list");
+            }},{}
+        ]
+    }
+
     var layout = {
         paddingY:15,
         paddingX:15,
         margin:15,
-        cols:[
-            map,from_ui
+        rows:[
+            filer_ui,
+            {
+                paddingY:15,
+                paddingX:15,
+                margin:15,
+                cols:[
+                    map,from_ui
+                ]
+            }
         ]
     }
 
