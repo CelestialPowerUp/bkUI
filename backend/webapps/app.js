@@ -30,8 +30,8 @@ define([
 	//configuration
 	var app = core.create({
 		id:			"ycar",
-		name:		"yangaiche",
-		version:	"1.0.0",
+		name:		"养爱车",
+		version:	"0.1",
 		debug:		true,
 		start:		"/app/index"
 	});

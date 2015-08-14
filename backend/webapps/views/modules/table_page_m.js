@@ -9,9 +9,9 @@ define(function(){
 	var page_item_list = {
 			view: "dataview",
 			yCount: 1,
-			xCount:5,
 			select: true,
 			scroll: false,
+			borderless:false,
 			type: {
 				width: 60,
 				height: 32
@@ -27,10 +27,11 @@ define(function(){
 	};
 	
 	var create_page_table = function(table_id,datatable){
-		var page_table_ui = {cols:[{rows:[]},{}]};
-		page_table_ui.cols[0].rows.push(datatable);
+		//var page_table_ui = {cols:[{rows:[]},{}]};
+		var page_table_ui = {rows:[]};
+		page_table_ui.rows.push(datatable);
 		page_item_list.id = table_id;
-		page_table_ui.cols[0].rows.push(webix.copy(page_item_list));
+		page_table_ui.rows.push(webix.copy(page_item_list));
 		return page_table_ui;
 	};
 	

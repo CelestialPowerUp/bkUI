@@ -1,6 +1,8 @@
 define(["views/modules/base",
     "views/modules/table_page_m"],function(base,table_page){
 
+    var cur_page = 1;
+
     var on_event = {
         "fa-trash-o":function(e, id, node){
             var item = $$("table_list").getItem(id);
@@ -16,33 +18,45 @@ define(["views/modules/base",
         "fa-pencil":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商
+            this.$scope.show("/supplier_edit:id="+item.supplier_id);
         }
     };
 
     var elements = [
-        {id:"ware_id",width:50,hidden:true},
-        {id:"ware_name", header:"单品名称",minWidth:250,fillspace:true},
-        {id:"ware_type_name", header:"单品类别",minWidth:120,fillspace:true},
-        {id:"product_name", header:"关联商品",minWidth:250,fillspace:true},
-        {id:"ware_full_price",header:"市场价", minWidth:125,fillspace:true},
-        {id:"ware_mark_price", header:"养爱车价", minWidth:125,fillspace:true},
-        {id:"ware_status", header:"单品状态", minWidth:125,fillspace:true,template:function(obj){
-            if(obj.ware_status === "up_shelves"){
-                return "<span class='status status1'>上架</span>";
+        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='编辑' class='webix_icon fa-pencil'></span>"},
+        {id:"product_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
+        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
+        {id:"supplier_id",header:"ID",width:80},
+        {id:"name", header:"名称",minWidth:350,fillspace:true},
+        {id:"address", header:"地址",minWidth:350,fillspace:true},
+        {id:"phone", header:"电话",width:185,fillspace:false,template:function(obj){
+            var result = "";
+            if(obj.mobile_number!==null&&obj.mobile_number!==''){
+                result = "<span class='status status1'>"+obj.mobile_number+"</span>";
+            }
+            if(obj.phone_number!==null&&obj.phone_number!==''){
+                result = result+" <span class='status status1'>"+obj.phone_number+"</span>";
+            }
+            return result;
+        }},
+        {id:"layoff", header:"状态",width:80,fillspace:false,template:function(obj){
+            console.log(obj);
+            if(obj.layoff === false){
+                return "<span class='status status1'>接单中</span>";
             }else{
-                return "<span class='status status0'>下架</span>";
+                return "<span class='status status0'>停业中</span>";
             }}
-        },
-        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' class='webix_icon fa-pencil'></span>"},
-        {id:"delete", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
+        }
     ];
 
     var table_ui = {
         id:"table_list",
         view:"datatable",
-        select:true,
+        select:false,
         rowHeight:35,
+        autoheight:true,
         hover:"myhover",
+        leftSplit:3,
         columns:elements,
         data:[],
         onClick:on_event
@@ -55,7 +69,7 @@ define(["views/modules/base",
     var filter_ui = {
         margin:15,
         cols:[
-            { view: "button", type: "iconButton", icon: "plus", label: "添加服务商", width: 105, click: function(){
+            { view: "button", type: "iconButton", icon: "plus", label: "添加服务商", width: 135, click: function(){
                 //todo
             }},
             {}
@@ -73,7 +87,16 @@ define(["views/modules/base",
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-
+        base.getReq("/v2/api/meta_supplier_list.json?page="+cur_page+"&size=15",function(data){
+            console.log(data);
+            $$("table_list").clearAll();
+            $$("table_list").parse(data.items);
+            table_page.$update_page_items("table_page_list",data);
+            table_page.$add_page_callback(function(page){
+                cur_page = page;
+                refresh_table();
+            });
+        })
     };
 
     return {
