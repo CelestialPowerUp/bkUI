@@ -24,7 +24,13 @@ define(["views/modules/base",
             var item = $$("table_list").getItem(id);
             //编辑服务商
             this.$scope.show("/supplier_product_list:id="+item.supplier_id);
+        },
+        "fa-user-md":function(e, id, node){
+            var item = $$("table_list").getItem(id);
+            //编辑服务商管理人员
+            this.$scope.show("/supplier_user_list:id="+item.supplier_id);
         }
+
     };
 
     var elements = [
@@ -102,7 +108,7 @@ define(["views/modules/base",
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "服务商管理", details: "服务商列表"});
+            webix.$$("title").parse({title: "服务商管理", details: "服务商管理人员"});
             refresh_table();
         }
     }
