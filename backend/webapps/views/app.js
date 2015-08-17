@@ -56,7 +56,7 @@ define([
 				this.refresh();
 			}},*/
 			{view: "icon", icon: "user", id:"agent_menu",tooltip:"座席状态", value: 0, width: 45,popup:"agent_submenu"}
-			/*,{view: "icon", icon: "user", id:"test",tooltip:"座席状态", value: 0, width: 45,click:function(){
+			/*,{view: "icon", icon: "user", id:"test1",tooltip:"座席状态", value: 0, width: 45,click:function(){
 				// this.$scope.ui(call_in_win.$ui).show();
 				showCallInWin();
 			}}*/
@@ -94,14 +94,27 @@ define([
 	var showCallInWin = function(){
 		webix.message({ type:"default",expire:5000,text:'来电话了...'});
 		$$("main_layout").$scope.ui(call_in_win.$ui).show();
-		play_info();
-	}
 
-	var play_info=function(){
+		play_info();
+		loopPlay();
+	}
+	var loopPlayInterval = null;
+	var loopPlay=function(){
+		loopPlayInterval = setInterval(play_info, 2000);
+		//video.pause();
+	};
+	var play_info = function(){
 		var i = Math.round(Math.random()*3);
 		palyer = $$("callin_"+i+"_audio");
-		palyer.getVideo().play();
-	};
+		var video = palyer.getVideo();
+		video.play();
+	}
+
+	var clearLoop = function(){
+		if(loopPlayInterval){
+			window.clearInterval(loopPlayInterval);
+		}
+	}
 
 	return {
 		$ui:layout,
@@ -119,6 +132,7 @@ define([
 			scope.ui(agent_menu.$ui);
 			sidebar.$init_data();
 			callcenter.addCallback(showCallInWin);
+			call_in_win.addCallback(clearLoop);
 		}
 	};
 });

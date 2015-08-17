@@ -6,10 +6,12 @@ define(function(){
 
     //拒接
     function reject(){
+        clearLoop();
         Cloopen.reject();
     }
     //接听
     function accept(){
+        clearLoop();
         Cloopen.accept();
 
         $$("reject_btn").hide();
@@ -17,12 +19,23 @@ define(function(){
         $$("call_in_off_btn").show();
     }
     function resetWin(){
+        clearLoop();
+
         $$("user_info").clearAll();
         $$("reject_btn").show();
         $$("accept_btn").show();
         $$("call_in_off_btn").hide();
         $$("call_in_win").hide();
     }
+
+    /*停止循环播放来电话提示音定时器*/
+    var _clearLoop = null;
+    var clearLoop = function (){
+        _clearLoop();
+    };
+    var addCallback = function(clearLoop){
+        _clearLoop = clearLoop;
+    };
 
     return {
         $ui:{
@@ -34,6 +47,7 @@ define(function(){
             width:300,
             height:200,
             head:"电话呼入",
+            close:true,
             body:{
                 rows:[
                     {
@@ -60,7 +74,8 @@ define(function(){
                 ]
             }
         },
-        resetWin:resetWin
+        resetWin:resetWin,
+        addCallback:addCallback
     }
 
 });

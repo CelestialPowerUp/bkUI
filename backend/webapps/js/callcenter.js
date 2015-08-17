@@ -30,11 +30,11 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     /*Cloopen初始化成功后的自定义函数*/
     function initCallBack(){
         console.log(arguments);
-        console.log("初始化...");
     }
     /*Cloopen显示事件回调通知的自定义函数*/
     function notifyCallBack(doFun,msg){
         console.log(doFun);
+        console.log(msg);
         //挂断
         if(doFun=='onHangup'){
             //通话结束后恢复座席为准备就绪状态
@@ -43,15 +43,14 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             call_out.resetView();
             if("呼叫终止"==msg || "normal"==msg || "callcancel"==msg || "byed"==msg ){
                 call_in_win.resetWin();
+                clearLoop();
             }
         }
         //取消
         if(doFun=='onHangup'){
-
         }
         if(doFun=='ringing'){
             if(msg=='0000000000'){//呼出时也走这个方法
-                console.log(".........");
                 Cloopen.accept();
                 return ;
             }
@@ -78,8 +77,6 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     });
     /*有呼入*/
     Cloopen.when_inbound(function(){
-        /*console.log("有呼入...");
-        callInTip();*/
     });
 
     var _func = null;
