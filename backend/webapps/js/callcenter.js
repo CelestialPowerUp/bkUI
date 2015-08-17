@@ -55,7 +55,7 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
                 return ;
             }
             if(msg){//真正的客户呼入
-                console.log("有呼入...");
+                console.log("有呼入..."+msg);
                 callInTip();
 
                 console.log("根据手机号获取用户信息..");

@@ -18,6 +18,7 @@ define(function(){
         $$("accept_btn").hide();
         $$("call_in_off_btn").show();
     }
+    //重置来电窗口
     function resetWin(){
         clearLoop();
 
