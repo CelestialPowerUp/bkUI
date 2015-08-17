@@ -1,5 +1,6 @@
 define(["views/modules/base",
-    "views/modules/table_page_m"],function(base,table_page){
+    "views/modules/table_page_m",
+    "views/forms/supplier_type"],function(base,table_page,supplier_type){
 
     var cur_page = 1;
 
@@ -20,6 +21,12 @@ define(["views/modules/base",
             //编辑服务商
             this.$scope.show("/supplier_edit:id="+item.supplier_id);
         },
+        "fa-check-circle":function(e, id, node){
+            var item = $$("table_list").getItem(id);
+            //编辑服务商类型
+            this.$scope.ui(supplier_type.$ui).show();
+            supplier_type.$init_data(item.supplier_id);
+        },
         "fa-list-ul":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商
@@ -35,6 +42,7 @@ define(["views/modules/base",
 
     var elements = [
         {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='编辑' class='webix_icon fa-pencil'></span>"},
+        {id:"supplier_type", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
         {id:"product_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
         {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
         {id:"supplier_id",header:"ID",width:80},
@@ -66,7 +74,7 @@ define(["views/modules/base",
         rowHeight:35,
         autoheight:true,
         hover:"myhover",
-        leftSplit:3,
+        leftSplit:4,
         columns:elements,
         data:[],
         onClick:on_event
