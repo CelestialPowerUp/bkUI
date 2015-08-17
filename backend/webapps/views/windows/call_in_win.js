@@ -76,6 +76,7 @@ define(function(){
             }
         },
         resetWin:resetWin,
+        reject:reject,
         addCallback:addCallback
     }
 

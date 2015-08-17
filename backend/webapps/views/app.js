@@ -97,6 +97,8 @@ define([
 
 		play_info();
 		loopPlay();
+
+		setTimeout(call_in_win.reject, 15000);
 	}
 	var loopPlayInterval = null;
 	var loopPlay=function(){
