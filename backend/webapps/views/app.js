@@ -94,7 +94,14 @@ define([
 	var showCallInWin = function(){
 		webix.message({ type:"default",expire:5000,text:'来电话了...'});
 		$$("main_layout").$scope.ui(call_in_win.$ui).show();
+		play_info();
 	}
+
+	var play_info=function(){
+		var i = Math.round(Math.random()*3);
+		palyer = $$("callin_"+i+"_audio");
+		palyer.getVideo().play();
+	};
 
 	return {
 		$ui:layout,
