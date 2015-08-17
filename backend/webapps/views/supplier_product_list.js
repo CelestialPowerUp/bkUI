@@ -68,7 +68,7 @@ define(["views/modules/base",
                     return;
                 }
                 this.$scope.ui(supplier_product.$ui).show();
-                supplier_product.$init_data();
+                supplier_product.$init_data($$("table_list").serialize());
                 supplier_product.$add_callback(function(data){
                     var formdata = {};
                     formdata.supplier_id = supplier_id;

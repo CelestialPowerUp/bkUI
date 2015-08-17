@@ -74,17 +74,23 @@ define(["views/modules/base"],function(base){
 			}
 		};
 	
-	var init_data = function(role_code){
+	var init_data = function(role_code,choose_data){
+		console.log(choose_data);
 		base.getReq("users_by_role_code.json?role_code="+role_code,function(users){
-			console.log(users);
-			$$("user_list").parse(users);
+			for(var i=0;i<users.length;i++){
+				var parse_data = parse_check_data(users[i],choose_data);
+				if(parse_data.$check){
+					continue;
+				}
+				$$("user_list").add(parse_data);
+			}
 		});
 	};
 	
 	var parse_check_data = function(obj,arrs){
 		obj.$check = false;
 		for(var i=0;i<arrs.length;i++){
-			if(arrs[i]['type']===obj['type']){
+			if(arrs[i]['user_id']===obj['id']){
 				obj.$check=true;
 				break;
 			}

@@ -113,15 +113,22 @@ define(["views/modules/base"],function(base){
 	var init_data = function(choose_data){
 		base.getReq("meta_products.json",function(data){
 			for(var i=0;i<data.length;i++){
-				$$("ware_products_list").add(parse_check_data(data[i],choose_data));
+				var parse_data = parse_check_data(data[i],choose_data);
+				if(parse_data.$check){
+					continue;
+				}
+				$$("ware_products_list").add(parse_data);
 			}
 		});
 	};
 	
-	var parse_check_data = function(obj,choose_id){
+	var parse_check_data = function(obj,choose_data){
 		obj.$check = false;
-		if(obj.product_id===choose_id){
-			obj.$check = true;
+		for(var i = 0;i<choose_data.length;i++){
+			if(obj.product_id === choose_data[i].product_id){
+				obj.$check = true;
+				break;
+			}
 		}
 		return obj;
 	};

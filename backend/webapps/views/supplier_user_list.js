@@ -59,7 +59,7 @@ define(["views/modules/base",
                     return;
                 }
                 this.$scope.ui(role_user.$ui).show();
-                role_user.$init_data("UserRoles_CarKeepers");
+                role_user.$init_data("UserRoles_CarKeepers",$$("table_list").serialize());
                 role_user.$add_callback(function(users){
                     var formdata = {supplier_id:supplier_id};
                     formdata.user_ids = [];
