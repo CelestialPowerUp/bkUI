@@ -67,10 +67,10 @@ define([],function(){
 	];
 
 	var audio_callcenter = [
-		{id:"callin_0",value:"assets/audio/callin1.m4a"},
-		{id:"callin_1",value:"assets/audio/callin1.m4a"},
-		{id:"callin_2",value:"assets/audio/callin2.m4a"},
-		{id:"callin_3",value:"assets/audio/callin3.m4a"}
+		{id:"callin_0",value:"assets/audio/callin1.mp3"},
+		{id:"callin_1",value:"assets/audio/callin1.mp3"},
+		{id:"callin_2",value:"assets/audio/callin2.mp3"},
+		{id:"callin_3",value:"assets/audio/callin3.mp3"}
 	];
 	
 	return {
