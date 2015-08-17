@@ -6,27 +6,27 @@ define(function(){
 
     //拒接
     function reject(){
-        clearLoop();
         Cloopen.reject();
+        clearLoop();
     }
     //接听
     function accept(){
-        clearLoop();
-        Cloopen.accept();
-
         $$("reject_btn").hide();
         $$("accept_btn").hide();
         $$("call_in_off_btn").show();
+
+        Cloopen.accept();
+        clearLoop();
     }
     //重置来电窗口
     function resetWin(){
-        clearLoop();
-
         $$("user_info").clearAll();
         $$("reject_btn").show();
         $$("accept_btn").show();
         $$("call_in_off_btn").hide();
         $$("call_in_win").hide();
+
+        clearLoop();
     }
 
     /*停止循环播放来电话提示音定时器*/

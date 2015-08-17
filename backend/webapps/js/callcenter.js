@@ -43,11 +43,11 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             call_out.resetView();
             if("呼叫终止"==msg || "normal"==msg || "callcancel"==msg || "byed"==msg ){
                 call_in_win.resetWin();
-                clearLoop();
             }
         }
         //取消
         if(doFun=='onHangup'){
+            call_in_win.resetWin();
         }
         if(doFun=='ringing'){
             if(msg=='0000000000'){//呼出时也走这个方法

@@ -103,7 +103,6 @@ define([
 	var loopPlayInterval = null;
 	var loopPlay=function(){
 		loopPlayInterval = setInterval(play_info, 2000);
-		//video.pause();
 	};
 	var play_info = function(){
 		var i = Math.round(Math.random()*3);
