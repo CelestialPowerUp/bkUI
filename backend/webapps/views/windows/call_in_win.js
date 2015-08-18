@@ -44,8 +44,10 @@ define(function(){
         $ui:{
             view:"window",
             id:"call_in_win",
-            modal:true,
-            position:"center",
+            modal:false,
+            move:true,
+            height:200,
+            position:"top",
             head:{
                 view:"toolbar", cols:[
                     {view:"label", label: "电话呼入" },
@@ -84,12 +86,19 @@ define(function(){
                     console.log("自定清除延时挂断");
                 }
             },
+            "onHide":function(){
+                console.log("系统非法关闭，重新打开");
+                $$("call_in_win").show();
+            },
             "onShow":function(){
-                console.log("窗口打开了");
-                timer = setTimeout(function(){
-                    console.log("15秒到了，自动拒绝,转接其他客服");
-                    reject();
-                },15000);
+                if(timer===null){
+                    //第一次初始化
+                    console.log("窗口打开了");
+                    timer = setTimeout(function(){
+                        console.log("15秒到了，自动拒绝,转接其他客服");
+                        reject();
+                    },15000);
+                }
             }}
         },
         resetWin:resetWin,
