@@ -94,12 +94,12 @@ define([
 	var showCallInWin = function(){
 		webix.message({ type:"default",expire:5000,text:'来电话了...'});
 		$$("main_layout").$scope.ui(call_in_win.$ui).show();
-
 		play_info();
 		loopPlay();
 
-		setTimeout(call_in_win.reject, 15000);
+		//setTimeout(call_in_win.reject, 15000);
 	}
+
 	var loopPlayInterval = null;
 	var loopPlay=function(){
 		loopPlayInterval = setInterval(play_info, 2000);

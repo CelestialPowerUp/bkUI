@@ -33,8 +33,6 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     }
     /*Cloopen显示事件回调通知的自定义函数*/
     function notifyCallBack(doFun,msg){
-        console.log(doFun);
-        console.log(msg);
         //挂断
         if(doFun=='onHangup'){
             //通话结束后恢复座席为准备就绪状态
@@ -57,14 +55,15 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             if(msg){//真正的客户呼入
                 console.log("有呼入..."+msg);
                 callInTip();
-
+                $$("user_info").clearAll();
                 console.log("根据手机号获取用户信息..");
                 var userInfo = base.getUserInfoByPhone(msg);
-                $$("user_info").clearAll();
+                if(userInfo===null){
+                    userInfo = {phone:msg,user_name:"未注册用户"};
+                }
                 $$("user_info").parse(userInfo);
             }
         }
-        console.log(msg);
     }
     /*座席准备就绪*/
     Cloopen.when_connected(function(){

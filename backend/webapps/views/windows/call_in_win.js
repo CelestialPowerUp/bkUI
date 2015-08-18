@@ -4,6 +4,7 @@
  */
 define(function(){
 
+    var timer = null;
     //拒接
     function reject(){
         Cloopen.reject();
@@ -11,6 +12,7 @@ define(function(){
     }
     //接听
     function accept(){
+
         $$("reject_btn").hide();
         $$("accept_btn").hide();
         $$("call_in_off_btn").show();
@@ -24,7 +26,7 @@ define(function(){
         $$("reject_btn").show();
         $$("accept_btn").show();
         $$("call_in_off_btn").hide();
-        $$("call_in_win").hide();
+        $$("call_in_win").close();
 
         clearLoop();
     }
@@ -41,30 +43,31 @@ define(function(){
     return {
         $ui:{
             view:"window",
-            modal:false,
-            move:true,
             id:"call_in_win",
-            position:"top",
-            width:300,
-            height:200,
-            head:"电话呼入",
-            close:true,
+            modal:true,
+            position:"center",
+            head:{
+                view:"toolbar", cols:[
+                    {view:"label", label: "电话呼入" },
+                    /*{ view:"button", label: '关闭', width: 100, align: 'right', click:"$$('win3').close();"}*/
+                ]
+            },
             body:{
                 rows:[
                     {
                         view:"dataview",
-                            id:"user_info",
+                        id:"user_info",
                          type: {
                             height: 60
                         },
                         template:"<div class='webix_strong'>#phone#</div>  #user_name#",data:{phone:"手机号",user_name:"姓名"}
                     },
+                    {view:"button",id:"accept_btn",value:"接听",type:"form",click:function(){
+                        accept();
+                    }},
                     {view:"button",id:"reject_btn",value:"拒接",click:function(){
                         reject();
                         resetWin();
-                    }},
-                    {view:"button",id:"accept_btn",value:"接听",type:"form",click:function(){
-                        accept();
                     }},
                     {
                         view:"button",id:"call_in_off_btn",value:"挂断",type:"danger",hidden:true,click:function(){
@@ -73,7 +76,21 @@ define(function(){
                         }
                     }
                 ]
-            }
+            },
+            on:{"onDestruct":function(){
+                console.log("销毁了窗体");
+                if(timer!==null){
+                    window.clearTimeout(timer);
+                    console.log("自定清除延时挂断");
+                }
+            },
+            "onShow":function(){
+                console.log("窗口打开了");
+                timer = setTimeout(function(){
+                    console.log("15秒到了，自动拒绝,转接其他客服");
+                    reject();
+                },15000);
+            }}
         },
         resetWin:resetWin,
         reject:reject,
