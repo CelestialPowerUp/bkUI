@@ -11,7 +11,7 @@ define(function(){
 			yCount: 1,
 			select: true,
 			scroll: false,
-			borderless:false,
+			borderless:true,
 			type: {
 				width: 60,
 				height: 32
@@ -19,7 +19,6 @@ define(function(){
 			template: page_item_fomat,
 			on:{"onItemClick":function(id){
 				var item = this.getItem(id);
-				console.log(item);
 				if(typeof(page_click_callback)==='function'){
 					page_click_callback(item.number);
 				}
@@ -27,7 +26,6 @@ define(function(){
 	};
 	
 	var create_page_table = function(table_id,datatable){
-		//var page_table_ui = {cols:[{rows:[]},{}]};
 		var page_table_ui = {rows:[]};
 		page_table_ui.rows.push(datatable);
 		page_item_list.id = table_id;

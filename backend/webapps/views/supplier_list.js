@@ -47,6 +47,13 @@ define(["views/modules/base",
         {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
         {id:"supplier_id",header:"ID",width:80},
         {id:"name", header:"名称",minWidth:350,fillspace:true},
+        {id:"supplier_mold", header:"服务类型",width:80,fillspace:false,template:function(obj){
+            if(obj.supplier_mold === 'community'){
+                return "<span class='status status1'>社区店</span>";
+            }else{
+                return "<span class='status status0'>综合店</span>";
+            }}
+        },
         {id:"address", header:"地址",minWidth:350,fillspace:true},
         {id:"phone", header:"电话",width:185,fillspace:false,template:function(obj){
             var result = "";
