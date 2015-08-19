@@ -29,13 +29,21 @@ define(["views/modules/base",
         },
         "fa-list-ul":function(e, id, node){
             var item = $$("table_list").getItem(id);
-            //编辑服务商
-            this.$scope.show("/supplier_product_list:id="+item.supplier_id);
+            //编辑服务商品
+            if(item.supplier_mold==='community'){
+                this.$scope.show("/supplier_product_list:id="+item.supplier_id);
+                return;
+            }
+            base.$msg.error("非社区店不支持该服务");
         },
         "fa-user-md":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商管理人员
-            this.$scope.show("/supplier_user_list:id="+item.supplier_id);
+            if(item.supplier_mold==='community'){
+                this.$scope.show("/supplier_user_list:id="+item.supplier_id);
+                return;
+            }
+            base.$msg.error("非社区店不支持该服务");
         }
 
     };
