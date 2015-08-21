@@ -28,7 +28,41 @@ define(["views/modules/base"],function(base){
 			}
 	};
 	
-	var button_ui = {cols:[{},{view:"button",label:"确定",width:80,click:function(){
+	var button_ui = {cols:[
+		{view:"button",label:"选中全部",width:80,click:function(){
+			var datas = $$("role_api_list").serialize();
+			for(var i=0;i<datas.length;i++){
+				try{
+					datas[i].$check = true;
+				}catch(e){
+					console.log(datas[i]);
+				}
+			}
+			$$("role_api_list").refresh();
+		}},
+		{view:"button",label:"取消全部",width:80,click:function(){
+			var datas = $$("role_api_list").serialize();
+			for(var i=0;i<datas.length;i++){
+				try{
+					datas[i].$check = false;
+				}catch(e){
+					console.log(datas[i]);
+				}
+			}
+			$$("role_api_list").refresh();
+		}},
+		{view:"button",label:"反选",width:80,click:function(){
+			var datas = $$("role_api_list").serialize();
+			for(var i=0;i<datas.length;i++){
+				try{
+					datas[i].$check = !(datas[i].$check);
+				}catch(e){
+					console.log(datas[i]);
+				}
+			}
+			$$("role_api_list").refresh();
+		}},
+		{},{view:"button",label:"确定",width:80,click:function(){
 								var datas = $$("role_api_list").serialize();
 								var checkdata = [];
 								for(var i=0;i<datas.length;i++){
@@ -60,7 +94,6 @@ define(["views/modules/base"],function(base){
 						var str1 = datas[i].method+datas[i].urls+datas[i].name;
 						datas[i].value_weight = base.$value_weight(value,str1);
 					}catch(e){
-						console.log(datas[i]);
 					}
 				}
 				$$("role_api_list").sort("#value_weight#","desc");

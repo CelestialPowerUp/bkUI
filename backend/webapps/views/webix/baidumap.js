@@ -7,22 +7,6 @@ webix.protoUI({
 		this.map = null;
 		this.$ready.push(this.render);
 	},
-	/*render:function(){
-        if(typeof BMap=="undefined"||typeof BMap.Map=="undefined"){
-            var name = "webix_callback_"+webix.uid();
-            window[name] = webix.bind(function(){
-                 this._initMap.call(this,true);
-            },this);
-
-            var script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = "//api.map.baidu.com/api?v=2.0&ak=WVAXZ05oyNRXS5egLImmentg&callback="+name;
-            document.getElementsByTagName("head")[0].appendChild(script);
-        }
-        else
-            this._initMap();
-	},*/
-
 	render:function(){
 		var name = "webix_callback_"+webix.uid();
 		window[name] = webix.bind(function(){
@@ -45,10 +29,10 @@ webix.protoUI({
 		this.map.centerAndZoom(point,c.zoom);
 		this.map.enableScrollWheelZoom();
         webix._ldGMap = null;
-		//webix.prototype = BMap;
-		/*this.map.getPoint = function(point){
-			return new BMap.Point(point[0], point[1]);
-		}*/
+		//地图完成后回调
+		if(this.config.on && typeof(this.config.on.onAfterRender)==='function'){
+			this.config.on.onAfterRender();
+		}
     },
 	center_setter:function(config){
 		if(this.map)

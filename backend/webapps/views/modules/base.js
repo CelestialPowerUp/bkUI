@@ -1,5 +1,13 @@
 define(["../forms/login"],function(login){
-	
+
+	//var server = "/ws";
+	var server = "";
+	if(window.location.href.indexOf("/ws/bk")>=0){
+		server = "/ws";
+	}
+	if(window.location.href.indexOf("/develop/bk")>=0){
+		server = "/develop";
+	}
 	var api_root = "/v1/api/";
 	
 	var show_login_win = function(){
@@ -8,7 +16,7 @@ define(["../forms/login"],function(login){
         $$("login_win").getBody().focus();
 	}
 	var filter_url = function(url){
-		return url.indexOf("/api/")>0?url:api_root+url;
+		return server+(url.indexOf("/api/")>0?url:api_root+url);
 	}
 
 	var postForm = function(url,param,callBack,failureBack){
@@ -157,8 +165,7 @@ define(["../forms/login"],function(login){
             type:"GET",
             dataType:"json",
             timeout:15*1000,
-            url: api_root+"/public/address.json?keyword="+name,
-            //data:{keyword:name},
+            url: filter_url("public/address.json?keyword="+name),
             beforeSend: function (request)
             {
                 request.setRequestHeader("API-Client-Device-Type", 'web');

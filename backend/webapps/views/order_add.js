@@ -3,12 +3,14 @@ define(["models/order",
         "views/modules/base",
         "views/forms/order_product",
         "views/forms/user_car_model",
-        "views/order_details"], function(order,product,base,order_product,user_car_model,order_details){
+        "views/order_details",
+		"views/webix/baidumap"], function(order,product,base,order_product,user_car_model,order_details){
 
 	var car_products = "";
 	
 	var user_defined_option = {"true" : "自定义","false" : "非自定义"};
 
+	//搜索地址
 	var search_address = function(){
 		var address = $$("address").getValue();
 		if(address==null||address==""){
@@ -43,6 +45,7 @@ define(["models/order",
 		});
 	};
 
+	//清除信息
 	var clear_info = function(){
 		$$("car_data_view").clearAll();
 		$$("coupon_data_view").clearAll();
@@ -51,6 +54,10 @@ define(["models/order",
 		$$("pick_address").clearAll();
 	};
 
+	/**
+	 * 更新用户车辆信息
+	 * @param user_id
+	 */
 	var update_car_model_list = function(user_id){
 		base.getReq("cars.json?car_user_id="+user_id,function(cardata){
 			if(cardata){
@@ -60,6 +67,10 @@ define(["models/order",
 		});
 	};
 
+	/**
+	 * 更新用户的优惠券列表
+	 * @param user_id
+	 */
 	var update_coupons_list = function(user_id){
 		base.getReq("coupons?user_id="+user_id,function(coupons){
 			$$("coupon_data_view").clearAll();
@@ -74,6 +85,10 @@ define(["models/order",
 		});
 	};
 
+	/**
+	 * 更新我的地址
+	 * @param user_id
+	 */
 	var refresh_user_address = function(user_id){
 		$$("pick_address").clearAll();
 		base.getReq("addresses.json?user_id="+user_id,function(addresses){
@@ -89,8 +104,11 @@ define(["models/order",
 		});
 	};
 
+	/**
+	 * 更新用户信息
+	 */
 	var update_user_info = function(){
-		base.getReq("meta_user/"+$$("phone_number").getValue(),function(data){
+		base.getReq("meta_user/"+$$("user_phone_number").getValue(),function(data){
 			webix.message("用户信息获取成功");
 			$$("register_button").hide();
 			$$("car_user_id").setValue(data['user_id']);
@@ -121,92 +139,231 @@ define(["models/order",
 	var check_user_info = function(){
 		update_user_info();
 	};
-	
+
+	var format_content = function(point,info){
+		var content = "经度："+point.lng+"<br/>"+"纬度："+point.lat+"<br/>";
+		content += info;
+		return content;
+	};
+
+	/**
+	 * 适配服务商
+	 * @param lng
+	 * @param lat
+	 */
+	var adaption_supplier = function(lng,lat){
+		$$("supplier_id").setValue("");
+		base.getReq("/v2/api/supplier/adaption.json?longitude="+lng+"&latitude="+lat,function(suppliers){
+			if(suppliers.length>0){
+				$$("adaption_supplier_info").setHTML((suppliers[0].supplier_mold==='community'?"社区店":"综合店")+" "+suppliers[0].supplier_name);
+				$$("supplier_id").setValue(suppliers[0].supplier_id);
+			}else{
+				$$("adaption_supplier_info").setHTML("养爱车 自营服务");
+			}
+			base.getReq("/v1/api/service_products.json?supplier_id="+$$("supplier_id").getValue()+"&code=all",function(products){
+				$$("service_type_view").clearAll();
+				$$("service_type_view").parse(products);
+				$$("service_type_view").select(products[0].id);
+			});
+		});
+
+	}
+
+	//更新infowindow的信息
+	var update_info_window = function(event){
+		var content = format_content(event.point,event.address);
+		infoWindow.setContent(content);
+		$$("map").map.panTo(event.point);
+		$$("longitude").setValue(event.point.lng);
+		$$("latitude").setValue(event.point.lat);
+		$$("take_car_address").setValue(event.address);
+		adaption_supplier(event.point.lng,event.point.lat);
+		$$("map").map.openInfoWindow(infoWindow,event.point); //开启信息窗口
+	};
+
+	//地图位置信息
+	var infoWindow = null;
+	var parse_address_info = function(address){
+		var map = $$("map").map;
+		map.clearOverlays();
+		var point = new BMap.Point(116.417854,39.921988);//默认点
+		var geoc = new BMap.Geocoder();
+		var opts = {
+			width : 250,     // 信息窗口宽度
+			height: 80,     // 信息窗口高度
+			offset: new BMap.Size(0, -25),
+			title : "当前位置"  // 信息窗口标题
+		}
+		infoWindow = new BMap.InfoWindow("", opts);  // 创建信息窗口对象
+		infoWindow.disableCloseOnClick();
+		if(typeof(address)!='undefined'&& address !== null ){
+			point = new BMap.Point(address.longitude,address.latitude);
+
+		}
+		var marker = new BMap.Marker(point);  // 创建标注
+		map.addOverlay(marker);              // 将标注添加到地图中
+		map.centerAndZoom(point, 15);
+		marker.enableDragging();
+		geoc.getLocation(point, function(rs){
+			update_info_window(rs); //开启信息窗口
+		});
+		marker.addEventListener("dragend",function(event){
+			geoc.getLocation(event.point, function(rs){
+				update_info_window(rs);
+			});
+		});
+		marker.addEventListener("dragging",function(event){
+			map.closeInfoWindow();
+		});
+	};
+
 	var order_form = {
 		view: "form",
 		id: "order_add",
-		position:"center",
 		elementsConfig:{
 			labelWidth: 80
 		},
 		scroll: false,
 		elements:[
-		    {view:"label",label:"手机号"},
-			{cols:[{view: "text",keyPressTimeout:100, id: "phone_number",name:"phone_number",value:"18210237734", placeholder: "输入手机号",width:250,value:"",on:{
-				"onTimedKeyPress":function(){
-					clear_info();
-					if($$("phone_number").getValue().length==11){
-						check_user_info();
-					}
-				}
-			}},
-			       { view: "button", label: "查询", width: 80,click:function(){
-			    	   check_user_info();
-			       }},
-			       { view: "button", label: "注册",id:"register_button", width: 80,hidden:true,click:function(){
-			    	   var param = {};
-			    	   param.phone = $$("phone_number").getValue();
-			    	   base.postForm("car_user/register.json",param,function(data){
-			    		   $$("register_button").hide();
-						   //获取用户信息
-			    		   check_user_info();
-
-			    		   webix.message("新用户注册成功");
-			    	   });
-			       }},
-			       {}]
-		    },
-			{view:"label",label:"姓名"},
+			//隐藏域
 			{view:"text",id:"car_user_id",name:"user_id",hidden:true,width:150},
-			{view: "text",id:"user_name", name: "contact_name", placeholder: "姓名",width:250},
-			{view:"label",label:"订单渠道"},
-	        {view: "richselect", name: "peer_source",value:"backend", placeholder:"选择订单渠道", vertical: true,width:250, options:[
+			{view:"text",id:"supplier_id",name:"supplier_id",hidden:true,width:150},
+
+			//手机号码
+			{
+				view:"toolbar",css: "highlighted_header header5",height:40,
+				elements:[
+				{view:"label", align:"left",label:"用户信息",height:30},
+				{view: "text",keyPressTimeout:100, id: "user_phone_number", placeholder: "输入下单手机号",width:300,value:"",on:{
+					"onTimedKeyPress":function(){
+						clear_info();
+						$$("phone_number").setValue($$("user_phone_number").getValue());
+						if($$("user_phone_number").getValue().length==11){
+							check_user_info();
+						}
+					}
+				}},
+				{ view: "button", label: "查询", width: 80,click:function(){
+					check_user_info();
+				}},
+				{ view: "button", label: "注册",id:"register_button", width: 80,hidden:true,click:function(){
+					var param = {};
+					param.phone = $$("user_phone_number").getValue();
+					base.postForm("car_user/register.json",param,function(data){
+						$$("register_button").hide();
+						//获取用户信息
+						check_user_info();
+
+						webix.message("新用户注册成功");
+					});
+				}}
+			]},
+
+			{view: "text",id: "phone_number",name:"phone_number",label:"联系电话", placeholder: "输入手机号",width:300,value:""},
+			{view: "text",label:"联系人",id:"user_name", name: "contact_name", placeholder: "请输入联系人姓名",width:300},
+	        {view: "richselect",label:"订单渠道", name: "peer_source",value:"backend", placeholder:"选择订单渠道", vertical: true,width:300, options:[
                 {id:"backend", value: "后台"},
   				{id:"xiaomi", value: "小米"},
   				{id:"weixin", value: "微信"},
   				{id:"guoqin", value: "国青"},
   				{id:"alipay", value: "支付宝"}
   			]},
-			/*{view:"label",label:"接车管家"},
-			{view: "richselect", name: "current_keeper_id",id:"current_keeper_id",options:[],placeholder:"选择接车管家",width:250,
-				on:{"onAfterRender":function(){
-					base.getReq("car_keepers.json",function(data) {
-						var list = $$("current_keeper_id").getPopup().getList();
-						list.clearAll();
-						for (var i = 0; i < data.length; i++) {
-							if (data[i]['lay_off']) {
-								continue;
+
+			//接车地址
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"接车地址",height:30},
+				{view:"text",id:"longitude",name:"longitude", label:"经度",labelWidth:50,width:250,placeholder: "经度",required:true,disabled:true},
+				{view:"text",id:"latitude",name:"latitude", label:"纬度",labelWidth:50,width:250,placeholder: "纬度",required:true,disabled:true},
+			]},
+			{
+				margin:5,
+				cols:[
+					{rows:[
+						{cols:[
+							{view: "text", id: "address",name:"address",keyPressTimeout:100, placeholder: "输入地址进行查询",width:250,value:"",
+								on:{"onTimedKeyPress":function(){
+									search_address();
+								}
+								}},
+							{ view: "button", label: "查询", width: 50,click:function(){
+								var address = $$("address").getValue();
+								if(address==null||address==""){
+									webix.message({ type:"error",expire:5000,text:"请输入查询的地址"});
+									return;
+								}
+								search_address();
+							}},{}]
+						},
+						{
+							id:"pick_address",
+							view:"list",
+							height:450,
+							template:"<div class='strong_text'>#name#(#help#)</div><div class='light_text'>#address#</div>",
+							type:{height:80,width:300},
+							select:true,
+							on:{"onItemClick":function(id, e, node){
+								var item = this.getItem(id);
+								console.log(item);
+								parse_address_info(item);
+							}}
+						}
+					]},
+					{
+						view:"baidu-map",
+						id:"map",
+						zoom:15,
+						center:[ 116.404, 39.915 ],
+						on:{
+							"onAfterRender":function(){
+
 							}
-							list.add({id: data[i]['car_keeper_id'], value: data[i]['name']});
 						}
-					});
-				}}
-			},*/
-			{view:"label",label:"销售渠道"},
-			{view: "richselect", name: "sale_person_id",id:"sale_person_id",options:[],placeholder:"选择销售渠道",width:250,
-				on:{"onAfterRender":function(){
-					base.getReq("users_by_role_code.json?role_code=UserRoles_SaleUsers",function(data) {
-						var list = $$("sale_person_id").getPopup().getList();
-						list.clearAll();
-						for (var i = 0; i < data.length; i++) {
-							list.add({id: data[i]['id'], value: data[i]['user_name']});
-						}
-					});
+					}
+				]
+			},
+			{view:"text",id:"take_car_address", label:"接车地址",labelWidth:80,placeholder: "请输入接车地址",required:true},
+
+			//服务方式
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"服务类型",height:30},
+				{view:"label", id:"adaption_supplier_info",height:30}
+			]},
+			{
+				id:"service_type_view",
+				view:"dataview",
+				datatype:"json",
+				yCount:1,
+				xCount:2,
+				scroll:false,
+				select:true,
+				type:{
+					width: 180,
+					height: 90,
+					template:"<div class='strong_text'>#product_name#</div><div class='light_text'>服务费 #price#元</div>"
+				},
+				on:{"onItemClick":function(id,e,node){
+					var item = this.getItem(id);
+
 				}}
 			},
-			{view:"label",label:"车型号",height:30},
-			{ view: "button", type: "iconButton", icon: "plus", label: "添加车型", width: 130, click: function(){
-				if($$("car_user_id").getValue()==null || $$("car_user_id").getValue()==""){
-					webix.message({ type:"error",expire:5000,text:"输入手机号并验证是否存在该用户！"});
-					return;
-				}
-				this.$scope.ui(user_car_model.$ui($$("car_user_id").getValue(),function(item){
-					//重新获取车型信息
-					update_car_model_list($$("car_user_id").getValue());
 
-				})).show();
-				
-			}},
+
+			//车型信息
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"选择车型",height:30},
+				{ view: "button", type: "iconButton", icon: "plus", label: "添加车型", width: 130, click: function(){
+					if($$("car_user_id").getValue()==null || $$("car_user_id").getValue()==""){
+						webix.message({ type:"error",expire:5000,text:"输入手机号并验证是否存在该用户！"});
+						return;
+					}
+					this.$scope.ui(user_car_model.$ui($$("car_user_id").getValue(),function(item){
+						//重新获取车型信息
+						update_car_model_list($$("car_user_id").getValue());
+
+					})).show();
+
+				}}
+			]},
 			{
 	            id:"car_data_view",
 				view:"dataview",
@@ -222,7 +379,11 @@ define(["models/order",
 	            	var item = this.getItem(id);
 	            	var modeltype = item['model_type'];
 	            	$$("order_product_datas").clearAll();
-	            	base.getReq("products.json?service_type=1&car_model_type="+modeltype,function(data){
+					var action = "/v2/api/products.json?service_type=11&car_model_type="+modeltype;
+					if($$("supplier_id").getValue().length>0){
+						action += "&supplier_id="+$$("supplier_id").getValue();
+					}
+	            	base.getReq(action,function(data){
 	            		car_products = data;
 						var required_products = data.required_products;
 						for(var i=0;i<required_products.length;i++){
@@ -247,109 +408,103 @@ define(["models/order",
 	            	});
 	            }}
 			},
-			
-			{view:"label",label:"选择商品",height:30},
-			
+
 			//车型关联商品
-			{cols:[{ view: "button", type: "iconButton", icon: "plus", label: "添加商品", width: 130, click: function(){
-				var carmodelid = getCarModelId();
-				if(carmodelid!=null){
-					this.$scope.ui(order_product.$ui(false,carmodelid)).show();//是否显示商品list,是否显示图片
-					order_product.$config_form_type(false,false);//是否是编辑项，是否是自定义商品
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"订单商品",height:30},
+				{ view: "button", type: "iconButton", icon: "plus", label: "添加商品", width: 130, click: function(){
+					var carmodelid = getCarModelId();
+					if(carmodelid!=null){
+						this.$scope.ui(order_product.$ui(false,carmodelid,$$("supplier_id").getValue())).show();//是否显示商品list,是否显示图片
+						order_product.$config_form_type(false,false);//是否是编辑项，是否是自定义商品
+						$$('order_product_datas').unselect();
+						$$('order_product_form').bind('order_product_datas');
+					}
+				}},
+				{view: "button", type: "iconButton", icon: "plus", label: "自定义商品", width: 130, click:function(){
 					$$('order_product_datas').unselect();
-					$$('order_product_form').bind('order_product_datas');
-				}
-			}},
-			{view: "button", type: "iconButton", icon: "plus", label: "自定义商品", width: 130, click:function(){
-				$$('order_product_datas').unselect();
-				var carmodelid = getCarModelId();
-				if(carmodelid!=null){
-					this.$scope.ui(order_product.$ui(true,carmodelid)).show();
-					order_product.$config_form_type(false,true);
-					$$('order_product_form').bind('order_product_datas');
-				}
-			}}]},
-			{cols:[
-					{
-						view:"datatable",
-						id:"order_product_datas",
-						columns:[
-						    { id:"product_type",header:"ID",hidden:true,width:150},
-						    { id:"product_name",header:"名称",width:250,hidden:true},
-							{ id:"product_info",header:"名称",width:250},
-							{ id:"unit_count",header:"数量",width:100},
-							{ id:"price",header:"单价",width:100},
-							{ id:"labour_price",header:"工时费",width:100},
-							{ id:"total_price",header:"价格",width:100},
-							{ id:"user_defined",header:"自定义",options:user_defined_option},
-							{id:"trash", header:"操作", width:80, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
-						],
-						select:true,
-						autoheight:true,
-						autowidth:true,
-						on:{"onAfterAdd":function(id, index){
-							coutPrice();
-						},"onAfterDelete":function(id){
-							coutPrice();
-							webix.message("移除了一个商品");
-						},"onItemDblClick":function(id, e, node){
-							var item = $$("order_product_datas").getItem(id);
-							var carmodelid = getCarModelId();
-							if(carmodelid!=null){
-								this.$scope.ui(order_product.$ui(item.user_defined,carmodelid)).show();
-								order_product.$config_form_type(false,item.user_defined);
-								order_product.$addPriceCallBack(coutPrice);
-								$$('order_product_form').bind('order_product_datas');
+					var carmodelid = getCarModelId();
+					var supplier_id = $$("supplier_id").getValue();
+					if(carmodelid!=null){
+						this.$scope.ui(order_product.$ui(true,carmodelid,supplier_id)).show();
+						order_product.$config_form_type(false,true);
+						$$('order_product_form').bind('order_product_datas');
+					}
+				}}
+			]},
+			{
+				view:"datatable",
+				id:"order_product_datas",
+				columns:[
+					{ id:"product_type",header:"ID",hidden:true,width:150},
+					{ id:"product_name",header:"名称",width:250,hidden:true},
+					{ id:"product_info",header:"名称",width:250},
+					{ id:"unit_count",header:"数量",width:100},
+					{ id:"price",header:"单价",width:100},
+					{ id:"labour_price",header:"工时费",width:100},
+					{ id:"total_price",header:"价格",width:100},
+					{ id:"user_defined",header:"自定义",options:user_defined_option},
+					{id:"trash", header:"操作", width:80, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
+				],
+				select:true,
+				autoheight:true,
+				on:{"onAfterAdd":function(id, index){
+					coutPrice();
+				},"onAfterDelete":function(id){
+					coutPrice();
+					webix.message("移除了一个商品");
+				},"onItemDblClick":function(id, e, node){
+					var item = $$("order_product_datas").getItem(id);
+					var carmodelid = getCarModelId();
+					if(carmodelid!=null){
+						this.$scope.ui(order_product.$ui(item.user_defined,carmodelid)).show();
+						order_product.$config_form_type(false,item.user_defined);
+						order_product.$addPriceCallBack(coutPrice);
+						$$('order_product_form').bind('order_product_datas');
+					}
+				}},
+				onClick:{
+					webix_icon:function(e,id,node){
+						webix.confirm({
+							text:"删除该商品<br/> 确定?", ok:"是", cancel:"取消",
+							callback:function(res){
+								if(res){
+									webix.$$("order_product_datas").remove(id);
+								}
 							}
-						}},
-						onClick:{
-							webix_icon:function(e,id,node){
-								webix.confirm({
-									text:"删除该商品<br/> 确定?", ok:"是", cancel:"取消",
-									callback:function(res){
-										if(res){
-											webix.$$("order_product_datas").remove(id);
-										}
-									}
-								});
-							}
-						}
-					},{}]
+						});
+					}
+				}
 			},
-			
-			{id: "products_info",
-				width:300,
-				height:50,
-				template:"<div>"+
-				  "<div class='big_strong_text'>总价：￥#total_price#　　　已优惠：￥-#free_price#</div>"+"</div>",
-				data:{total_price: 0, free_price: 0}
-		     },
 
-			{view:"label",label:"优惠券"},
-			{cols:[{view:"text",id:"coupon_code",width:120,placeholder: "输入优惠券码"},{view:"button",label:"兑换",width:50,click:function(){
-				var user_id = $$("car_user_id").getValue();
-				if(user_id==""){
-					webix.message({ type:"error",expire:5000,text:"请填入下单手机号码并验证用户"});
-					return;
-				}
-				var couponcode = $$("coupon_code").getValue();
-				if(couponcode==""){
-					webix.message({ type:"error",expire:5000,text:"优惠券码不能为空"});
-					return;
-				}
-				var param = {};
-				param.user_id=user_id;
-				param.coupons=[{"code":couponcode}];
-				base.postReq("coupons/conversion.json",param,function(data){
-					base.getReq("coupons?user_id="+user_id,function(coupons){
-						$$("coupon_data_view").clearAll();
-						$$("coupon_data_view").parse(coupons);
-					})
-				},function(err){
-					console.log(err);
-				});
+			//优惠券
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"优惠券",height:30},
+				{view:"text",id:"coupon_code",width:120,placeholder: "输入优惠券码"},{view:"button",label:"兑换",width:50,click:function(){
+					var user_id = $$("car_user_id").getValue();
+					if(user_id==""){
+						webix.message({ type:"error",expire:5000,text:"请填入下单手机号码并验证用户"});
+						return;
+					}
+					var couponcode = $$("coupon_code").getValue();
+					if(couponcode==""){
+						webix.message({ type:"error",expire:5000,text:"优惠券码不能为空"});
+						return;
+					}
+					var param = {};
+					param.user_id=user_id;
+					param.coupons=[{"code":couponcode}];
+					base.postReq("coupons/conversion.json",param,function(data){
+						base.getReq("coupons?user_id="+user_id,function(coupons){
+							$$("coupon_data_view").clearAll();
+							$$("coupon_data_view").parse(coupons);
+						})
+					},function(err){
+						console.log(err);
+					});
 
-			}}]},
+				}}
+			]},
 			{
 				id:"coupon_data_view",
 				view:"dataview",
@@ -367,84 +522,38 @@ define(["models/order",
 					}
 				}
 			},
-			
-			{view:"label",label:"接车时间"},
-			{cols:[{
-        		id:"pick_time",
-        		view:"list",
-        		height:250,
-        		width:250,
-        		template:"<div class='strong_text'>#pick_time#</div><div class='light_text'>#pick_time_segment#</div>",
-        		type:{height:80,width:250},
-        		select:true,
-				on:{"onItemClick":function(id, e, node){
-					/*var item = this.getItem(id);
-					if(item.pick_time){
-						//获取冲突数据
-						var param = "pick_time="+item.pick_time;
-						var currentKeeperId = $$("current_keeper_id").getValue();
-						if(currentKeeperId && currentKeeperId!=''){
-							param = param + "&current_keeper_id="+currentKeeperId;
-							base.getReq("order/keeper_conflict.json?"+param,function(data){
-								if(data && data.length>0){
-									$$("pick_time_tip").show();
-									$$("pick_time_tip").clearAll();
-									webix.message({ type:"error",expire:5000,text:"管家当天时间冲突，请谨慎下单。"});
-									for(var a=0;a<data.length;a++){
-										var item = {};
-										item.customer_info=data[a]['customer_phone_number']+"  "+data[a]['customer_name'];
-										item.pick_time_info = data[a]['pick_time_segment'];
-										$$("pick_time_tip").add(item);
-									}
-								}else{
-									$$("pick_time_tip").hide();
-									$$("pick_time_tip").clearAll();
-								}
-							});
-						}
-					}*/
-				}}
-    		},{
-				id:"pick_time_tip",
-				view:"list",
-				height:250,
-				width:250,
-				hidden:true,
-				template:"<div class='strong_text'>#customer_info#</div><div class='light_text'>#pick_time_info#</div>",
-				type:{height:80,width:250},
-				select:false
-			}]},
-    		//接车地址
-    		{view:"label",label:"接车地址"},
-    		{cols:[{view: "text", id: "address",name:"address",keyPressTimeout:100, placeholder: "输入地址进行查询",width:250,value:"",
-				on:{"onTimedKeyPress":function(){
-					search_address();
-				}}},
-			       { view: "button", label: "查询", width: 80,click:function(){
-			    	   var address = $$("address").getValue();
-			    	   if(address==null||address==""){
-			    		   webix.message({ type:"error",expire:5000,text:"请输入查询的地址"});
-			    		   return;
-			    	   }
-					   search_address();
-			       }},{}]
-		    },
-    		{cols:[{
-        		id:"pick_address",
-        		view:"list",
-        		height:250,
-        		template:"<div class='strong_text'>#name#(#help#)</div><div class='light_text'>#address#</div>",
-        		type:{height:65,width:500},
-        		select:true,
-        		on:{"onItemClick":function(id, e, node){
-        			var item = this.getItem(id);
-        		}}
-    		},{}]},
-    		
 
+			{id: "products_info",
+				width:300,
+				height:50,
+				template:"<div>"+
+				"<div class='big_strong_text'>总价：￥#total_price#　　　已优惠：￥-#free_price#</div>"+"</div>",
+				data:{total_price: 0, free_price: 0}
+			},
+
+			//接车时间
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"接车时间",height:30}
+			]},
+			{
+				id:"pick_time",
+				view:"dataview",
+				datatype:"json",
+				yCount:2,
+				select:true,
+				type:{
+					width: 150,
+					height: 80,
+					template:"<div class='strong_text'>#pick_time#</div><div class='light_text'>#pick_time_segment#</div>"
+				}
+			},
+
+			//备注信息
+			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+				{view:"label", align:"left",label:"订单备注",height:30}
+			]},
 			{view:"textarea",name:"product_comment",height:80,width:950,label:"商品备注"},
-			{view:"textarea",name:"comment",height:80,width:950,label:"客户备注"},
-			{view:"textarea",name:"operator_comment",height:80,width:950,label:"客服备注"}
+			{view:"textarea",name:"comment",height:80,width:950,label:"客户备注"}
 		]
 	};
 	
@@ -457,16 +566,6 @@ define(["models/order",
 		return carmodel['model_type'];
 	};
 	
-	/*var coutPrice = function(){
-		var price = {};
-		price.total_price = 0;
-		$$("order_product_datas").eachRow(function (row){ 
-	        var item = $$("order_product_datas").getItem(row);
-	        price.total_price += item.total_price*1;
-		});
-		$$("products_info").parse(price);
-	};*/
-
 	var coutPrice = function(){
 		var price = {};
 		price.total_price = 0;
@@ -496,8 +595,7 @@ define(["models/order",
 		if(scoupon!=null){
 			paramform.coupon_id = scoupon.id;
 		}
-		base.postReq("/order_preview.json",paramform,function(data){
-			console.log(data);
+		base.postReq("order_preview.json",paramform,function(data){
 			$$("products_info").parse(data);
 		 },function(err){
 			if(err.code="20001"){
@@ -506,26 +604,63 @@ define(["models/order",
 		});
 
 	};
+
+	/**
+	 * 获取订单地址
+	 * @returns {*}
+	 */
+	var getOrderAddress = function(){
+		if($$("latitude").getValue().length<=0 || $$("longitude").getValue().length<=0 || $$("take_car_address").getValue().length<=0){
+			return null;
+		}
+		return {latitude: $$("longitude").getValue(), longitude: $$("latitude").getValue(),name: "", address: $$("take_car_address").getValue()};
+	}
 	
 	var submit = function(view){
+
+		//基本信息
 		var formdata = $$("order_add").getValues();
+
+		//接车地址
+		var addre = getOrderAddress();
+		if(addre===null){
+			base.$msg.error("接车地址不能为空");
+			return;
+		}
+		formdata.location = addre;
+
+		//车辆
 		var carmodel = $$("car_data_view").getSelectedItem();
 		if(carmodel==null){
 			webix.message({ type:"error",expire:5000,text:"请选择一个车型"});
 			return;
 		}
 		formdata['car_id'] = carmodel['id'];
-		if($$("coupon_data_view").getSelectedItem()!=null){
-			formdata['coupon_id'] = $$("coupon_data_view").getSelectedItem().id;
+
+		//优惠券
+		var scoupon = $$("coupon_data_view").getSelectedItem();
+		if(scoupon!=null){
+			formdata.coupon_id = scoupon.id;
 		}
+
+		//商品
 		formdata.products = [];
 		$$("order_product_datas").eachRow( 
 		    function (row){ 
 		        var item = $$("order_product_datas").getItem(row);
-		        item.id="";
+		        delete item.id;
 		        formdata.products.push(item);
 		    }
 		)
+		var service_product = $$("service_type_view").getSelectedItem();
+		if(service_product===null){
+			base.$msg.error("请选择一个服务类型");
+		}
+		delete service_product.id;
+		formdata.products.push(service_product);
+		formdata.service_type = service_product.service_type;
+
+		//接车时间
 		var itemtime = $$("pick_time").getSelectedItem();
 		if(itemtime==null){
 			webix.message({ type:"error",expire:5000,text:"请选择一个接车时间"});
@@ -533,26 +668,13 @@ define(["models/order",
 		}
 		formdata.pick_time = itemtime.pick_time;
 		formdata.pick_time_segment = itemtime.pick_time_segment;
-		formdata.location= {
-			latitude: 21.1,
-			longitude: 21.1,
-			name: "",
-			address: ""
-		};
-		
-		 var addre = $$("pick_address").getSelectedItem();
-		 if(addre!=null){
-			 formdata.location = addre
-		 }
-		 
-		 var scoupon = $$("coupon_data_view").getSelectedItem();
-		 if(scoupon!=null){
-			 formdata.coupon_id = scoupon.id;
-		 }
-		 formdata.operator_id = base.getUserId();
-		 var ui = view.$scope;
+
+		formdata.operator_id = base.getUserId();
+		var ui = view.$scope;
+		console.log(formdata);
+		debugger;
 		 $$("commit_data").disable();
-		 base.postReq("order/create.json",formdata,function(data){
+		 base.postReq("/v2/api/order/create.json",formdata,function(data){
 			webix.message("订单新增成功");
 			ui.show("/order_details:id="+data.id);
 	     },function(data){
@@ -586,16 +708,23 @@ define(["models/order",
 		check_user_info();
 	};
 
-	var layout = {
+
+var layout = {
+			type:"wide",
 			cols:[
             {},
             {
-            	type:"space",
-            	rows:[order_form,
-            	      {cols:[{},{ view: "button",width:80,height:50,type: "iconButton", id:"commit_data", icon: "plus", label: "提交",click:function(){
+				type:"wide",
+				borderless:true,
+            	rows:[
+					order_form,
+				  	{cols:[{},{ view: "button",width:80,height:50,type: "iconButton", id:"commit_data", icon: "plus", label: "提交",click:function(){
                   		submit(this);
                   	}}]}
-            	]},{}]};
+            	]},
+				{}
+			]
+		};
 	return {
 		$ui:layout,
 		$oninit:function(app,config){
@@ -604,6 +733,4 @@ define(["models/order",
 			init_url_param();
 		}
 	};
-	
-
 });

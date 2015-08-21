@@ -92,7 +92,7 @@ define(["views/modules/base"], function(base){
 							{ id:"unit_count",header:"数量",width:100},
 							{ id:"price",header:"单价",width:100},
 							{ id:"labour_price",header:"工时费",width:100},
-							{ id:"total_price",header:"价格",width:100}
+							{ id:"total_price",header:"小计",width:100}
 						],
 						autoheight:true,
 						autowidth:true,
@@ -109,9 +109,9 @@ define(["views/modules/base"], function(base){
 						width:500,
 						height:200,
 						template:"<div>"+
-						  "<div class='big_strong_text'>管家接车：#fee#</div>"+
-						  "<div class='big_strong_text'>优惠券抵扣：#coupon_price#</div>"+
-						  "<div class='big_strong_text'>总价：#total_price#</div>"+
+						  "<div class='big_strong_text'>管家接车：￥#fee#</div>"+
+						  "<div class='big_strong_text'>优惠券抵扣：￥#coupon_price#</div>"+
+						  "<div class='big_strong_text'>总价：￥#total_price#</div>"+
 						  "<div class='big_strong_text'>支付状态：#status#</div>"+"</div>"
 				
 				      },{}]}
@@ -148,7 +148,7 @@ define(["views/modules/base"], function(base){
 	                    button_ui]}
 	
 	var get_order_details = function(order_id){
-		base.getReq("/orders.json?order_id="+order_id,function(order){
+		base.getReq("/v2/api/orders.json?order_id="+order_id,function(order){
 			if(order!=null){
 				prase_title(order);
 				//车主信息
