@@ -18,8 +18,6 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 			cur_page = page;
 		}
 		var tabCheckId = $$("tabviewdata").getValue();
-		console.log($$("tabviewdata"));
-		console.log(tabCheckId);
 		var order_status = 1;
 		if(tabCheckId=='unprocessed'){
 			order_status = 2;
@@ -27,7 +25,7 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		if(tabCheckId=='processed'){
 			order_status = 3;
 		}
-		base.getReq("orders?operator_id="+base.getUserId()+"&order_status="+order_status+"&size=15"+get_page_url(),function(data){
+		base.getReq("/v3/api/orders.json?operator_id="+base.getUserId()+"&order_status="+order_status+"&size=15"+get_page_url(),function(data){
 			parse_table_data(data);
 		});
 	};
@@ -67,14 +65,15 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 	
 	var unbelong_colums = webix.copy(columns);
 	
-	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:250, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><u class='delete row_button'>删除</u></span>"});
+	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:150, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><u class='delete row_button'>删除</u></span>"});
 	
 	var unprocessed_colums = webix.copy(columns);
-	
-	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:220,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='complate row_button'> 完成</u><u class='delete row_button'>删除</u></span>"});
+
+	//<u class='complate row_button'> 完成</u>
+	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:150,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='delete row_button'>删除</u></span>"});
 	
 	var complated_colums = webix.copy(columns);
-	complated_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='delete row_button'>删除</u></span>"});
+	complated_colums.splice(0,0,{id:"trash", header:"操作",width:150, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='delete row_button'>删除</u></span>"});
 	
 	var onClick = {
 			"views":function(e,id,node){
@@ -148,7 +147,6 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		columns:unbelong_colums,
 		hover:"myhover",
 		autoheight:true,
-		autowidth:true,
 		onClick:onClick
 	};
 
@@ -161,7 +159,6 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		hover:"myhover",
 		leftSplit:1,
 		autoheight:true,
-		autowidth:true,
 		columns:unprocessed_colums,
 		onClick:onClick
 	};
@@ -174,7 +171,6 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		select:true,
 		leftSplit:1,
 		autoheight:true,
-		autowidth:true,
 		hover:"myhover",
 		columns:complated_colums,
 		onClick:onClick

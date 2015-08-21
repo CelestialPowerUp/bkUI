@@ -3,8 +3,6 @@ define(["views/modules/base",
         "views/modules/upload_img_win",
         "views/forms/order_supplier"],function(base,order_product,upload_img_win,order_supplier){
 	
-	var car_products = "";
-	
 	var uodate_car_keepers_data = function(current_keeper_id){
 		base.getReq("car_keepers.json",function(data){
 				var list = $$("current_keeper_id").getPopup().getList();
@@ -67,7 +65,7 @@ define(["views/modules/base",
 		}
 		base.postReq("/v2/api/order/keeper_conflict",param,function(data){
 			if(data && data.length>0){
-				$$("pick_time_tip").show();
+				$$("keeper_confict_info").show();
 				$$("pick_time_tip").clearAll();
 				webix.message({ type:"error",expire:5000,text:"管家当天时间冲突，请谨慎下单。"});
 				for(var a=0;a<data.length;a++){
@@ -77,7 +75,7 @@ define(["views/modules/base",
 					$$("pick_time_tip").add(item);
 				}
 			}else{
-				$$("pick_time_tip").hide();
+				$$("keeper_confict_info").hide();
 				$$("pick_time_tip").clearAll();
 			}
 		});
@@ -101,10 +99,14 @@ define(["views/modules/base",
 	}
 	
 	var customer_base_info_ui = {
-			type:"space",
-			rows:[{type:"header",template:"客户基本信息"},
-			      {type:"clean",cols:[{
+			type:"clean",
+			rows:[
+				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"客户基本信息",height:30}
+				]},
+			  	{type:"clean",cols:[{
 					    view:"form",
+						borderless:true,
 						id: "order_base_data",
 						elementsConfig:{
 							labelWidth: 120
@@ -112,6 +114,8 @@ define(["views/modules/base",
 						elements:[
 						    {view:"text",id:"order_id",name:"id",hidden:true},
 						    {view:"text",name:"user_id",hidden:true},
+							{view:"text",id:"supplier_id",name:"supplier_id",hidden:true},
+							{view:"text",id:"service_type",name:"service_type",hidden:true},
 				          	{view: "text", label:"手机号",name:"phone_number", placeholder: "输入手机号",width:350,value:""},
 				          	{view: "text",name: "contact_name",label:"姓名", placeholder: "姓名",width:350},
 				          	{view: "richselect", name: "peer_source",label:"订单渠道",placeholder:"选择订单渠道",width:350,
@@ -167,78 +171,137 @@ define(["views/modules/base",
 							/*{view:"datepicker", timepicker:true, label:"还车时间：", name:"give_back_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350},*/
                    			{view:"textarea",name:"comment",label:"客户备注",placeholder:"客户备注",disabled:true},
                    			{view:"textarea",name:"product_comment",label:"商品备注",placeholder:"商品备注",disabled:true},
-                   			{view:"textarea",name:"operator_comment",label:"客服备注",placeholder:"客服备注",width:500},
+                   			{view:"textarea",name:"operator_comment",label:"客服备注",placeholder:"客服备注"},
 				          ]
-			      },
+			      },{},
 			      {
+					  paddingY:15,
+					  margin:15,
 			    	  rows:[
-		             	{width:250,height:120,id:"car_model",template:"<div>" +
-		             			"<div class='strong_text'>#car_licence#</div>" +
-		             			"<div class='strong_text'>#brand##category#</div>"+
-		             			"<div class='light_text'>#model#</div>" +
-		             			"</div>",
-		             			data:{car_licence:"",model:"",brand:"",category:""}},
 						  {
-							  id:"pick_time_tip",
-							  view:"list",
-							  height:220,
-							  width:250,
-							  hidden:true,
-							  template:"<div class='strong_text'>#customer_info#</div><div class='light_text'>#pick_time_info#</div>",
-							  type:{height:80,width:250},
-							  select:false
-						  }
+							  rows:[
+								  {view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+									  {view:"label", align:"left",label:"订单车辆信息",height:30}
+								  ]},
+								  {width:250,height:100,id:"car_model",template:"<div>" +
+								  "<div class='strong_text'>#car_licence#</div>" +
+								  "<div class='strong_text'>#brand##category#</div>"+
+								  "<div class='light_text'>#model#</div>" +
+								  "</div>",
+									  data:{car_licence:"",model:"",brand:"",category:""}},
+							  ]
+						  },
+
+						  {id:"keeper_confict_info",hidden:true,rows:[
+							  {view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+								  {view:"label", align:"left",label:"管家冲突信息",height:30}
+							  ]},
+							  {
+								  id:"pick_time_tip",
+								  view:"list",
+								  template:"<div class='strong_text'>#customer_info#</div><div class='light_text'>#pick_time_info#</div>",
+								  type:{height:65},
+								  select:false
+							  }
+						  ]},
 			             ]},
 			      {}]},
 		      ]
 	};
-	
-	var user_defined_option = {"true" : "自定义","false" : "非自定义"};
-	
+
 	var product_columns = [
 						    { id:"product_type",header:"ID",hidden:true,width:150},
 						    { id:"product_name",header:"名称",width:250,hidden:true},
-							{ id:"product_info",header:"名称",width:250},
+							{ id:"product_info",header:"商品名称",width:250,fillspace:true},
 							{ id:"unit_count",header:"数量",width:100},
-							{ id:"price",header:"单价",width:100},
-							{ id:"labour_price",header:"工时费",width:100},
-							{ id:"total_price",header:"价格",width:100},
+							{ id:"price",header:"单价",format:base.priceFormat,width:100},
+							{ id:"labour_price",header:"工时费",format:base.priceFormat,width:100},
+							{ id:"total_price",header:"小计",format:base.priceFormat,width:100},
 							{ id:"pics",header:"图片",hidden:true},
-							{ id:"user_defined",header:"自定义",options:user_defined_option},
-							{ id:"trash", header:"图片", width:80, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>查看</u></span>"}
+							{ id:"user_defined",header:"自定义",template:function(obj){
+								if(obj.user_defined===true || obj.user_defined === 'true'){
+									return "<span class='status status0'>自定义</span>";
+								}
+								return "<span class='status status1'>非自定义</span>";
+							}},
+							{ id:"selection_mode",header:"商品来源",width:150,template:function(obj){
+								var msg = "";
+								var status = "status0";
+								if(obj.selection_mode === 1){
+									status = "status1";
+									msg =  "非增项（自主下单）";
+								}
+								if(obj.selection_mode === 2){
+									msg =  "增项（待客户确认）";
+								}
+								if(obj.selection_mode === 3){
+									msg =  "增项（客户已同意）";
+								}
+								if(obj.selection_mode === 4){
+									msg =  "增项（客户已拒绝）";
+								}
+								if(obj.selection_mode === 5){
+									msg =  "增项（超时自动拒绝）";
+								}
+								return "<span class='status "+status+"'>"+msg+"</span>";
+							}},
+							{ id:"pay_status",header:"支付状态",template:function(obj){
+								if(obj.pay_status===0){
+									return "<span class='status status0'>未支付</span>";
+								}
+								return "<span class='status status1'>已支付</span>";
+							}},
+							{ id:"disabled",header:"有效",template:function(obj){
+								if(obj.disabled===false || obj.disabled === 'false'){
+									return "<span class='status status1'>正常</span>";
+								}
+								return "<span class='status status0'>已删除</span>";
+							}},
+							{id:"trash", header:"", width:45, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
+
+							//{ id:"trash", header:"图片", width:80, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>查看</u></span>"}
 							//{ id:"trash", header:"操作", width:50, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
 							
 						];
 	
 	var product_table_on_event = {
 			"onAfterAdd":function(id, index){
-				//coutPrice();
+				coutPrice();
 			},"onAfterDelete":function(id){
 				coutPrice();
 			},
 			"onItemDblClick":function(id, e, node){
-				if(!($$("add_product_button").isEnabled())){
+				//屏蔽商品修改接口
+				/*if(!($$("add_product_button").isEnabled())){
 					webix.message({type:"error",text:"该订单已付款，不支持商品编辑"});
 					return ;
 				}
-
 				var item = $$("order_product_datas").getItem(id);
 				var carModelId = getModelId();
 				if(carModelId != null){
-					this.$scope.ui(order_product.$ui(item.user_defined,carModelId)).show();
+					this.$scope.ui(order_product.$ui(item.user_defined,carModelId,getOrderSupplierId())).show();
 					order_product.$config_form_type(true,item.user_defined);//是否是编辑项，是否是自定义商品
-					order_product.$addPriceCallBack(coutPrice);//计算价格回调函数
-					$$('order_product_form').bind('order_product_datas');
-				}
+					order_product.$parse_data(item);
+					order_product.$addCallBack(function(data){
+						$$("order_product_datas").add(data);
+					});
+				}*/
 		}};
 	
 	var product_onClick = {
 			"webix_icon":function(e,id,node){
+				var item = $$("order_product_datas").getItem(id);
 				webix.confirm({
 					text:"删除该商品<br/> 确定?", ok:"是", cancel:"取消",
 					callback:function(res){
 						if(res){
-							webix.$$("order_product_datas").remove(id);
+							base.postForm("/v1/api/order_product/delete.json?order_item_id="+item.order_item_id,{},function(){
+								base.$msg.info("商品删除成功");
+								item.disabled = true;
+								$$("order_product_datas").refresh();
+
+								//webix.$$("order_product_datas").remove(id);
+							});
 						}
 					}
 				});
@@ -256,34 +319,6 @@ define(["views/modules/base",
 				}
 			}
 		};
-	
-	/*var pay_type_ui ={
-			view: "list",
-			css: "tasks_list",
-			id:"pay_type_list",
-			scroll:false,
-			xCount:1,
-			yCount:2,
-			type: {
-                height: 32,
-				marker: function(obj){
-					return "<span class='webix_icon_btn fa-bell-o marker "+obj.type+"' style='max-width:32px;' ></span>";
-				},
-				check:  webix.template('<span class="webix_icon_btn fa-{obj.$check?check-:}square-o list_icon" style="max-width:32px;"></span>'),
-				template: function(obj,type){
-					console.log(obj);
-					return "<div class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text'>"+obj.name+"</div>";
-				}
-			},
-			data: [{pay_type:2,name:"线下支付"},{pay_type:1,name:"未付款支付"},],
-			on: {
-				onItemClick:function(id){
-					var item = this.getItem(id);
-					item.$check = !item.$check;
-					this.refresh(id);
-				}
-			}
-	};*/
 
 	var getModelId = function(){
 		var carModelId = $$("model_type").getValue();
@@ -293,80 +328,71 @@ define(["views/modules/base",
 		}
 		return carModelId;
 	};
-	
-	var order_product_ui = {
-			type:"space",
-			rows:[{type:"header",template:"商品信息"},
-			      {cols:[{view:"button",id:"add_product_button",label:"添加商品",width:105,click:function(){
-					  var carModelId = getModelId();
-					  if(carModelId != null){
-						  this.$scope.ui(order_product.$ui(false,carModelId)).show();
-						  order_product.$config_form_type(true,false);//是否是编辑项，是否是自定义商品
-						  order_product.$addPriceCallBack(coutPrice);//计算价格回调函数
-						  $$("order_product_datas").unselect();
-						  $$('order_product_form').bind('order_product_datas');
-					  }
-			      }},
-			      {view:"button",label:"自定义商品",id:"add_user_define_product_button",width:105,click:function(){
-					  var carModelId = getModelId();
-					  if(carModelId != null){
-						  this.$scope.ui(order_product.$ui(true,carModelId)).show();
-						  order_product.$config_form_type(true,true);//是否是编辑项，是否是自定义商品
-						  order_product.$addPriceCallBack(coutPrice);//计算价格回调函数
-						  $$("order_product_datas").unselect();
-						  $$('order_product_form').bind('order_product_datas');
-					  }
-			      }},
-			      {view:"button", id:"submit_product_button",algin:"right",label:"提交商品数据",width:105,click:function(){
-			    	  var products = [];
-					  $$("submit_product_button").disable();
-			    	  var order = {id:$$("order_id").getValue(),products:products};
-			    	  $$("order_product_datas").eachRow( 
-	        			    function (row){ 
-	        			        var item = $$("order_product_datas").getItem(row);
-	        			        products.push(item);
-	        			    }
-		        		)
-		        	  var pay_type = $$("pay_type").getValue();
-			    	  order.pay_type = pay_type;
-			    	  base.postReq("order/product/price",order,function(data){
-			    		  parse_products_data(data);
-						  $$("submit_product_button").enable();
-			    		  webix.message("商品数据更新成功");
-			    	  },function(){
-						  $$("submit_product_button").enable();
-					  });
-			      }},{}]},
-			      
-			      {cols:[
-					{
-						view:"datatable",
-						id:"order_product_datas",
-						columns:product_columns,
-						select:true,
-						autoheight:true,
-						autowidth:true,
-						data:[],
-						on:product_table_on_event,
-						onClick:product_onClick
-					},{}]},
-					
-					{cols:[{view: "richselect", name: "pay_type",id:"pay_type",label:"支付方式",
-				    	  options:[{id:1,value:"未付款支付"},
-				    	           {id:2,value:"线下支付"},
-				    	           {id:3,value:"线上支付"}],placeholder:"选择支付方式",width:250},{}]},
-		      ]
+
+	var getOrderSupplierId = function(){
+		return $$("supplier_id").getValue();
 	};
-	
-	var total_price_ui = {
-			type:"space",
-			cols:[{id: "products_info",
-				width:500,
-				height:50,
-				template:"<div>"+
-				"<div class='big_strong_text'>总价：￥#total_price#　　已优惠：￥-#free_price#</div>"+"</div>",
-				data:{total_price: 0, free_price: 0}
-		     },{}]
+
+	var order_product_ui = {
+			type:"clean",
+			rows:[
+				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"商品信息",height:30},
+					{view:"label",id: "products_info", height:50},
+					{view:"button",id:"add_product_button",label:"添加增项",width:105,click:function(){
+						var carModelId = getModelId();
+						if(carModelId != null){
+							this.$scope.ui(order_product.$ui(false,carModelId,getOrderSupplierId())).show();
+							order_product.$config_form_type(true,false);//是否是编辑项，是否是自定义商品
+							order_product.$addCallBack(function(data){
+								var order_id = $$("order_id").getValue();
+								base.postReq("/v1/api/order_product_addition/create.json?order_id="+order_id,[data],function(results){
+									base.$msg.info(results);
+									$$("order_product_datas").add(data);
+								});
+							});//回调函数
+						}
+					}},
+						{view:"button",label:"其他增项",id:"add_user_define_product_button",width:105,click:function(){
+							var carModelId = getModelId();
+							if(carModelId != null){
+								this.$scope.ui(order_product.$ui(true,carModelId,getOrderSupplierId())).show();
+								order_product.$config_form_type(true,true);//是否是编辑项，是否是自定义商品
+								order_product.$addCallBack(function(data){
+									var order_id = $$("order_id").getValue();
+									base.postReq("/v1/api/order_product_addition/create.json?order_id="+order_id,[data],function(results){
+										base.$msg.info(results);
+										$$("order_product_datas").add(data);
+									});
+								});
+							}
+						}},
+						{view:"button", id:"change_pay_type_button",algin:"right",label:"已线下支付",width:105,click:function(){
+							webix.confirm({
+								text:"确定修改支付方式为线下支付<br/> 确定?", ok:"是", cancel:"取消",
+								callback:function(res){
+									if(res){
+										var param = {order_id:$$("order_id").getValue(),pay_type:2};
+										base.postReq("/v1/api/order/pay_status/update.json",param,function(data){
+											base.$msg.info(data);
+										});
+									}
+								}
+							});
+						}}
+				]},
+				{
+					view:"datatable",
+					id:"order_product_datas",
+					columns:product_columns,
+					select:true,
+					autoheight:true,
+					autowidth:true,
+					data:[],
+					on:product_table_on_event,
+					onClick:product_onClick
+				}
+		      ]
 	};
 	
 	var suppliers_onClick = {
@@ -379,6 +405,7 @@ define(["views/modules/base",
 							base.postReq("order/suppliers/delete.json",[item.id],function(data){
 								webix.$$("supplier_table").remove(id);
 								base.$msg.info("服务商删除成功");
+								initdata($$("order_id").getValue());
 							});
 						}
 					}
@@ -387,24 +414,32 @@ define(["views/modules/base",
 		};
 	
 	var suppliers_ui =  {
-			type:"space",
-			rows:[{type:"header",template:"服务商列表"},
-			      {cols:[{view:"button",id:"add_supplier_button",label:"选择服务商",width:105,click:function(){
-			    	  this.$scope.ui(order_supplier.$ui).show();
-			    	  $$("supplier_table").unselect();
-			    	  order_supplier.$init_data($$("supplier_table").serialize());
-			    	  order_supplier.$add_callback(function(checks){
-			    		  //$$("supplier_table").clearAll();
-			    		  for(var i=0;i<checks.length;i++){
-			    			 $$("supplier_table").add(checks[i]);
-			    		  }
-			    	  });
-			      }},{}]},
-			      {cols:[
+			type:"clean",
+			rows:[
+				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"服务商列表",height:30},
+					{view:"button",id:"add_supplier_button",label:"选择服务商",width:105,click:function(){
+						this.$scope.ui(order_supplier.$ui).show();
+						$$("supplier_table").unselect();
+						order_supplier.$init_data($$("supplier_table").serialize());
+						order_supplier.$add_callback(function(checks){
+							var param = {order_id:$$("order_id").getValue()};
+							param.supplier_ids = [];
+							for(var i=0;i<checks.length;i++){
+								param.supplier_ids.push(checks[i].id);
+							}
+							base.postReq("order_suppliers/create.json",param,function(result){
+								for(var i=0;i<checks.length;i++){
+									$$("supplier_table").add(checks[i]);
+								}
+							});
+						});
+					}}
+				]},
+			  	{cols:[
 			 			{
 							view:"datatable",
 							id:"supplier_table",
-							scrollY:false,
 							columns:[
 								{ id:"name",header:"名称",width:250},
 								{ id:"contact_name",editor:"text",header:"联系人",width:120},
@@ -413,25 +448,23 @@ define(["views/modules/base",
 								{ id:"type",editor:"text",header:"类型",width:120},
 								{id:"trash", header:"&nbsp;", width:35, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
 							],
+							scrollY:false,
 							select:true,
 							autoheight:true,
-							autowidth:true,
+							//autowidth:true,
 							data: [],
 							onClick:suppliers_onClick
-						},{}]
+						}]
 			}]
 		};
-	
-	
-	var take_car_photos = {};
 	
 	var check_result_option = {"true" : "合格","false" : "不合格"};
 	
 	var check_columns = [
-	     			    { id:"result",editor:"select",options:check_result_option,	header:"是否合格" , width:80},
+	     			    { id:"result",editor:"select",options:check_result_option,	header:"是否合格" , width:120},
 	    				{ id:"id",editor:"text",header:"ID",hidden:true,width:200},
-	    				{ id:"name",header:"名称",width:300},
-	    				{ id:"comment",editor:"text",header:"备注",width:450},
+	    				{ id:"name",header:"名称",width:300,fillspace:true},
+	    				{ id:"comment",editor:"text",header:"备注",width:450,fillspace:true},
 	    				{ id:"option",header:"操作", width:80, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>图片</u></span>"}
 	    			];
 	
@@ -442,21 +475,24 @@ define(["views/modules/base",
 	                      {view:"text",name:"description",label:"备注",width:250}];
 	
 	var garage_check_ui = {
-			type:"space",
-			rows:[{type:"header",template:"全检项目"},
-			      {cols:[{view:"form",
-				    	id:"garage_form",
-				    	hidden:true,
-				    	elements:webix.copy(check_elements)
-			      },{}]},
-			      {cols:[{
+			type:"clean",
+			rows:[
+				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"全检项目",height:30},
+					{view:"form",
+						id:"garage_form",
+						hidden:true,
+						elements:webix.copy(check_elements)
+					}
+				]},
+				{
 						id:"garage_check_data",
 						view:"datatable",
-						columns:check_columns,
+						columns:webix.copy(check_columns),
 						editable:true,
 						editaction:"dblclick",
 						autoheight:true,
-						autowidth:true,
+						//autowidth:true,
 						select:true,
 						data: [],
 						onClick:{
@@ -473,43 +509,42 @@ define(["views/modules/base",
 								}
 							}
 						}
-				      },{}]}
-			      ]
+			  	}
+		  	]
 	}
 	
-	var first_check_ui = {type:"space",
-			rows:[{type:"header",template:"初检项目"},
-			      {cols:[{view:"form",
-				    	id:"suface_form",
-				    	hidden:true,
-				    	elements:webix.copy(check_elements)
-			      },{}]},
-			      {cols:[{
-						id:"first_check_data",
-						view:"datatable",
-						columns:check_columns,
-						editable:true,
-						editaction:"dblclick",
-						autoheight:true,
-						autowidth:true,
-						select:true,
-						data: [],
-						onClick:{
-							"links":function(e, id, trg){
-								var item = $$("first_check_data").getItem(id);
-								this.$scope.ui(upload_img_win.$ui).show();
-								upload_img_win.$addCallBack(function(data){
-									item.pics = data.pics;
-									item.pic_id = data.pics_id;
-									webix.message("图片更新成功！！");
-								});
-								if(item.pics!=null){
-									upload_img_win.$init_img(item.pics);
-								}
+	var first_check_ui = {type:"clean",
+			rows:[
+				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"初检项目",height:30},
+					{view:"form",
+						id:"suface_form",
+						hidden:true,
+						elements:webix.copy(check_elements)
+					}
+				]},
+			  {id:"first_check_data",view:"datatable",
+				  columns:webix.copy(check_columns),
+				  editable:true,
+				  editaction:"dblclick",
+				  autoheight:true,
+				  select:true,
+					data: [],
+					onClick:{
+						"links":function(e, id, trg){
+							var item = $$("first_check_data").getItem(id);
+							this.$scope.ui(upload_img_win.$ui).show();
+							upload_img_win.$addCallBack(function(data){
+								item.pics = data.pics;
+								item.pic_id = data.pics_id;
+								webix.message("图片更新成功！！");
+							});
+							if(item.pics!=null){
+								upload_img_win.$init_img(item.pics);
 							}
 						}
-				      },{}]}
-			      
+					}
+				  }
 			]};
 	
 	var take_car_time = {
@@ -529,7 +564,8 @@ define(["views/modules/base",
 	
 	var submit_ui = {
 			cols:[{},
-				{view:"button",label:"完成",width:120,click:function(){
+				//屏蔽完成按钮
+				/*{view:"button",label:"完成",width:120,click:function(){
 					webix.confirm({
 						text:"将订单状态更改为已完成<br/> 确定?", ok:"是", cancel:"取消",
 						callback:function(res){
@@ -545,7 +581,7 @@ define(["views/modules/base",
 							}
 						}
 					});
-				}},
+				}},*/
 				{view:"button",label:"提交订单修改",width:120,click:function(){
 				//基本信息
 				var order = $$("order_base_data").getValues();
@@ -553,7 +589,7 @@ define(["views/modules/base",
 				order.give_back_time = base.format_time(order.give_back_time);*/
 				order.pick_start_time=base.format_time(order.pick_start_time);
 				order.pick_end_time = base.format_time(order.pick_end_time);
-				//供应商信息
+			/*	//供应商信息
 				var suppliers = $$("supplier_table").serialize();
 				order.supplier_ids = [];
 				for(var i=0;i<suppliers.length;i++){
@@ -563,7 +599,7 @@ define(["views/modules/base",
 					}
 					order.supplier_ids.push(suppliers[i]['supplier_id']);
 				}
-				
+				*/
 				//维护过程信息
 				order.inspections=[];
 				
@@ -584,7 +620,7 @@ define(["views/modules/base",
 				order.operator_id = base.getUserId();
 				//完结
 				var ui = this.$scope;
-				base.postReq("order/update.json",order,function(data){
+				base.postReq("/v3/api/order/update.json",order,function(data){
 					webix.message("更新订单成功");
 					ui.show("order_edit:id="+data.id);
 				});
@@ -592,17 +628,18 @@ define(["views/modules/base",
 	}
 	
 	var layout = {
-			rows:[
-			      customer_base_info_ui,
-			      order_product_ui,
-			      total_price_ui,
-			      suppliers_ui,
-			      //take_car_time,
-			      first_check_ui,
-			      garage_check_ui,
-			      submit_ui
-			      ]
-		};
+		type:"from",
+		margin:15,
+		rows:[
+			customer_base_info_ui,
+			order_product_ui,
+			suppliers_ui,
+			//take_car_time,
+			first_check_ui,
+			garage_check_ui,
+			submit_ui
+		]
+	};
 	
 	var parse_tile = function(order){
 		webix.$$("title").parse({title: "订单编辑", details: "订单号："+order.number+" 订单状态："+order.status});
@@ -611,7 +648,7 @@ define(["views/modules/base",
 	var old_pick_time = null;
 	var old_current_keeper_id = null;
 	var initdata = function(order_id){
-		base.getReq("/orders.json?order_id="+order_id,function(order){
+		base.getReq("/v2/api/orders.json?order_id="+order_id,function(order){
 			if(order!=null){
 				//初始化数据
 				
@@ -634,7 +671,7 @@ define(["views/modules/base",
 				//parse_take_time_info(order);
 				
 				//初始化商品类别
-				get_product_data(order);
+				//get_product_data(order);
 
 				//赋值管家接车时间信息
 				old_pick_time = order.pick_time;
@@ -642,20 +679,20 @@ define(["views/modules/base",
 			}
 		});
 	};
-	
+
+	/**
+	 * 依据订单状态控制部分权限
+	 * @param order
+	 */
 	var config_ui_by_order = function(order){
 		if(order.paid){//已支付，不能修改
-			$$("add_user_define_product_button").disable();
-			$$("add_product_button").disable();
-			//$$("add_supplier_button").disable();
+			//$$("add_user_define_product_button").disable();
+			//$$("add_product_button").disable();
+		}
+		if(order.supplier_mold === 'community'){
+			$$("add_supplier_button").disable();
 		}
 	}
-	
-	var get_product_data = function(order){
-		base.getReq("products.json?service_type=1&car_model_type="+order.car.model_type,function(data){
-    		car_products = data;
-		});
-	};
 	
 	var parse_take_time_info = function(order){
 		//接车刷新时间
@@ -672,12 +709,14 @@ define(["views/modules/base",
 	};
 	
 	var parse_suppliers = function(order){
+		$$("supplier_table").clearAll();
 		var suppliers = order.suppliers;
 		if(suppliers!=null){
 			for(var i= 0;i<suppliers.length;i++){
 				if(suppliers[i].type==null){
 					suppliers[i].type = "修理厂";
 				}
+				$$("supplier_id").setValue(suppliers[i].supplier_id);
 				$$("supplier_table").add(suppliers[i]);
 			}
 		}
@@ -696,8 +735,6 @@ define(["views/modules/base",
 		data['comment'] = order.comment;
 		data['operator_comment'] = order.operator_comment;
 		data['product_comment'] = order.product_comment;
-		/*data['take_time'] = base.$show_time(order.take_time);
-		data['give_back_time'] = base.$show_time(order.give_back_time);*/
 		data['pick_start_time'] = base.$show_time_sec(order.pick_start_time);
 		data['pick_end_time'] = base.$show_time_sec(order.pick_end_time);
 		if(order.coupon!=null ){
@@ -713,30 +750,14 @@ define(["views/modules/base",
 	
 	var parse_products_data = function(order){
 		var products = order.products;
+		products = products.concat(order.increase_products)
 		webix.$$("order_product_datas").clearAll()
 		for(var i = 0;i<products.length;i++){
-			products[i].product_info = products[i].product_categories.join('_')+'_'+products[i].product_name;
+			//products[i].product_info = products[i].product_categories.join('_')+'_'+products[i].product_name;
 			webix.$$("order_product_datas").add(products[i]);
 		}
-		$$("pay_type").setValue(order.pay_type);
-		$$("pay_type").refresh();
-		/*var datas = $$("pay_type_list").serialize();
-		var pay_types = order.pay_types;
-		for(var i=0;i<datas.length;i++){
-			check_select(datas[i],pay_types);
-			$$("pay_type_list").refresh(datas[i]['id']);
-		}*/
 	};
-	
-	var check_select = function(obj,arrs){
-		for(var i=0;i<arrs.length;i++){
-			if(arrs[i]===obj['pay_type']){
-				obj.$check=true;
-			}
-		}
-		return obj;
-	};
-	
+
 	var parse_first_check_data = function(check){
 		if(check.items.length>0){
 			$$("suface_form").show();
@@ -745,6 +766,7 @@ define(["views/modules/base",
 			return;
 		}
 		$$("suface_form").parse(check);
+		$$("first_check_data").clearAll();
 		for(var i=0;i<check.items.length;i++){
 			$$("first_check_data").add(check['items'][i]);
 		}
@@ -758,6 +780,7 @@ define(["views/modules/base",
 			return;
 		}
 		$$("garage_form").parse(check);
+		$$("garage_check_data").clearAll();
 		for(var i=0;i<check.items.length;i++){
 			$$("garage_check_data").add(check['items'][i]);
 		}
@@ -773,16 +796,6 @@ define(["views/modules/base",
 			}
 		}
 	};
-	
-	/*var coutPrice = function(){
-		var price = {};
-		price.total_price = 0;
-		$$("order_product_datas").eachRow(function (row){ 
-	        var item = $$("order_product_datas").getItem(row);
-	        price.total_price += item.total_price*1;
-		});
-		$$("products_info").parse(price);
-	};*/
 
 	var coutPrice = function(){
 		var order_info = $$("order_base_data").getValues();
@@ -797,7 +810,6 @@ define(["views/modules/base",
 		$$("order_product_datas").eachRow(
 			function (row){
 				var item = $$("order_product_datas").getItem(row);
-				console.log(item);
 				var pitem = {};
 				pitem.product_type=item.product_type;
 				pitem.unit_count =item.unit_count;
@@ -808,8 +820,10 @@ define(["views/modules/base",
 				paramform.products.push(pitem);
 			}
 		)
+		paramform.supplier_id=$$("supplier_id").getValue();
 		base.postReq("/order_update_preview.json",paramform,function(data){
-			$$("products_info").parse(data);
+			//$$("products_info").parse(data);
+			$$("products_info").setHTML("总价：￥"+data.total_price+"　　已优惠：￥-"+data.free_price);
 		},function(err){
 			if(err.code="20001"){
 
@@ -819,7 +833,7 @@ define(["views/modules/base",
 	};
 	
 	return {
-		$ui:{type:"space",cols:[layout]},
+		$ui:{type:"wide",cols:[{},layout,{}]},
 		$oninit:function(app,config){
 			webix.$$("title").parse({title: "订单编辑", details: ""});
 			var id = base.get_url_param("id");

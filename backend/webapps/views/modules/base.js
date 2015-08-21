@@ -512,6 +512,19 @@ define(["../forms/login"],function(login){
 		return result;
 	};
 
+	/**
+	 * 格式化钱
+	 * @param obj
+	 * @returns {string}
+	 */
+	var priceFormat = function(obj){
+		return "￥"+obj;
+	};
+
+	var timeFormat = function(obj){
+		return "";
+	};
+
 	return {
 		postReq:postReq,
 		getReq:getReq,
@@ -538,6 +551,7 @@ define(["../forms/login"],function(login){
 		getAgentState:getAgentState,
 		setAgentState:setAgentState,
 		agentLogin:agentLogin,
-		getUserInfoByPhone:getUserInfoByPhone
+		getUserInfoByPhone:getUserInfoByPhone,
+		priceFormat:priceFormat
 	};
 });

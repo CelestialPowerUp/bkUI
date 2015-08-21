@@ -233,8 +233,8 @@ define(["models/order",
 			{
 				view:"toolbar",css: "highlighted_header header5",height:40,
 				elements:[
-				{view:"label", align:"left",label:"用户信息",height:30},
-				{view: "text",keyPressTimeout:100, id: "user_phone_number", placeholder: "输入下单手机号",width:300,value:"",on:{
+				//{view:"label", align:"left",label:"用户信息",height:30},
+				{view: "text",keyPressTimeout:100, id: "user_phone_number", placeholder: "输入下单手机号确认用户信息",width:300,value:"",on:{
 					"onTimedKeyPress":function(){
 						clear_info();
 						$$("phone_number").setValue($$("user_phone_number").getValue());
@@ -253,7 +253,6 @@ define(["models/order",
 						$$("register_button").hide();
 						//获取用户信息
 						check_user_info();
-
 						webix.message("新用户注册成功");
 					});
 				}}
@@ -303,7 +302,6 @@ define(["models/order",
 							select:true,
 							on:{"onItemClick":function(id, e, node){
 								var item = this.getItem(id);
-								console.log(item);
 								parse_address_info(item);
 							}}
 						}
@@ -326,7 +324,7 @@ define(["models/order",
 			//服务方式
 			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
 				{view:"label", align:"left",label:"服务类型",height:30},
-				{view:"label", id:"adaption_supplier_info",height:30}
+				{view:"label", id:"adaption_supplier_info"}
 			]},
 			{
 				id:"service_type_view",
@@ -418,19 +416,23 @@ define(["models/order",
 						this.$scope.ui(order_product.$ui(false,carmodelid,$$("supplier_id").getValue())).show();//是否显示商品list,是否显示图片
 						order_product.$config_form_type(false,false);//是否是编辑项，是否是自定义商品
 						$$('order_product_datas').unselect();
-						$$('order_product_form').bind('order_product_datas');
+						order_product.$addCallBack(function(data){
+							$$("order_product_datas").add(data);
+						});
 					}
-				}},
-				{view: "button", type: "iconButton", icon: "plus", label: "自定义商品", width: 130, click:function(){
+				}}
+				/*{view: "button", type: "iconButton", icon: "plus", label: "自定义商品", width: 130, click:function(){
 					$$('order_product_datas').unselect();
 					var carmodelid = getCarModelId();
 					var supplier_id = $$("supplier_id").getValue();
 					if(carmodelid!=null){
 						this.$scope.ui(order_product.$ui(true,carmodelid,supplier_id)).show();
 						order_product.$config_form_type(false,true);
-						$$('order_product_form').bind('order_product_datas');
+						order_product.$addCallBack(function(data){
+							$$("order_product_datas").add(data);
+						});
 					}
-				}}
+				}}*/
 			]},
 			{
 				view:"datatable",
@@ -438,7 +440,7 @@ define(["models/order",
 				columns:[
 					{ id:"product_type",header:"ID",hidden:true,width:150},
 					{ id:"product_name",header:"名称",width:250,hidden:true},
-					{ id:"product_info",header:"名称",width:250},
+					{ id:"product_info",header:"商品名称",width:250,fillspace:true},
 					{ id:"unit_count",header:"数量",width:100},
 					{ id:"price",header:"单价",width:100},
 					{ id:"labour_price",header:"工时费",width:100},
@@ -457,10 +459,12 @@ define(["models/order",
 					var item = $$("order_product_datas").getItem(id);
 					var carmodelid = getCarModelId();
 					if(carmodelid!=null){
-						this.$scope.ui(order_product.$ui(item.user_defined,carmodelid)).show();
+						this.$scope.ui(order_product.$ui(item.user_defined,carmodelid,$$("supplier_id").getValue())).show();
 						order_product.$config_form_type(false,item.user_defined);
-						order_product.$addPriceCallBack(coutPrice);
-						$$('order_product_form').bind('order_product_datas');
+						order_product.$parse_data(item);
+						order_product.$addCallBack(function(data){
+							$$("order_product_datas").updateItem(id,data);
+						});
 					}
 				}},
 				onClick:{
@@ -565,7 +569,31 @@ define(["models/order",
 		}
 		return carmodel['model_type'];
 	};
-	
+
+	/**
+	 * 获取订单选择的商品
+	 */
+	var getOrderProducts = function(){
+		var products = [];
+		$$("order_product_datas").eachRow(
+			function (row){
+				var item = $$("order_product_datas").getItem(row);
+				var pitem = {};
+				pitem.product_type=item.product_type;
+				pitem.unit_count =item.unit_count;
+				pitem.part_type=item.part_type;
+				products.push(pitem);
+			}
+		)
+		var service_product = $$("service_type_view").getSelectedItem();
+		if(service_product===null){
+			base.$msg.error("请选择一个服务类型");
+		}
+		delete service_product.id;
+		products.push(service_product);
+		return products;
+	}
+
 	var coutPrice = function(){
 		var price = {};
 		price.total_price = 0;
@@ -580,21 +608,15 @@ define(["models/order",
 			return;
 		}
 		paramform.car_model_type = carmodel.model_type;
-		paramform.products = [];
-		$$("order_product_datas").eachRow(
-			function (row){
-				var item = $$("order_product_datas").getItem(row);
-				var pitem = {};
-				pitem.product_type=item.product_type;
-				pitem.unit_count =item.unit_count;
-				pitem.part_type=item.part_type;
-				paramform.products.push(pitem);
-			}
-		)
+		paramform.products = getOrderProducts();
+
 		var scoupon = $$("coupon_data_view").getSelectedItem();
 		if(scoupon!=null){
 			paramform.coupon_id = scoupon.id;
 		}
+
+		var formdata = $$("order_add").getValues();
+		paramform.supplier_id=formdata.supplier_id;
 		base.postReq("order_preview.json",paramform,function(data){
 			$$("products_info").parse(data);
 		 },function(err){
@@ -602,7 +624,6 @@ define(["models/order",
 				$$("coupon_data_view").unselectAll();
 			}
 		});
-
 	};
 
 	/**
@@ -671,8 +692,6 @@ define(["models/order",
 
 		formdata.operator_id = base.getUserId();
 		var ui = view.$scope;
-		console.log(formdata);
-		debugger;
 		 $$("commit_data").disable();
 		 base.postReq("/v2/api/order/create.json",formdata,function(data){
 			webix.message("订单新增成功");
