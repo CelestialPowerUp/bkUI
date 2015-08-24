@@ -19,13 +19,17 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		}
 		var tabCheckId = $$("tabviewdata").getValue();
 		var order_status = 0;
-		if(tabCheckId=='unprocessed'){
-			order_status = "uncompleted";
+		var action = "/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&size=18"+get_page_url();
+		if(tabCheckId === 'unbelong'){
+			action += "&received=0";
 		}
-		if(tabCheckId=='processed'){
-			order_status = "completed";
+		if(tabCheckId==='unprocessed'){
+			action += "&order_status=uncompleted";
 		}
-		base.getReq("/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&order_status="+order_status+"&size=15"+get_page_url(),function(data){
+		if(tabCheckId==='processed'){
+			action += "&order_status=completed";
+		}
+		base.getReq(action,function(data){
 			parse_table_data(data);
 		});
 	};

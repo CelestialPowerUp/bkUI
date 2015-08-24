@@ -642,7 +642,7 @@ define(["views/modules/base",
 	};
 	
 	var parse_tile = function(order){
-		webix.$$("title").parse({title: "订单编辑", details: "订单号："+order.number+" 订单状态："+order.status});
+		webix.$$("title").parse({title: "订单编辑", details: "订单号："+order.number+" 订单状态："+order.order_status_value});
 	}
 
 	var old_pick_time = null;
@@ -685,9 +685,9 @@ define(["views/modules/base",
 	 * @param order
 	 */
 	var config_ui_by_order = function(order){
-		if(order.paid){//已支付，不能修改
-			//$$("add_user_define_product_button").disable();
-			//$$("add_product_button").disable();
+		if(order.order_status_key==='completed'){//已完成
+			$$("add_user_define_product_button").disable();
+			$$("add_product_button").disable();
 		}
 		if(order.supplier_mold === 'community'){
 			$$("add_supplier_button").disable();
