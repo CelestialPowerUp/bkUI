@@ -18,14 +18,14 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 			cur_page = page;
 		}
 		var tabCheckId = $$("tabviewdata").getValue();
-		var order_status = 1;
+		var order_status = 0;
 		if(tabCheckId=='unprocessed'){
-			order_status = 2;
+			order_status = "uncompleted";
 		}
 		if(tabCheckId=='processed'){
-			order_status = 3;
+			order_status = "completed";
 		}
-		base.getReq("/v3/api/orders.json?operator_id="+base.getUserId()+"&order_status="+order_status+"&size=15"+get_page_url(),function(data){
+		base.getReq("/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&order_status="+order_status+"&size=15"+get_page_url(),function(data){
 			parse_table_data(data);
 		});
 	};
