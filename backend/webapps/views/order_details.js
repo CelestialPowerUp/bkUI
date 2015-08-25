@@ -148,7 +148,7 @@ define(["views/modules/base"], function(base){
 	                    button_ui]}
 	
 	var get_order_details = function(order_id){
-		base.getReq("/v2/api/orders.json?order_id="+order_id,function(order){
+		base.getReq("/v3/api/orders.json?order_id="+order_id,function(order){
 			if(order!=null){
 				prase_title(order);
 				//车主信息
