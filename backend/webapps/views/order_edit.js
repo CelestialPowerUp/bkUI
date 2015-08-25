@@ -648,7 +648,7 @@ define(["views/modules/base",
 	var old_pick_time = null;
 	var old_current_keeper_id = null;
 	var initdata = function(order_id){
-		base.getReq("/v3/api/orders.json?order_id="+order_id,function(order){
+		base.getReq("/v3/api/orders.json?user_type=operator&order_id="+order_id,function(order){
 			if(order!=null){
 				//初始化数据
 				

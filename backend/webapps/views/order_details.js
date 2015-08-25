@@ -112,7 +112,7 @@ define(["views/modules/base"], function(base){
 						  "<div class='big_strong_text'>管家接车：￥#fee#</div>"+
 						  "<div class='big_strong_text'>优惠券抵扣：￥#coupon_price#</div>"+
 						  "<div class='big_strong_text'>总价：￥#total_price#</div>"+
-						  "<div class='big_strong_text'>支付状态：#status#</div>"+"</div>"
+						  "<div class='big_strong_text'>支付状态：#order_status_value#</div>"+"</div>"
 				
 				      },{}]}
 			      ]
@@ -148,7 +148,7 @@ define(["views/modules/base"], function(base){
 	                    button_ui]}
 	
 	var get_order_details = function(order_id){
-		base.getReq("/v3/api/orders.json?order_id="+order_id,function(order){
+		base.getReq("/v3/api/orders.json?user_type=operator&order_id="+order_id,function(order){
 			if(order!=null){
 				prase_title(order);
 				//车主信息
@@ -166,7 +166,7 @@ define(["views/modules/base"], function(base){
 	};
 	
 	var prase_title = function(order){
-		webix.$$("title").parse({title: "订单详情", details: "订单号："+order.number+" 支付状态："+order.status});
+		webix.$$("title").parse({title: "订单详情", details: "订单号："+order.number+" 支付状态："+order.order_status_value});
 		webix.$$("order_id").setValue(order.id);
 	};
 	
