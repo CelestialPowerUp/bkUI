@@ -253,7 +253,7 @@ define(["views/modules/base",
 								return "<span class='status status1'>已支付</span>";
 							}},
 							{ id:"disabled",header:"有效",template:function(obj){
-								if(obj.disabled===false || obj.disabled === 'false'){
+								if(typeof(obj.disabled) === 'undefined' || obj.disabled===false || obj.disabled === 'false'){
 									return "<span class='status status1'>正常</span>";
 								}
 								return "<span class='status status0'>已删除</span>";
