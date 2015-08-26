@@ -112,7 +112,7 @@ define(["views/modules/base"], function(base){
 						  "<div class='big_strong_text'>管家接车：￥#fee#</div>"+
 						  "<div class='big_strong_text'>优惠券抵扣：￥#coupon_price#</div>"+
 						  "<div class='big_strong_text'>总价：￥#total_price#</div>"+
-						  "<div class='big_strong_text'>支付状态：#order_status_value#</div>"+"</div>"
+						  "<div class='big_strong_text'>支付状态：#pay_status_value#</div>"+"</div>"
 				
 				      },{}]}
 			      ]
