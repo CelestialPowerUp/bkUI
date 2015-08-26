@@ -65,11 +65,19 @@ define([],function(){
 		{id:"weixin",value:"assets/audio/weixin_order.mp3"},
 		{id:"xiaomi",value:"assets/audio/xiaomi_order.mp3"}
 	];
+
+	var audio_callcenter = [
+		{id:"callin_0",value:"assets/audio/callin1.mp3"},
+		{id:"callin_1",value:"assets/audio/callin1.mp3"},
+		{id:"callin_2",value:"assets/audio/callin2.mp3"},
+		{id:"callin_3",value:"assets/audio/callin3.mp3"}
+	];
 	
 	return {
 		citys:citys,
 		$car_part_type:car_part_type,
-		$audio_order:audio_order
+		$audio_order:audio_order,
+		$audio_callcenter:audio_callcenter
 	};
 
 });

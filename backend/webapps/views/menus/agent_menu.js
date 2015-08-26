@@ -35,9 +35,11 @@ define(["../modules/base"],function(base){
 				rows:[
 					{view:"label",id:"agent_state_show",label:"在线中(可接听和拨打电话)",align:"center",hidden:false},
 					{view:"button",id:"agent_state_to_free_btn",value:"在线",click:function(){
+						$$("agent_submenu").hide();
 						agentStateChange(1);
 					}},
 					{view:"button",id:"agent_state_to_busy_btn",value:"离开",click:function(){
+						$$("agent_submenu").hide();
 						agentStateChange(0);
 					}}
 				]

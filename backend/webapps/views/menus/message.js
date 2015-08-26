@@ -39,8 +39,23 @@ define(['../modules/base','../../models/base_data'],function(base,base_data){
         return audio_ui;
 	};
 
+	var create_audio_ui_callcenter = function(){
+		var arr = base_data.$audio_callcenter;
+		var audio_ui = {hidden:true,cols:[]};
+		for(var i=0;i<arr.length;i++){
+			audio_ui.cols.push({
+				id:arr[i].id+"_audio",
+				view:"video",
+				src: [arr[i].value],
+				hidden:true,
+				autoplay: false
+			});
+		}
+		return audio_ui;
+	};
+
 	var audio_ui = create_audio_ui();
-	
+	var audio_callcenter = create_audio_ui_callcenter();
 	var layout = {
 			view: "popup",
 			id: "messagePopup",
@@ -52,7 +67,7 @@ define(['../modules/base','../../models/base_data'],function(base,base_data){
 				type: "clean",
 				borderless:true,
 				rows:[
-					audio_ui,
+					audio_ui,audio_callcenter,
 					{
 						id:"new_order_list",
 						view: "list",

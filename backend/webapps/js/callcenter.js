@@ -30,11 +30,9 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     /*Cloopen初始化成功后的自定义函数*/
     function initCallBack(){
         console.log(arguments);
-        console.log("初始化...");
     }
     /*Cloopen显示事件回调通知的自定义函数*/
     function notifyCallBack(doFun,msg){
-        console.log(doFun);
         //挂断
         if(doFun=='onHangup'){
             //通话结束后恢复座席为准备就绪状态
@@ -47,25 +45,25 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
         }
         //取消
         if(doFun=='onHangup'){
-
+            call_in_win.resetWin();
         }
         if(doFun=='ringing'){
             if(msg=='0000000000'){//呼出时也走这个方法
-                console.log(".........");
                 Cloopen.accept();
                 return ;
             }
             if(msg){//真正的客户呼入
-                console.log("有呼入...");
+                console.log("有呼入..."+msg);
                 callInTip();
-
+                $$("user_info").clearAll();
                 console.log("根据手机号获取用户信息..");
                 var userInfo = base.getUserInfoByPhone(msg);
-                $$("user_info").clearAll();
+                if(userInfo===null){
+                    userInfo = {phone:msg,user_name:"未注册用户"};
+                }
                 $$("user_info").parse(userInfo);
             }
         }
-        console.log(msg);
     }
     /*座席准备就绪*/
     Cloopen.when_connected(function(){
@@ -78,8 +76,6 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     });
     /*有呼入*/
     Cloopen.when_inbound(function(){
-        /*console.log("有呼入...");
-        callInTip();*/
     });
 
     var _func = null;

@@ -159,6 +159,43 @@ define(["../forms/login"],function(login){
 			}
 		});
 	};
+
+	var getReqSync = function(url,callBack,failureBack){
+		$.ajax({
+			type:"GET",
+			dataType:"json",
+			timeout:15*1000,
+			url: filter_url(url),
+			async:false,
+			beforeSend: function (request)
+			{
+				request.setRequestHeader("API-Client-Device-Type", 'web');
+				var user_info = webix.storage.local.get("user_info");
+				if(user_info!=null){
+					request.setRequestHeader("API-Access-Token", user_info['token']);
+				}
+			},
+			success: function(data) {
+				if(data&&typeof(data['code'])==='undefined'){
+					callBack(data);
+					return ;
+				}
+				if(data&&data['code']=='00000'){
+					callBack(data['data']);
+				}else if(data&&data['code']=='20007'){
+					show_login_win();
+				}else{
+					webix.message({ type:"error",expire:5000,text:data['message']});
+					if(failureBack){
+						failureBack(data);
+					}
+				}
+			},
+			error:function(xhr,status,error){
+				webix.message({ type:"error",expire:5000,text:"服务器异常 status:"+status});
+			}
+		});
+	};
 	
 	var getLocation = function(name,callBack){
 		$.ajax({
@@ -505,10 +542,12 @@ define(["../forms/login"],function(login){
 		var result = null;
 		if(phone){
 			var url = "meta_user/"+phone;
-			getReq(url,function(data){
+			getReqSync(url,function(data){
+				console.log("getUserInfo:1");
 				result = data;
-			},function(){},true);
+			},function(){});
 		}
+		console.log("getUserInfo:2");
 		return result;
 	};
 
