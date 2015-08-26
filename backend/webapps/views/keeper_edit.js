@@ -96,10 +96,16 @@ define(["views/modules/base",
         {id:"car_number", header:"车牌号", sort:"string"},
         {id:"car_model", header:"车型号", sort:"string",width:380,fillspace:true},
         {id:"paid",header:"支付状态",sort:"string",template:function(obj){
-            if(obj.paid){
-                return "已支付";
+            if(obj.pay_status==1){
+                return "<span class='status status1'>已支付</span>";
             }
-            return "未支付";
+            if(obj.pay_status==2){
+                return "<span class='status status0'>未支付</span>";
+            }
+            if(obj.pay_status==3){
+                return "<span class='status status2'>部分支付</span>";
+            }
+            return "未知";
         }},
         {id:"place_time", header:"下单时间",sort:"string",width:210}
     ];
