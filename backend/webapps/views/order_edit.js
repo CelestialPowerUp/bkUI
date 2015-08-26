@@ -125,7 +125,8 @@ define(["views/modules/base",
                            				{id:"weixin", value: "微信"},
                            				{id:"guoqin", value: "国青"},
                            				{id:"alipay", value: "支付宝"},
-                           				{id:"app",value:"app"}
+                           				{id:"app",value:"app"},
+										{id:"ios",value:"ios"}
                            			]},
                    			{view: "text", name: "car_id",id:"car_id",label:"车辆",value:"", hidden: true,width:250},
 							{view: "text", name: "model_type",id:"model_type",label:"车模型",value:"", hidden: true,width:250},
@@ -338,7 +339,8 @@ define(["views/modules/base",
 			rows:[
 				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
 					{view:"label", align:"left",label:"商品信息",height:30},
-					{view:"label",id: "products_info", height:50},
+					{view:"label",id: "products_info", height:30,width:360},
+					{view:"label",id:"paid_info",height:30},
 					{view:"button",id:"add_product_button",label:"添加增项",width:105,click:function(){
 						var carModelId = getModelId();
 						if(carModelId != null){
@@ -651,7 +653,7 @@ define(["views/modules/base",
 		base.getReq("/v3/api/orders.json?user_type=operator&order_id="+order_id,function(order){
 			if(order!=null){
 				//初始化数据
-				
+				$$("paid_info").setHTML("已支付：￥"+order.paid_price);
 				config_ui_by_order(order);
 				
 				parse_tile(order);
@@ -823,7 +825,7 @@ define(["views/modules/base",
 		paramform.supplier_id=$$("supplier_id").getValue();
 		base.postReq("/order_update_preview.json",paramform,function(data){
 			//$$("products_info").parse(data);
-			$$("products_info").setHTML("总价：￥"+data.total_price+"　　已优惠：￥-"+data.free_price);
+			$$("products_info").setHTML("总价：￥"+data.total_price+" 优惠：￥-"+data.free_price);
 		},function(err){
 			if(err.code="20001"){
 

@@ -19,7 +19,7 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 		}
 		var tabCheckId = $$("tabviewdata").getValue();
 		var order_status = 0;
-		var action = "/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&size=18"+get_page_url();
+		var action = "/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&size=16"+get_page_url();
 		if(tabCheckId === 'unbelong'){
 			action += "&received=0";
 		}
@@ -59,10 +59,16 @@ define(["views/modules/base","views/modules/table_page_m"], function(base,table_
 					{id:"keeper", header:["管家", {content:"textFilter"} ], width:150},
 					{id:"peer_source", header:"来源", width:90},
 					{id:"paid",header:"支付状态",sort:"string",template:function(obj){
-						if(obj.paid){
-							return "已支付";
+						if(obj.pay_status==1){
+							return "<span class='status status1'>已支付</span>";
 						}
-						return "未支付";
+						if(obj.pay_status==2){
+							return "<span class='status status0'>未支付</span>";
+						}
+						if(obj.pay_status==3){
+							return "<span class='status status2'>部分支付</span>";
+						}
+						return "未知";
 					}},
 					{id:"place_time", header:"下单时间",sort:"string",width:210}
 				];

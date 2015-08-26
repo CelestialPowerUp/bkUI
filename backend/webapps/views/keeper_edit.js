@@ -78,8 +78,8 @@ define(["views/modules/base",
     var table_bar_ui = {
         cols:[
             { view:"segmented", id:"switch_table", value:"", inputWidth:250, options:[
-                { id:"unfinished", value:"未完成订单" },
-                { id:"finished", value:"已完成订单"}
+                { id:"uncompleted", value:"未完成订单" },
+                { id:"completed", value:"已完成订单"}
             ],
             on:{
                 "onAfterTabClick":function(id){
@@ -94,9 +94,7 @@ define(["views/modules/base",
         {id:"customer_name", header:"姓名", sort:"string"},
         {id:"customer_phone_number", header:"电话号码",width:120, sort:"string"},
         {id:"car_number", header:"车牌号", sort:"string"},
-        {id:"car_model", header:"车型号", sort:"string",width:380,fillspace:1},
-        {id:"keeper", header:"管家", width:150},
-        {id:"peer_source", header:"来源", width:90},
+        {id:"car_model", header:"车型号", sort:"string",width:380,fillspace:true},
         {id:"paid",header:"支付状态",sort:"string",template:function(obj){
             if(obj.paid){
                 return "已支付";
@@ -110,9 +108,8 @@ define(["views/modules/base",
         id:"data_list",
         view:"datatable",
         select:false,
-        editable:true,
         autowidth:true,
-        autoheight:true,
+        autoheight:false,
         rowHeight:45,
         hover:"myhover",
         onClick:onClick,
@@ -120,8 +117,8 @@ define(["views/modules/base",
     };
 
     var layout ={
-        margin:25,
-        rows:[base_info,{rows:[table_bar_ui,data_table]}]
+        margin:15,
+        cols:[{rows:[table_bar_ui,data_table]},{paddingY:36,rows:[base_info,{}]}]
     };
 
     var parse_form_data = function(data){
@@ -142,7 +139,7 @@ define(["views/modules/base",
         if(typeof(keeper_id)==='undefined' || keeper_id === ""){
             return ;
         }
-        base.getReq("orders?keeper_id="+keeper_id+"&order_status="+value,function(data){
+        base.getReq("/v3/api/orders.json?user_type=keeper&keeper_id="+keeper_id+"&order_status="+value,function(data){
             for(var i=0;i<data.length;i++){
                 $$("data_list").add(data[i]);
             }

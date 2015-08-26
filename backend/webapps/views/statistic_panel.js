@@ -47,9 +47,10 @@ define(["views/modules/base"],function(base){
     };
 
     var table_columns = [
-        {id:"name", header:["姓名", {content:"textFilter"} ], width:180,fillspace:1},
-        {id:"all_orders", header:"累计订单总量", sort:"int",fillspace:1},
-        {id:"cur_month_added_orders", header:"本月新增订单",width:120, sort:"int",fillspace:1}
+        {id:"name", header:["姓名", {content:"textFilter"} ], width:180,fillspace:true},
+        {id:"all_orders", header:"累计订单总量", sort:"int",fillspace:true},
+        {id:"pre_month_added_orders", header:"上月新增订单",width:120, sort:"int",fillspace:true},
+        {id:"cur_month_added_orders", header:"本月新增订单",width:120, sort:"int",fillspace:true}
     ];
 
 
