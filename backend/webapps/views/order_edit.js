@@ -825,7 +825,7 @@ define(["views/modules/base",
 		paramform.supplier_id=$$("supplier_id").getValue();
 		base.postReq("/order_update_preview.json",paramform,function(data){
 			//$$("products_info").parse(data);
-			$$("products_info").setHTML("总价：￥"+data.total_price+" 优惠：￥-"+data.free_price);
+			$$("products_info").setHTML("总价：￥"+data.total_price+" 已优惠：￥-"+data.free_price);
 		},function(err){
 			if(err.code="20001"){
 
