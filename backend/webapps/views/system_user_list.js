@@ -12,8 +12,8 @@ define(["views/modules/base",
     var elements = [
         {id:"trash", header:"操作", width:150, template:"<span><u class='edit'>用户角色</u></span>"},
         {id:"id",width:50,hidden:true},
-        {id:"phone_number", header:"电话号码", width:250},
-        {id:"user_name", header:"姓名", width:250},
+        {id:"phone_number",header:["电话号码", {content:"textFilter"} ], width:250},
+        {id:"user_name", header:["姓名",{content:"textFilter"}], width:250},
         {id:"sing_in_origin", header:"注册来源", width:250}
     ];
 
