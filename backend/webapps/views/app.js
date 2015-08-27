@@ -55,7 +55,7 @@ define([
 				this.data.value = 0;
 				this.refresh();
 			}},*/
-			{view: "icon", icon: "user", id:"agent_menu",tooltip:"座席状态", value: 0, width: 45,popup:"agent_submenu"}
+			{view: "icon", icon: "user", id:"agent_menu",tooltip:"座席状态",value:"离线", width: 45,popup:"agent_submenu"}
 			/*,{view: "icon", icon: "user", id:"test1",tooltip:"座席状态", value: 0, width: 45,click:function(){
 				// this.$scope.ui(call_in_win.$ui).show();
 				showCallInWin();

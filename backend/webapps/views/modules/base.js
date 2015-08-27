@@ -196,6 +196,40 @@ define(["../forms/login"],function(login){
 			}
 		});
 	};
+	var postReqSync = function(url,param,callBack,failureBack){
+		$.ajax({
+			type:"POST",
+			dataType:"json",
+			contentType: "application/json",
+			timeout:15*1000,
+			url: filter_url(url),
+			async:false,
+			data:JSON.stringify(param),
+			beforeSend: function (request)
+			{
+				request.setRequestHeader("API-Client-Device-Type", 'web');
+				var user_info = webix.storage.local.get("user_info");
+				if(user_info!=null){
+					request.setRequestHeader("API-Access-Token", user_info['token']);
+				}
+			},
+			success: function(data) {
+				if(data&&data['code']=='00000'){
+					callBack(data['data']);
+				}else if(data&&data['code']=='20007'){
+					show_login_win();
+				}else{
+					webix.message({ type:"error",expire:5000,text:data['message']});
+					if(failureBack){
+						failureBack(data);
+					}
+				}
+			},
+			error:function(xhr,status,error){
+				webix.message({ type:"error",expire:5000,text:"服务器异常 status:"+status});
+			}
+		});
+	};
 	
 	var getLocation = function(name,callBack){
 		$.ajax({
@@ -463,7 +497,7 @@ define(["../forms/login"],function(login){
 			webix.message({ type:"error",expire:5000,text:"座席登陆失败"});
 		}
 		var url = "ivr/agent?user_id="+user_id;
-		getReq(url,function(data){
+		getReqSync(url,function(data){
 			webix.storage.local.put("agent_token",data.agent_token);
 			webix.storage.local.put("agent_id",data.agent_id);
 			window.location.reload(true);
@@ -478,7 +512,7 @@ define(["../forms/login"],function(login){
 		}
 		var user_id = getUserId();
 		var url = "ivr/agent?user_id="+user_id;
-		getReq(url,function(data){
+		getReqSync(url,function(data){
 			webix.storage.local.put("agent_token",data.agent_token);
 			return webix.storage.local.get("agent_token");
 		},function(){},true);
@@ -491,7 +525,7 @@ define(["../forms/login"],function(login){
 		}
 		var user_id = getUserId();
 		var url = "ivr/agent?user_id="+user_id;
-		getReq(url,function(data){
+		getReqSync(url,function(data){
 			webix.storage.local.put("agent_id",data.agent_id);
 			return webix.storage.local.get("agent_id");
 		},function(){},true);
@@ -506,14 +540,14 @@ define(["../forms/login"],function(login){
 			return agentState;
 		}
 		var url = "ivr/agent/state/"+agentId;
-		getReq(url,function(data){
+		getReqSync(url,function(data){
 			agentState = data;
 		},function(){},true);
 
 		return agentState;
 	};
 
-	//查询座席当前状态
+	//更新座席当前状态
 	var setAgentState = function(agentStateParam){
 		var agentId = getAgentId();
 		var agentState = 1;
@@ -530,9 +564,9 @@ define(["../forms/login"],function(login){
 		param.agent_id = agentId;
 		param.agent_state = agentState;
 		var url = "ivr/agent/state/update";
-		postReq(url,param,function(data){
+		postReqSync(url,param,function(data){
 			result = true;
-		},function(){},true);
+		},function(){});
 
 		return result;
 	};
@@ -543,11 +577,9 @@ define(["../forms/login"],function(login){
 		if(phone){
 			var url = "meta_user/"+phone;
 			getReqSync(url,function(data){
-				console.log("getUserInfo:1");
 				result = data;
 			},function(){});
 		}
-		console.log("getUserInfo:2");
 		return result;
 	};
 

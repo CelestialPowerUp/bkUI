@@ -1,4 +1,4 @@
-define(["../modules/base"],function(base){
+define(["../modules/base","../../js/callcenter"],function(base,callcenter){
 
 	//座席状态改变
 	var agentStateChange = function (stateParam){
@@ -33,14 +33,16 @@ define(["../modules/base"],function(base){
 			padding:0,
 			body:{
 				rows:[
-					{view:"label",id:"agent_state_show",label:"在线中(可接听和拨打电话)",align:"center",hidden:false},
+					{view:"label",id:"agent_state_show",hidden:true,label:"在线中(可接听和拨打电话)",align:"center"},
 					{view:"button",id:"agent_state_to_free_btn",value:"在线",click:function(){
 						$$("agent_submenu").hide();
+						callcenter.ivrLogin();
 						agentStateChange(1);
 					}},
-					{view:"button",id:"agent_state_to_busy_btn",value:"离开",click:function(){
+					{view:"button",id:"agent_state_to_busy_btn",hidden:true,value:"离开",click:function(){
 						$$("agent_submenu").hide();
-						agentStateChange(0);
+						//agentStateChange(0);
+						Cloopen.disconnect();
 					}}
 				]
 			}

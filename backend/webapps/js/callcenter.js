@@ -1,31 +1,45 @@
 define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_out","../views/windows/call_in_win"],function(base,agent_menu,call_out,call_in_win){
-    var agentToken = base.getAgentToken();
+  /*  var agentToken = base.getAgentToken();
     var ivrAppId = "aaf98f894ae167eb014ae748e7b404a3";
 
-    /*call start*/
-    /*设置为debug模式*/
+    *//*call start*//*
+    *//*设置为debug模式*//*
     Cloopen.debug();
 
-    /*设置为强制登录模式*/
+    *//*设置为强制登录模式*//*
     Cloopen.forceLogin();
-    /*初始化，使用token模式登录*/
+    *//*初始化，使用token模式登录*//*
     var appIdToken = ivrAppId+'#'+agentToken;
     Cloopen.init('ivrflash'
         ,initCallBack
         ,notifyCallBack
         ,appIdToken //应用appid与用户token可根据开发者业务自行获取
-    );
-    /*未连接状态*/
-    Cloopen.when_idle(function(){
-        console.log("未连接...");
-    });
+    );*/
+
+    var ivrLogin = function(){
+        var agentToken = base.getAgentToken();
+        var ivrAppId = "aaf98f894ae167eb014ae748e7b404a3";
+
+        /*call start*/
+        /*设置为debug模式*/
+        Cloopen.debug();
+
+        /*设置为强制登录模式*/
+        Cloopen.forceLogin();
+        /*初始化，使用token模式登录*/
+        var appIdToken = ivrAppId+'#'+agentToken;
+        Cloopen.init('ivrflash'
+            ,initCallBack
+            ,notifyCallBack
+            ,appIdToken //应用appid与用户token可根据开发者业务自行获取
+        );
+    };
+
+    ivrLogin();
+
     /*正在连接服务器中状态*/
     Cloopen.when_connecting(function(){
         console.log("连接中...");
-    });
-    /*已经注册登录状态，通话结束也返回此状态*/
-    Cloopen.when_connected(function(){
-        console.log("登录状态...");
     });
     /*Cloopen初始化成功后的自定义函数*/
     function initCallBack(){
@@ -33,10 +47,15 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     }
     /*Cloopen显示事件回调通知的自定义函数*/
     function notifyCallBack(doFun,msg){
+        console.log("------",doFun,msg);
         //挂断
         if(doFun=='onHangup'){
             //通话结束后恢复座席为准备就绪状态
-            agent_menu.agentStateChange(1);
+            try{
+            //    agent_menu.agentStateChange(1);
+            }catch (e){
+                console.log(e);
+            }
             //呼叫菜单恢复为初始状态
             call_out.resetView();
             if("呼叫终止"==msg || "normal"==msg || "callcancel"==msg || "byed"==msg ){
@@ -65,8 +84,31 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             }
         }
     }
+    /*未连接状态*/
+    Cloopen.when_idle(function(){
+        $$("agent_menu").setValue("离线");
+        $$("agent_menu").refresh();
+
+        console.log("...未连接...");
+    });
     /*座席准备就绪*/
     Cloopen.when_connected(function(){
+        var agentState = base.getAgentState();
+        var msg = "";
+        if(agentState!=1){
+            msg = "未就绪";
+            for(var i=0;i<3;i++){
+                agentState = base.getAgentState();
+                console.log("**"+agentState);
+                if(agentState===1){
+                    msg = "";
+                    break;
+                }
+            }
+
+        }
+        $$("agent_menu").setValue(msg);
+        $$("agent_menu").refresh();
         console.log("准备就绪");
     });
     /*通话中*/
@@ -89,6 +131,7 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     /*call end*/
     return {
         callInTip:callInTip,
-        addCallback:addCallback
+        addCallback:addCallback,
+        ivrLogin:ivrLogin
     }
 });
