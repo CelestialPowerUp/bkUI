@@ -45,9 +45,14 @@ define(function(){
             view:"window",
             id:"call_in_win",
             modal:false,
+<<<<<<< HEAD
             move:true,
             height:200,
             position:"top",
+=======
+            position:"top",
+			move:true,
+>>>>>>> ec802fe083d99854b66fbfe3dfd2915c0e168520
             head:{
                 view:"toolbar", cols:[
                     {view:"label", label: "电话呼入" },
@@ -85,7 +90,9 @@ define(function(){
                     window.clearTimeout(timer);
                     console.log("自定清除延时挂断");
                 }
+              
             },
+<<<<<<< HEAD
             "onHide":function(){
                 console.log("系统非法关闭，重新打开");
                 $$("call_in_win").show();
@@ -99,6 +106,20 @@ define(function(){
                         reject();
                     },15000);
                 }
+=======
+			"onHide":function(){
+				console.log("非人为关闭，重新显示");
+				$$("call_in_win").show();
+			},
+            "onShow":function(){
+				if(timer===null){
+					console.log("窗口打开了");
+					timer = setTimeout(function(){
+						console.log("15秒到了，自动拒绝,转接其他客服");
+						reject();
+					},15000);
+				}
+>>>>>>> ec802fe083d99854b66fbfe3dfd2915c0e168520
             }}
         },
         resetWin:resetWin,
