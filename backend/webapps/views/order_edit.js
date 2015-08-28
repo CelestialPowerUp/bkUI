@@ -387,7 +387,8 @@ define(["views/modules/base",
 									if(res){
 										var param = {order_id:$$("order_id").getValue(),pay_type:2};
 										base.postReq("/v1/api/order/pay_status/update.json",param,function(data){
-											base.$msg.info(data);
+											base.$msg.info("线下支付成功");
+											update_order_product(data);
 										});
 									}
 								}
