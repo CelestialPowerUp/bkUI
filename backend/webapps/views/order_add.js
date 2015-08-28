@@ -20,15 +20,6 @@ define(["models/order",
 		base.getLocation(address,function(data){
 			if(data['message']=="ok"){
 				$$("pick_address").clearAll();
-				if(data.results.lenth<=0){
-					var item = {};
-					item.latitude=21.1;
-					item.longitude=21.1;
-					item.name=address;
-					item.address="--";
-					obj.help = "";
-					$$("pick_address").add(item);
-				}
 				for(var i=0;i<data.results.length;i++){
 					if(typeof (data.results[i]['location']) === 'undefined'){
 						continue;

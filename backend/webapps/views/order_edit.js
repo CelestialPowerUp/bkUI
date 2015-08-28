@@ -334,6 +334,15 @@ define(["views/modules/base",
 		return $$("supplier_id").getValue();
 	};
 
+	var update_order_product = function(data){
+		var products = data.products;
+		products = products.concat(data.increase_products)
+		webix.$$("order_product_datas").clearAll()
+		for(var i = 0;i<products.length;i++){
+			webix.$$("order_product_datas").add(products[i]);
+		}
+	}
+
 	var order_product_ui = {
 			type:"clean",
 			rows:[
@@ -351,8 +360,8 @@ define(["views/modules/base",
 							order_product.$addCallBack(function(data){
 								var order_id = $$("order_id").getValue();
 								base.postReq("/v1/api/order_product_addition/create.json?order_id="+order_id,[data],function(results){
-									base.$msg.info(results);
-									$$("order_product_datas").add(data);
+									base.$msg.info("增项添加成功");
+									update_order_product(results);
 								});
 							});//回调函数
 						}
