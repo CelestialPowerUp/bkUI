@@ -8,6 +8,9 @@ define(["../forms/login"],function(login){
 	if(window.location.href.indexOf("/develop/bk")>=0){
 		server = "/develop";
 	}
+	if(window.location.href.indexOf("/staging/bk")>=0){
+		server = "/staging";
+	}
 	var api_root = "/v1/api/";
 	
 	var show_login_win = function(){

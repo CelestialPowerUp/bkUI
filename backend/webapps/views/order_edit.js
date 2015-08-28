@@ -473,20 +473,23 @@ define(["views/modules/base",
 	var check_elements = [{view:"text",name:"id",hidden:true},
 	                      {view:"text",name:"car_inspection_type",hidden:true},
 	                      {view:"text",name:"keeper_id",hidden:true},
-	                      {view:"richselect",name:"complete",label:"状态",width:250,options:[{id:"true",value:"已完成"},{id:"false",value:"未完成"}]},
-	                      {view:"text",name:"description",label:"备注",width:250}];
+							{margin:15,cols:[
+								{view:"richselect",name:"complete",label:"状态:",labelWidth:45,width:250,options:[{id:"true",value:"已完成"},{id:"false",value:"未完成"}]},
+								{view:"text",name:"description",label:"备注:",labelWidth:45}
+							]}
+	                      ];
 	
 	var garage_check_ui = {
 			type:"clean",
 			rows:[
 				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
-					{view:"label", align:"left",label:"全检项目",height:30},
-					{view:"form",
-						id:"garage_form",
-						hidden:true,
-						elements:webix.copy(check_elements)
-					}
+					{view:"label", align:"left",label:"全检项目",height:30}
 				]},
+				{view:"form",
+					id:"garage_form",
+					hidden:true,
+					elements:webix.copy(check_elements)
+				},
 				{
 						id:"garage_check_data",
 						view:"datatable",
@@ -518,13 +521,13 @@ define(["views/modules/base",
 	var first_check_ui = {type:"clean",
 			rows:[
 				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
-					{view:"label", align:"left",label:"初检项目",height:30},
-					{view:"form",
-						id:"suface_form",
-						hidden:true,
-						elements:webix.copy(check_elements)
-					}
+					{view:"label", align:"left",label:"初检项目",height:30}
 				]},
+				{view:"form",
+					id:"suface_form",
+					hidden:true,
+					elements:webix.copy(check_elements)
+				},
 			  {id:"first_check_data",view:"datatable",
 				  columns:webix.copy(check_columns),
 				  editable:true,
