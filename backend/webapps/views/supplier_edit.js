@@ -75,7 +75,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             { value:"营业中", id:'false' },
             { value:"停业中", id:'true' }
         ]},
-        {view: "text", label:"综合评分",name:"rating", placeholder: "",placeholder: "新建服务商默认4分",width:350,required:true,disabled:true},
+        {view: "text", label:"综合评分",name:"rating", placeholder: "",placeholder: "新建服务商默认4分",width:350,value:4,required:true,disabled:true},
 
         {
             paddingY:15,
