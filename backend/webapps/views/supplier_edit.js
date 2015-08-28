@@ -163,6 +163,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             address.x = data.longitude;
             address.y = data.latitude;
             parse_address_info(address);
+            $$("supplier_mold").disable();
         });
     }
 

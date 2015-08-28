@@ -166,7 +166,7 @@ define(["views/modules/base"], function(base){
 	};
 	
 	var prase_title = function(order){
-		webix.$$("title").parse({title: "订单详情", details: "订单号："+order.number+" 支付状态："+order.order_status_value});
+		webix.$$("title").parse({title: "订单详情", details: "订单号："+order.number+" 订单状态："+order.order_status_value});
 		webix.$$("order_id").setValue(order.id);
 	};
 	

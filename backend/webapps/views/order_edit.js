@@ -339,8 +339,10 @@ define(["views/modules/base",
 			rows:[
 				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
 					{view:"label", align:"left",label:"商品信息",height:30},
-					{view:"label",id: "products_info", height:30,width:360},
-					{view:"label",id:"paid_info",height:30},
+					{view:"label",id: "products_total_price", height:30,width:160},
+					{view:"label",id: "products_free_price", height:30,width:160},
+					{view:"label",id: "products_paid_price", height:30,width:160},
+					{view:"label",id: "products_need_price", height:30,width:160},
 					{view:"button",id:"add_product_button",label:"添加增项",width:105,click:function(){
 						var carModelId = getModelId();
 						if(carModelId != null){
@@ -431,9 +433,8 @@ define(["views/modules/base",
 								param.supplier_ids.push(checks[i].id);
 							}
 							base.postReq("order_suppliers/create.json",param,function(result){
-								for(var i=0;i<checks.length;i++){
-									$$("supplier_table").add(checks[i]);
-								}
+								$$("supplier_table").clearAll();
+								$$("supplier_table").parse(result);
 							});
 						});
 					}}
@@ -656,7 +657,8 @@ define(["views/modules/base",
 		base.getReq("/v3/api/orders.json?user_type=operator&order_id="+order_id,function(order){
 			if(order!=null){
 				//初始化数据
-				$$("paid_info").setHTML("已支付：￥"+order.paid_price);
+				$$("products_paid_price").setHTML("已支付￥"+order.paid_price);
+				$$("products_need_price").setHTML("未支付￥"+order.not_paid_price);
 				config_ui_by_order(order);
 				
 				parse_tile(order);
@@ -828,7 +830,8 @@ define(["views/modules/base",
 		paramform.supplier_id=$$("supplier_id").getValue();
 		base.postReq("/order_update_preview.json",paramform,function(data){
 			//$$("products_info").parse(data);
-			$$("products_info").setHTML("总价：￥"+data.total_price+" 已优惠：￥-"+data.free_price);
+			$$("products_total_price").setHTML("总价￥"+data.total_price);
+			$$("products_free_price").setHTML("已优惠￥-"+data.free_price);
 		},function(err){
 			if(err.code="20001"){
 
