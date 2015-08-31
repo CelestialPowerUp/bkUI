@@ -258,9 +258,8 @@ define(["views/modules/base",
 								}
 								return "<span class='status status0'>已删除</span>";
 							}},
+							{ id:"trash", header:"", width:45, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>图片</u></span>"},
 							{id:"trash", header:"", width:45, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
-
-							//{ id:"trash", header:"图片", width:80, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>查看</u></span>"}
 							//{ id:"trash", header:"操作", width:50, template:"<span  style='color:#777777; cursor:pointer;' class='webix_icon fa-trash-o'></span>"}
 							
 						];
@@ -311,9 +310,13 @@ define(["views/modules/base",
 				var item = $$("order_product_datas").getItem(id);
 				this.$scope.ui(upload_img_win.$ui).show();
 				upload_img_win.$addCallBack(function(data){
-					item.pics = data.pics;
-					item.pic_id =data.pics_id;
-					webix.message("图片更新成功！！");
+					var param = {};param.id = $$("order_id").getValue();param.products = [];
+					param.products.push({id:item.id,pic_id:data.pics_id});
+					base.postReq("/v3/api/order/update.json",param,function(response){
+						webix.message("图片更新成功！！");
+						item.pics = data.pics;
+						item.pic_id =data.pics_id;
+					});
 				});
 				if(item.pics!=null){
 					upload_img_win.$init_img(item.pics);
