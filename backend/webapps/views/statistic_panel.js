@@ -66,12 +66,8 @@ define(["views/modules/base"],function(base){
     var layout = {
         type:"clean",
         rows:[
-            base_info_ui,{
-                type:"space",
-                cols:[
-                    {rows:[table_bar_ui,data_table]},
-                    {}]
-            }
+            base_info_ui,
+            {type:"wide",margin:0,paddingX:15,paddingY:15, rows:[table_bar_ui,data_table]}
         ]
     }
 
