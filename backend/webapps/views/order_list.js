@@ -284,7 +284,11 @@ define(["views/modules/base","views/modules/table_page_m",
 				search(1);
 			}}
 			},
-			{view:"text",id:"search_text",width:250,placeholder:"输入查询关键字"},
+			{view:"text",id:"search_text",width:250,placeholder:"输入查询关键字",keyPressTimeout:500,on:{
+				onTimedKeyPress:function(){
+					search(1);
+				}
+			}},
 			{ view: "button", label: "查询", width: 50,click:function(){
 				search(1);
 			}},
