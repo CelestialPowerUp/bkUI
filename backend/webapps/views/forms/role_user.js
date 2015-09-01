@@ -6,8 +6,8 @@ define(["views/modules/base"],function(base){
 			view: "list",
 			css: "tasks_list",
 			id:"user_list",
-			height:250,
-			width:400,
+			height:450,
+			width:650,
 			type: {
                 height: 35,
 				marker: function(obj){
