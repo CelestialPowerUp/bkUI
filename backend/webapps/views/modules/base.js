@@ -595,8 +595,42 @@ define(["../forms/login"],function(login){
 		return "￥"+obj;
 	};
 
-	var timeFormat = function(obj){
-		return "";
+	var spilt_time = function(time){
+		if(check_empty(time)){
+			return ["",""];
+		}
+		time = time.replace("T"," ");
+		var timeArr=time.split(" ");
+		var d=timeArr[0].split("-");
+		var t=timeArr[1].split(":");
+		var data = new Date(d[0],(d[1]-1),d[2],t[0],t[1],"");
+		var year = data.getFullYear();  //获取年
+		var month = data.getMonth() + 1;    //获取月
+		var day = data.getDate(); //获取日
+		var hours = data.getHours();
+		var minutes = data.getMinutes();
+		return [year+"-"+fill_zero(month)+"-"+fill_zero(day),fill_zero(hours)+":"+fill_zero(minutes)];
+	}
+
+	var fill_zero = function(value){
+		if(value!==null){
+			value += "";
+			if(value.length==1){
+				return "0"+value;
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * 时间
+	 * @param obj
+	 * @returns {string}
+	 */
+	var time_period_format = function(start,end){
+		var start_time = spilt_time(start);
+		var end_time = spilt_time(end);
+		return start_time[0]+" "+start_time[1]+"～"+end_time[1];
 	};
 
 	return {
@@ -626,6 +660,7 @@ define(["../forms/login"],function(login){
 		setAgentState:setAgentState,
 		agentLogin:agentLogin,
 		getUserInfoByPhone:getUserInfoByPhone,
-		priceFormat:priceFormat
+		priceFormat:priceFormat,
+		time_period_format:time_period_format
 	};
 });
