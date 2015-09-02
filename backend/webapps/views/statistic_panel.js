@@ -42,15 +42,41 @@ define(["views/modules/base"],function(base){
                     "onAfterTabClick":function(id){
                         swich_user_order(id);
                     }
-                }}
+                }},
+            {},
+            {
+                margin:10,
+                cols:[
+                    {view: "richselect", id:"filter_search",label:"订单查询:",labelWidth:80,options:[
+                        {id:"create_time",value:"创建时间"},
+                        {id:"start_time",value:"接车时间"}
+                    ],placeholder:"选择关键字",width:250, on:{"onChange":function(n,o){
+                        swich_user_order();
+                    }}},
+                    {view:"datepicker", timepicker:true, label:"", labelWidth:45,id:"pick_start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350,
+                        on:{
+                            "onChange":function(){
+                                swich_user_order();
+                            }
+                        }
+                    },
+                    {view:"datepicker", timepicker:true, label:"--", id:"pick_end_time",labelWidth:35, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
+                        on:{
+                            "onChange":function(){
+                                swich_user_order();
+                            }
+                        }
+                    },
+                    { view: "button", label: "查询", width: 50,click:function(){
+                        swich_user_order()
+                    }}
+                ]}
         ]
     };
 
     var table_columns = [
         {id:"name", header:["姓名", {content:"textFilter"} ], width:180,fillspace:true},
-        {id:"all_orders", header:"累计订单总量", sort:"int",fillspace:true},
-        {id:"pre_month_added_orders", header:"上月新增订单",width:120, sort:"int",fillspace:true},
-        {id:"cur_month_added_orders", header:"本月新增订单",width:120, sort:"int",fillspace:true}
+        {id:"all_orders", header:"订单量", sort:"int",fillspace:true}
     ];
 
 
@@ -84,13 +110,18 @@ define(["views/modules/base"],function(base){
         });
     };
 
-    var swich_user_order = function(id){
-        if(typeof(id) === 'undefined'){
-            id = "UserRoles_CarKeepers";
+    var swich_user_order = function(){
+        var role = $$("switch_table").getValue();
+        if(role==="" || $$("pick_start_time").getValue()==="" || $$("pick_end_time").getValue()===""){
+            return ;
         }
-        $$("switch_table").setValue(id);
         $$("data_list").clearAll();
-        base.getReq("amount/user_service_order_info.json?code="+id,function(data){
+        var param = {};
+        param.option = $$("filter_search").getValue();
+        param.start_time = base.format_time($$("pick_start_time").getValue());
+        param.end_time = base.format_time($$("pick_end_time").getValue());;
+        param.code = role;
+        base.postReq("/v1/api/amount/order_statistic_by_time.json",param,function(data){
             $$("data_list").parse(data);
             base.$msg.info("数据加载成功");
         });
