@@ -4,7 +4,8 @@ define(["models/order",
         "views/forms/order_product",
         "views/forms/user_car_model",
         "views/order_details",
-		"views/webix/baidumap"], function(order,product,base,order_product,user_car_model,order_details){
+		"views/forms/supplier",
+		"views/webix/baidumap"], function(order,product,base,order_product,user_car_model,order_details,supplier){
 
 	var car_products = "";
 	
@@ -137,25 +138,35 @@ define(["models/order",
 		return content;
 	};
 
+	var get_service_type = function(){
+		base.getReq("/v1/api/service_products.json?supplier_id="+$$("supplier_id").getValue()+"&code=all",function(products){
+			$$("service_type_view").clearAll();
+			$$("service_type_view").parse(products);
+			$$("service_type_view").select(products[0].id);
+		});
+	};
+
+	var parse_supplier_info = function(supplier){
+		$$("adaption_supplier_info").setHTML((supplier.supplier_mold==='community'?"社区店":"综合店")+" "+supplier.supplier_name);
+		$$("supplier_id").setValue(supplier.supplier_id);
+	};
+
 	/**
 	 * 适配服务商
 	 * @param lng
 	 * @param lat
 	 */
-	var adaption_supplier = function(lng,lat){
+	var adaption_supplier = function(){
 		$$("supplier_id").setValue("");
+		var lng = $$("longitude").getValue();
+		var lat = $$("latitude").getValue();
 		base.getReq("/v2/api/supplier/adaption.json?longitude="+lng+"&latitude="+lat,function(suppliers){
 			if(suppliers.length>0){
-				$$("adaption_supplier_info").setHTML((suppliers[0].supplier_mold==='community'?"社区店":"综合店")+" "+suppliers[0].supplier_name);
-				$$("supplier_id").setValue(suppliers[0].supplier_id);
+				parse_supplier_info(suppliers[0]);
 			}else{
-				$$("adaption_supplier_info").setHTML("养爱车 自营服务");
+				parse_supplier_info({supplier_id:"",supplier_name:"养爱车自营",supplier_mold:"comprehensive"});
 			}
-			base.getReq("/v1/api/service_products.json?supplier_id="+$$("supplier_id").getValue()+"&code=all",function(products){
-				$$("service_type_view").clearAll();
-				$$("service_type_view").parse(products);
-				$$("service_type_view").select(products[0].id);
-			});
+			get_service_type();
 		});
 
 	}
@@ -168,7 +179,9 @@ define(["models/order",
 		$$("longitude").setValue(event.point.lng);
 		$$("latitude").setValue(event.point.lat);
 		$$("take_car_address").setValue(event.address);
-		adaption_supplier(event.point.lng,event.point.lat);
+		if($$("switch_service_type").getValue()==='auto'){
+			adaption_supplier();
+		}
 		$$("map").map.openInfoWindow(infoWindow,event.point); //开启信息窗口
 	};
 
@@ -315,7 +328,31 @@ define(["models/order",
 			//服务方式
 			{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
 				{view:"label", align:"left",label:"服务类型",height:30},
-				{view:"label", id:"adaption_supplier_info"}
+				{view:"label", id:"adaption_supplier_info"},
+				/*{view:"button",id:"add_supplier_button",label:"选择服务商",width:105,click:function(){
+					this.$scope.ui(supplier.$ui).show();
+					supplier.$init_data([]);
+					supplier.$add_callback(function(checks){
+						debugger;
+						if(checks.length>0){
+							parse_supplier_info({supplier_id:checks[0].id,supplier_name:checks[0].name,supplier_mold:checks[0].supplier_mold});
+						}
+					});
+				}}*/
+				{ view:"segmented", id:"switch_service_type", value:"",tooltip:"sasjdkjkdjasakjsda", inputWidth:250, options:[
+						{ id:"auto", value:"自动匹配模式" },
+						{ id:"manually", value:"养爱车自营模式"}
+					],
+					on:{
+						"onAfterTabClick":function(id){
+							if(id==="auto"){
+								adaption_supplier();
+								return ;
+							}
+							parse_supplier_info({supplier_id:"",supplier_name:"养爱车自营",supplier_mold:"comprehensive"});
+							get_service_type();
+						}
+					}}
 			]},
 			{
 				id:"service_type_view",

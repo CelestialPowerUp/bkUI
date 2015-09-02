@@ -97,6 +97,7 @@ define(["views/modules/base"],function(base){
 					}
 				}
 				$$("role_api_list").sort("#value_weight#","desc");
+				$$("role_api_list").scrollTo(0,0);
 			}
 		}},
 	]};

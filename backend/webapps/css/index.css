@@ -147,3 +147,10 @@
 .highlighted_header.header5{
     background-color: #8bbfb7 !important;
 }
+
+.text_button{
+    text-align: center;
+    padding: 2px 5px;
+    border-radius: 3px;
+    color: #fff;
+}
