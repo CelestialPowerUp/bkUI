@@ -124,13 +124,17 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
         click: function (e, id, node) {
             var banners_view = $$('banners_view');
             var size = banners_view.count();
-            var banner = banners_view.getItem(banners_view.getIdByIndex(size - 1));
+            if (size > 0) {
 
-            if (!banner.banner_id) {
-                webix.alert({
-                    text: "还有一条记录未入库！", ok: "是的"
-                });
-                return;
+                var banner = banners_view.getItem(banners_view.getIdByIndex(size - 1));
+
+                if (!banner.banner_id) {
+                    webix.alert({
+                        text: "还有一条记录未入库！", ok: "是的"
+                    });
+                    return;
+                }
+
             }
 
             var add_data = {
