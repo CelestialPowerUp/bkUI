@@ -32,6 +32,26 @@ define(["../modules/base"],function(base){
 		callingLabelSh(false);
 	}
 
+	//外呼
+	var callOut = function(){
+		if(!callOutCheck()){
+			return ;
+		}
+		//呼出时
+		//显示呼叫中
+		callingLabelSh(true);
+		//隐藏呼出按钮
+		callOutBtnSh(false);
+		//发送外呼请求
+		var jsonParam = {};
+		jsonParam.agent_id = base.getAgentId();
+		jsonParam.call_number = $$("phone_number").getValue();
+		base.postReq("ivr/agent/callout",jsonParam,function(data){
+			//base.$msg.info("外呼成功");
+			console.log(data);
+		});
+	};
+
 
 return {
 	$ui:{
@@ -50,23 +70,7 @@ return {
 				},
 				{view:"label",id:"calling",label:"呼叫中...",align:"center",hidden:true},
 				{view:"button",id:"call_out_btn",value:"呼出",type:"form",click:function(){
-					//验证手机号手否有效
-					if(!callOutCheck()){
-						return ;
-					}
-					//呼出时
-					//显示呼叫中
-					callingLabelSh(true);
-					//隐藏呼出按钮
-					callOutBtnSh(false);
-					//发送外呼请求
-					var jsonParam = {};
-					jsonParam.agent_id = base.getAgentId();
-					jsonParam.call_number = $$("phone_number").getValue();
-					base.postReq("ivr/agent/callout",jsonParam,function(data){
-						//base.$msg.info("外呼成功");
-						console.log(data);
-					});
+					 callOut();
 				}},
 				{view:"button",id:"call_off_btn",value:"挂断",type:"danger",click:function(){
 					//外呼结束通话
@@ -76,7 +80,8 @@ return {
 			]
 		}
 	},
-	resetView:resetView
+	resetView:resetView,
+	callOut:callOut
 };
 
 });

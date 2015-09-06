@@ -28,11 +28,12 @@
     cursor:pointer;
     color:blue;
 }
-.edit{
+.edit, .add, .call{
     cursor:pointer;
     font-size:15px;
     color:blue;
 }
+
 .delete{
     color:#777777;
     cursor:pointer;

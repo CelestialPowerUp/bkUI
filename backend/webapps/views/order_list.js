@@ -1,5 +1,5 @@
 define(["views/modules/base","views/modules/table_page_m",
-	"views/forms/role_user"], function(base,table_page,role_user){
+	"views/forms/role_user","views/menus/call_out"], function(base,table_page,role_user,call_out){
 
 	var initData = function(){
 		search(cur_page);
@@ -97,17 +97,17 @@ define(["views/modules/base","views/modules/table_page_m",
 	
 	var unbelong_colums = webix.copy(columns);
 	
-	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:150, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><u class='delete row_button'>删除</u></span>"});
+	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
 	
 	var unprocessed_colums = webix.copy(columns);
 
 	//<u class='complate row_button'> 完成</u>
-	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:120,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='delete row_button'>删除</u></span>"});
+	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:160,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
 
 	unprocessed_colums.splice(1,0,{id:"assign",header:"分配",width:65,template:custom_checkbox});
 	
 	var complated_colums = webix.copy(columns);
-	complated_colums.splice(0,0,{id:"trash", header:"操作",width:150, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='delete row_button'>删除</u></span>"});
+	complated_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
 	
 	var onClick = {
 			"views":function(e,id,node){
@@ -168,6 +168,12 @@ define(["views/modules/base","views/modules/table_page_m",
 						}
 					}
 				});
+			},
+			"call":function(e,id,node){
+				var phoneNumber = this.getItem(id).customer_phone_number;
+				$$("call_out_submenu").show($$("call_out").getNode());
+				$$("phone_number").setValue(phoneNumber);
+				call_out.callOut();
 			}
 		};
 

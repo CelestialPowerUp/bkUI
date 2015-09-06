@@ -1,4 +1,4 @@
-define(["views/modules/base"],function(base){
+define(["views/modules/base","views/menus/call_out"],function(base,call_out){
 
     var elements = [
         {id:"id",width:50,hidden:true},
@@ -26,11 +26,9 @@ define(["views/modules/base"],function(base){
         },
         "call":function (e,id,node) {
             var phoneNumber = this.getItem(id).customer_phone_number;
-            var callOut = $$("call_out");
             $$("call_out_submenu").show($$("call_out").getNode());
             $$("phone_number").setValue(phoneNumber);
-            $$("call_out_btn").click();
-
+            call_out.callOut();
         }
     }
 
