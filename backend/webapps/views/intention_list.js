@@ -1,9 +1,11 @@
-define(["views/modules/base"],function(base){
+define(["views/modules/base","views/menus/call_out"],function(base,call_out){
 
     var elements = [
         {id:"id",width:50,hidden:true},
         {id:"customer_name", header:"姓名", width:100},
-        {id:"customer_phone_number", header:"电话", width:100},
+        {id:"customer_phone_number", header:"电话", width:100,onClick:function(){
+            console.log(arguments);
+        }},
         {id:"car_model", header:"车型",template:function(obj){
             return obj.car.model;
         } ,width:250},
@@ -11,7 +13,7 @@ define(["views/modules/base"],function(base){
             return base.$show_time(obj.create_time);
         }},
         {id:"description", header:"意向备注",width:300},
-        {id:"operate", header:"操作", adjust:true,template:"<span class='edit row_button'>编辑</span><span class='add row_button'> 新建一单</span>"}
+        {id:"operate", header:"操作", adjust:true,template:"<span class='call row_button'>呼叫</span><span class='edit row_button'>编辑</span><span class='add row_button'> 新建一单</span>"}
     ];
 
     var onClick={
@@ -21,6 +23,12 @@ define(["views/modules/base"],function(base){
         },
         "add":function(e,id,node){
             this.$scope.show("/order_add:phone_number="+this.getItem(id).customer_phone_number);
+        },
+        "call":function (e,id,node) {
+            var phoneNumber = this.getItem(id).customer_phone_number;
+            $$("call_out_submenu").show($$("call_out").getNode());
+            $$("phone_number").setValue(phoneNumber);
+            call_out.callOut();
         }
     }
 
