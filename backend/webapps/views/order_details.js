@@ -77,6 +77,57 @@ define(["views/modules/base"], function(base){
 			rows:[{type:"header",template:"服务过程"},
 			      {view:"label",label:"接车照片"}]
 	};
+
+	var product_columns = [
+		{ id:"product_type",header:"ID",hidden:true,width:150},
+		{ id:"product_name",header:"名称",width:250,hidden:true},
+		{ id:"product_info",header:"商品名称",width:250,fillspace:true},
+		{ id:"unit_count",header:"数量",width:100},
+		{ id:"price",header:"单价",format:base.priceFormat,width:100},
+		{ id:"labour_price",header:"工时费",format:base.priceFormat,width:100},
+		{ id:"total_price",header:"小计",format:base.priceFormat,width:100},
+		{ id:"pics",header:"图片",hidden:true},
+		{ id:"user_defined",header:"自定义",template:function(obj){
+			if(obj.user_defined===true || obj.user_defined === 'true'){
+				return "<span class='status status0'>自定义</span>";
+			}
+			return "<span class='status status1'>非自定义</span>";
+		}},
+		{ id:"selection_mode",header:"商品来源",width:150,template:function(obj){
+			var msg = "";
+			var status = "status0";
+			if(obj.selection_mode === 1){
+				status = "status1";
+				msg =  "非增项（自主下单）";
+			}
+			if(obj.selection_mode === 2){
+				msg =  "增项（待客户确认）";
+			}
+			if(obj.selection_mode === 3){
+				msg =  "增项（客户已同意）";
+			}
+			if(obj.selection_mode === 4){
+				msg =  "增项（客户已拒绝）";
+			}
+			if(obj.selection_mode === 5){
+				msg =  "增项（超时自动拒绝）";
+			}
+			return "<span class='status "+status+"'>"+msg+"</span>";
+		}},
+		{ id:"pay_status",header:"支付状态",template:function(obj){
+			if(obj.pay_status===0){
+				return "<span class='status status0'>未支付</span>";
+			}
+			return "<span class='status status1'>已支付</span>";
+		}},
+		{ id:"disabled",header:"有效",template:function(obj){
+			if(typeof(obj.disabled) === 'undefined' || obj.disabled===false || obj.disabled === 'false'){
+				return "<span class='status status1'>正常</span>";
+			}
+			return "<span class='status status0'>已删除</span>";
+		}},
+		{ id:"trash", header:"", width:45, template:"<span  style='color:#777777; cursor:pointer;'><u class='links'>图片</u></span>"}
+	];
 	
 	var order_products_ui={
 			type:"space",
@@ -85,15 +136,7 @@ define(["views/modules/base"], function(base){
 					{
 						view:"datatable",
 						id:"order_product_datas",
-						columns:[
-						    { id:"product_type",header:"ID",hidden:true,width:150},
-							{ id:"product_name",header:"名称1",width:250,hidden:true},
-							{ id:"product_info",header:"名称",width:350},
-							{ id:"unit_count",header:"数量",width:100},
-							{ id:"price",header:"单价",width:100},
-							{ id:"labour_price",header:"工时费",width:100},
-							{ id:"total_price",header:"小计",width:100}
-						],
+						columns:product_columns,
 						autoheight:true,
 						autowidth:true,
 						data: []
@@ -225,6 +268,7 @@ define(["views/modules/base"], function(base){
 	
 	var prase_order_products = function(order){
 		var products = order.products;
+		products = products.concat(order.increase_products);
 		if(products!=null){
 			for(var i=0;i<products.length;i++){
 				$$("order_product_datas").add(products[i])

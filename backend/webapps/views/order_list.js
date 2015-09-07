@@ -316,7 +316,7 @@ define(["views/modules/base","views/modules/table_page_m",
 					}
 					base.postReq("/v1/api/order_operator/update.json",param,function(resp){
 						console.log("返回数据",resp);
-
+						search();
 					});
 					console.log("提交的数据",param);
 				});
