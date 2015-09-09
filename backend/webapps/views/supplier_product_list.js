@@ -35,7 +35,8 @@ define(["views/modules/base",
         {id:"supplier_id",header:"ID",hidden:true,width:80},
         {id:"product_id",header:"ID",hidden:true,width:80},
         {id:"supplier_product_name", header:["商品名称", {content:"textFilter"} ],minWidth:350,fillspace:true},
-        {id:"supplier_price", header:"商品价格",minWidth:350,editor:"text",fillspace:true}
+        {id:"supplier_price", header:"商品价格",minWidth:350,editor:"text",fillspace:true},
+        {id:"supplier_cost", header:"结算价格",minWidth:350,editor:"text",fillspace:true}
     ];
 
     var table_ui = {
