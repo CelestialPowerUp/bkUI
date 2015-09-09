@@ -1,6 +1,6 @@
 define(["views/modules/base", "views/modules/upload"], function (base, upload) {
 
-    var cache = {};
+    var cache = {}, last_node, last_obj;
 
     var on_event = {
         "open-link": function (e, id, node) {
@@ -74,28 +74,11 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
                 }
             });
         },
-        "image-view": function (e, id, node) {
-            var banner = $$('banners_view').getItem(id);
-            console.log(banner);
-            var uid = 'banner' + banner.banner_id;
-            $(node).attr('id', uid);
-            if (cache[uid]) {
-                return;
-            }
-
-            upload.$bind_upload(uid, function (data) {
-                if (data.code === '00000' && data.data != null) {
-                    banner.image_url = data.data['raw_url'];
-                    console.log(banner);
-                    $$('banners_view').updateItem(id, banner);
-                    //$$('banners_view').render(id);
-                    cache[uid] = undefined;
-                }
-            });
-            cache[uid] = true;
-            setTimeout(function () {
-                $(node).click();
-            }, 1);
+        "image-view": function(e, id, node) {
+            var banners_view = $$('banners_view');
+            last_obj = banners_view.getItem(id);
+            last_node = node;
+            alert('a');
         }
     };
 
@@ -109,7 +92,38 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
             height: 334,
             template: "http->views/store_banner_template.html"
         },
-        onClick: on_event
+        onClick: on_event,
+        on: {
+            onAfterRender: function () {
+                var banners_view = $$('banners_view');
+                var size = banners_view.count();
+                for (var i = 0; i < size; i++) {
+                    var banner = banners_view.getItem(banners_view.getIdByIndex(i));
+                    var idByIndex = banner.id;
+                    var uid = 'banner' + banner.id;
+                    $(banners_view.getItemNode(idByIndex)).find('.image-view').eq(0).attr('id', uid);
+                    if (cache['' + banner.id]) {
+                        return true;
+                    }
+
+                    upload.$bind_upload(uid, function (data) {
+                        if (data.code === '00000' && data.data != null) {
+                            last_obj.image_url = data.data['raw_url'];
+                            console.log(last_obj);
+                            banners_view.updateItem(last_obj.id, last_obj);
+                            //$$('banners_view').render(id);
+                            cache['' + last_obj.id] = false;
+                        }
+                    });
+                    cache['' + banner.id] = true;
+                }
+            },
+            onAfterDrop: function(context) {
+                for (var i=0; i< context.source.length; i++){
+                    cache['' + context.source[i]] = false;
+                }
+            }
+        }
     };
 
     var add_one_view = {
