@@ -1,6 +1,6 @@
 define(["views/modules/base", "views/modules/upload"], function (base, upload) {
 
-    var cache = {}, last_node, last_obj;
+    var cache = {};
 
     var on_event = {
         "open-link": function (e, id, node) {
@@ -73,12 +73,6 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
                     }
                 }
             });
-        },
-        "image-view": function(e, id, node) {
-            var banners_view = $$('banners_view');
-            last_obj = banners_view.getItem(id);
-            last_node = node;
-            alert('a');
         }
     };
 
@@ -108,8 +102,12 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
 
                     upload.$bind_upload(uid, function (data) {
                         if (data.code === '00000' && data.data != null) {
+                            console.log(JSON.stringify(data));
+                            var obj_id = data.tab.match(/banner(.*)/)[1];
+                            console.log(obj_id);
+                            var last_obj = banners_view.getItem(obj_id);
+                            console.log(JSON.stringify(last_obj));
                             last_obj.image_url = data.data['raw_url'];
-                            console.log(last_obj);
                             banners_view.updateItem(last_obj.id, last_obj);
                             //$$('banners_view').render(id);
                             cache['' + last_obj.id] = false;

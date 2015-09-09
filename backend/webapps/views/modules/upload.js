@@ -18,6 +18,7 @@ define(["views/modules/base"],function(base){
 		        'FileUploaded': function(up, file, info) {
 		        	webix.message("上传图片成功");
 		        	info = jQuery.parseJSON(info);
+					info.tab = tab;
 		        	console.log(info);
 		        	if(typeof(callback)==='function'){
 		        		callback(info);
