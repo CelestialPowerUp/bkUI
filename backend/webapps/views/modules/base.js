@@ -22,6 +22,25 @@ define(["../forms/login"],function(login){
 		return server+(url.indexOf("/api/")>0?url:api_root+url);
 	}
 
+	/**
+	 * 请求服务器头信息
+	 * @param request
+	 */
+	var beforeReq = function(request){
+		request.setRequestHeader("API-Client-Device-Type", 'backend');
+		var user_info = webix.storage.local.get("user_info");
+		if(user_info!=null){
+			request.setRequestHeader("API-Access-Token", user_info['token']);
+		}
+	}
+
+	/**
+	 * post表单提交
+	 * @param url
+	 * @param param
+	 * @param callBack
+	 * @param failureBack
+	 */
 	var postForm = function(url,param,callBack,failureBack){
 		$.ajax({
             type:"POST",
@@ -29,14 +48,7 @@ define(["../forms/login"],function(login){
             timeout:15*1000,
             url: filter_url(url),
             data:param,
-            beforeSend: function (request)
-            {
-                request.setRequestHeader("API-Client-Device-Type", 'web');
-                var user_info = webix.storage.local.get("user_info");
-                if(user_info!=null){
-                	request.setRequestHeader("API-Access-Token", user_info['token']);
-                }
-            },
+            beforeSend: beforeReq,
             success: function(data) {
                 if(data&&data['code']=='00000'){
                 	callBack(data['data']);
@@ -62,16 +74,8 @@ define(["../forms/login"],function(login){
             timeout:60*1000,
             url: filter_url(url),
             data:param,
-            beforeSend: function (request)
-            {
-                request.setRequestHeader("API-Client-Device-Type", 'web');
-                var user_info = webix.storage.local.get("user_info");
-                if(user_info!=null){
-                	request.setRequestHeader("API-Access-Token", user_info['token']);
-                }
-            },
+            beforeSend: beforeReq,
             success: function(data) {
-            	console.log(data);
             	if(typeof(callBack)==='function'){
             		callBack(data);
             	}
@@ -83,7 +87,15 @@ define(["../forms/login"],function(login){
             }
 		});
 	};
-	
+
+	/**
+	 * post请求
+	 * @param url
+	 * @param param
+	 * @param callBack
+	 * @param failureBack
+	 * @param notAsync
+	 */
 	var postReq = function(url,param,callBack,failureBack,notAsync){
 		var async = true;
 		if(notAsync){
@@ -97,14 +109,7 @@ define(["../forms/login"],function(login){
             url: filter_url(url),
 			async:async,
             data:JSON.stringify(param),
-            beforeSend: function (request)
-            {
-                request.setRequestHeader("API-Client-Device-Type", 'web');
-                var user_info = webix.storage.local.get("user_info");
-                if(user_info!=null){
-                	request.setRequestHeader("API-Access-Token", user_info['token']);
-                }
-            },
+            beforeSend: beforeReq,
             success: function(data) {
                 if(data&&data['code']=='00000'){
                 	callBack(data['data']);
@@ -122,6 +127,14 @@ define(["../forms/login"],function(login){
             }
 		});
 	};
+
+	/**
+	 * get请求
+	 * @param url
+	 * @param callBack
+	 * @param failureBack
+	 * @param notAsync
+	 */
 	var getReq = function(url,callBack,failureBack,notAsync){
 		var async = true;
 		if(notAsync){
@@ -133,14 +146,7 @@ define(["../forms/login"],function(login){
 			timeout:15*1000,
 			url: filter_url(url),
 			async:async,
-			beforeSend: function (request)
-			{
-				request.setRequestHeader("API-Client-Device-Type", 'web');
-				var user_info = webix.storage.local.get("user_info");
-				if(user_info!=null){
-					request.setRequestHeader("API-Access-Token", user_info['token']);
-				}
-			},
+			beforeSend: beforeReq,
 			success: function(data) {
 				if(data&&typeof(data['code'])==='undefined'){
 					callBack(data);
@@ -163,6 +169,12 @@ define(["../forms/login"],function(login){
 		});
 	};
 
+	/**
+	 * 同步get请求
+	 * @param url
+	 * @param callBack
+	 * @param failureBack
+	 */
 	var getReqSync = function(url,callBack,failureBack){
 		$.ajax({
 			type:"GET",
@@ -170,14 +182,7 @@ define(["../forms/login"],function(login){
 			timeout:15*1000,
 			url: filter_url(url),
 			async:false,
-			beforeSend: function (request)
-			{
-				request.setRequestHeader("API-Client-Device-Type", 'web');
-				var user_info = webix.storage.local.get("user_info");
-				if(user_info!=null){
-					request.setRequestHeader("API-Access-Token", user_info['token']);
-				}
-			},
+			beforeSend: beforeReq,
 			success: function(data) {
 				if(data&&typeof(data['code'])==='undefined'){
 					callBack(data);
@@ -199,6 +204,14 @@ define(["../forms/login"],function(login){
 			}
 		});
 	};
+
+	/**
+	 * 同步post请求
+	 * @param url
+	 * @param param
+	 * @param callBack
+	 * @param failureBack
+	 */
 	var postReqSync = function(url,param,callBack,failureBack){
 		$.ajax({
 			type:"POST",
@@ -208,14 +221,7 @@ define(["../forms/login"],function(login){
 			url: filter_url(url),
 			async:false,
 			data:JSON.stringify(param),
-			beforeSend: function (request)
-			{
-				request.setRequestHeader("API-Client-Device-Type", 'web');
-				var user_info = webix.storage.local.get("user_info");
-				if(user_info!=null){
-					request.setRequestHeader("API-Access-Token", user_info['token']);
-				}
-			},
+			beforeSend: beforeReq,
 			success: function(data) {
 				if(data&&data['code']=='00000'){
 					callBack(data['data']);
@@ -233,21 +239,19 @@ define(["../forms/login"],function(login){
 			}
 		});
 	};
-	
+
+	/**
+	 * 百度获取地址接口
+	 * @param name
+	 * @param callBack
+	 */
 	var getLocation = function(name,callBack){
 		$.ajax({
             type:"GET",
             dataType:"json",
             timeout:15*1000,
             url: filter_url("public/address.json?keyword="+name),
-            beforeSend: function (request)
-            {
-                request.setRequestHeader("API-Client-Device-Type", 'web');
-                var user_info = webix.storage.local.get("user_info");
-                if(user_info!=null){
-                	request.setRequestHeader("API-Access-Token", user_info['token']);
-                }
-            },
+            beforeSend: beforeReq,
             success: function(data) {
             	callBack(data);
             },
