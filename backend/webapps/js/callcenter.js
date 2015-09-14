@@ -1,9 +1,13 @@
-define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_out","../views/windows/call_in_win"],function(base,agent_menu,call_out,call_in_win){
+define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_out","../views/windows/call_in_win"],function(base,agent_menuWin,call_out,call_in_win){
 
     /*voip初始化登录*/
     var ivrLogin = function(){
         var agentToken = base.getAgentToken();
         var ivrAppId = "aaf98f894ae167eb014ae748e7b404a3";
+
+        if(!agentToken){
+            return;
+        }
 
         /*call start*/
         /*设置为debug模式*/
@@ -21,13 +25,41 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
     };
     ivrLogin();
 
+    /*定时更新座席状态*/
+    function refreshAgentState(){
+        console.log("定时更新座席状态...");
+        var agentMenu = $$("agent_menu");
+        if(!agentMenu){
+            return ;
+        }
+        var currentValue = agentMenu.getValue();
+        if(currentValue == '非座席'){//非座席用户直接返回
+            return ;
+        }
+        if(currentValue == '离线'){//离线用户，登陆
+            ivrLogin();
+        }
+        if(currentValue == '未就绪'){//未就绪状态，更新状态
+            var agentState = base.getAgentState();
+            var msg = "";
+            if(agentState==='0'){
+                agent_menuWin.agentStateChange(1);
+            }
+            agentState = base.getAgentState();
+            if(agentState!='1'){
+                msg = "未就绪";
+            }
+            $$("agent_menu").setValue(msg);
+            $$("agent_menu").refresh();
+        }
+    };
+    setInterval(refreshAgentState,1000*60*2);
+
     /*正在连接服务器中状态*/
     Cloopen.when_connecting(function(){
-        console.log("连接中...");
     });
     /*Cloopen初始化成功后的自定义函数*/
     function initCallBack(){
-        console.log(arguments);
     }
     /*Cloopen显示事件回调通知的自定义函数*/
     function notifyCallBack(doFun,msg){

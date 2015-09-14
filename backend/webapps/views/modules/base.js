@@ -505,6 +505,9 @@ define(["../forms/login"],function(login){
 		}
 		var url = "ivr/agent?user_id="+user_id;
 		getReqSync(url,function(data){
+			if(data===null){
+				return ;
+			}
 			webix.storage.local.put("agent_token",data.agent_token);
 			webix.storage.local.put("agent_id",data.agent_id);
 			window.location.reload(true);
@@ -520,6 +523,9 @@ define(["../forms/login"],function(login){
 		var user_id = getUserId();
 		var url = "ivr/agent?user_id="+user_id;
 		getReqSync(url,function(data){
+			if(data===null){
+				return null;
+			}
 			webix.storage.local.put("agent_token",data.agent_token);
 			return webix.storage.local.get("agent_token");
 		},function(){},true);
@@ -533,6 +539,9 @@ define(["../forms/login"],function(login){
 		var user_id = getUserId();
 		var url = "ivr/agent?user_id="+user_id;
 		getReqSync(url,function(data){
+			if(data===null){
+				return null;
+			}
 			webix.storage.local.put("agent_id",data.agent_id);
 			return webix.storage.local.get("agent_id");
 		},function(){},true);
