@@ -1,10 +1,11 @@
 define(["views/modules/base"],function(base){
 
     var elements = [
-        {id:"urls", header:["接口地址"], width:350},
-        {id:"method",header:"请求方式", width:150},
-        {id:"api_name", header:["接口名称"], width:250},
-        {id:"counts", header:"访问量",width:150}
+        {id:"api_name", header:["接口名称"], width:400},
+        {id:"urls", header:["接口地址"], width:400},
+        {id:"method",header:"请求方式", width:100},
+        {id:"disabled",header:"是否禁用", width:100},
+        {id:"counts", header:"请求次数",width:100}
     ];
 
     var table_ui = {
@@ -43,13 +44,20 @@ define(["views/modules/base"],function(base){
                     }
                 }
             },
-            {id:"search_sort_type",view:"checkbox",label:"访问量低到高",checkValue:"asc",uncheckValue:"desc",labelWidth:110,width:150,
+            {id:"search_show_disabled",view:"checkbox",label:"已禁用接口",checkValue:"true",uncheckValue:"false",labelWidth:110,width:150,
                 on:{
                     "onChange":function(){
                         search_data();
                     }
                 }
             },
+            {id:"search_sort_type",view:"checkbox",label:"访问量低到高",checkValue:"asc",uncheckValue:"desc",labelWidth:110,width:150,
+                on:{
+                    "onChange":function(){
+                        search_data();
+                    }
+                }
+            }
         ]
     };
 
@@ -67,6 +75,7 @@ define(["views/modules/base"],function(base){
         var search_start_time = $$("search_start_time").getValue();
         var search_end_time = $$("search_end_time").getValue();
         var search_sort_type = $$("search_sort_type").getValue();
+        var search_show_disabled = $$("search_show_disabled").getValue();
 
         if(search_result_size){
             url = url+"&result_size="+search_result_size;
@@ -79,6 +88,9 @@ define(["views/modules/base"],function(base){
         }
         if(search_sort_type){
             url = url+"&sort_type="+search_sort_type;
+        }
+        if(search_show_disabled){
+            url = url+"&show_disabled="+search_show_disabled;
         }
 
         base.getReq(url,function(datas){
