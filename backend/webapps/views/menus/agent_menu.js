@@ -10,7 +10,6 @@ define(["../modules/base","../../js/callcenter"],function(base,callcenter){
 			state = stateParam;
 		}
 		base.setAgentState(state);
-		updateStateTip();
 	};
 
 	//更新座席状态提示
@@ -34,7 +33,12 @@ define(["../modules/base","../../js/callcenter"],function(base,callcenter){
 			body:{
 				rows:[
 					{view:"label",id:"agent_state_show",hidden:true,label:"在线中(可接听和拨打电话)",align:"center"},
-					{view:"button",id:"agent_state_to_free_btn",value:"在线",click:function(){
+					{view:"button",id:"agent_state_to_free_btn",value:"上线",click:function(){
+						var agentValue = $$("agent_menu").getValue();
+						if(agentValue=='非座席'){
+							webix.message({ type:"error",expire:3000,text:"非座席：无法登录"});
+							return;
+						}
 						$$("agent_submenu").hide();
 						callcenter.ivrLogin();
 						agentStateChange(1);

@@ -1,7 +1,42 @@
 define(["views/modules/base", "views/modules/upload"], function (base, upload) {
 
-    var cache = {};
+    var cache_obj = {};
 
+    var submit_data = function (e, id, node) {
+        var banner = $$('banners_view').getItem(id);
+        banner.image_url = $(node).siblings('.image-view').css('background').match(/url\((.*)\)/)[1];
+        banner.link_url = $(node).siblings('input').val();
+        console.log(banner);
+
+        if (!banner.image_url) {
+            webix.alert({
+                text: "图片为空！", ok: "是的"
+            });
+            return;
+        }
+
+        if (!banner.link_url) {
+            webix.alert({
+                text: "链接地址为空！", ok: "是的"
+            });
+            return;
+        }
+
+        banner.id = banner.banner_id;
+
+        var url = "";
+        if (banner.banner_id) {
+            url = "/v2/api/store/banner/update";
+        } else {
+            url = "/v2/api/store/banner/create";
+        }
+
+        base.postReq(url, banner, function () {
+            webix.alert({
+                text: "提交成功！", ok: "是的"
+            });
+        });
+    };
     var on_event = {
         "open-link": function (e, id, node) {
             var link = $(node).siblings('input').val();
@@ -17,47 +52,13 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
 
             window.open(link);
         },
-        "submit-data": function (e, id, node) {
-            var banner = $$('banners_view').getItem(id);
-            banner.image_url = $(node).siblings('.image-view').css('background').match(/url\((.*)\)/)[1];
-            banner.link_url = $(node).siblings('input').val();
-            console.log(banner);
-
-            if (!banner.image_url) {
-                webix.alert({
-                    text: "图片为空！", ok: "是的"
-                });
-                return;
-            }
-
-            if (!banner.link_url) {
-                webix.alert({
-                    text: "链接地址为空！", ok: "是的"
-                });
-                return;
-            }
-
-            banner.id = banner.banner_id;
-
-            var url = "";
-            if (banner.banner_id) {
-                url = "/v2/api/store/banner/update";
-            } else {
-                url = "/v2/api/store/banner/create";
-            }
-
-            base.postReq(url, banner, function () {
-                refresh();
-            });
-        },
+        "submit-data": submit_data,
         "delete-data": function (e, id, node) {
             var banner = $$('banners_view').getItem(id);
             console.log(banner);
 
             if (!banner.banner_id) {
-                webix.alert({
-                    text: "未入库元素无需删除！", ok: "是的"
-                });
+                refresh();
                 return;
             }
 
@@ -73,29 +74,39 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
                     }
                 }
             });
-        },
-        "image-view": function (e, id, node) {
-            var banner = $$('banners_view').getItem(id);
-            console.log(banner);
-            var uid = 'banner' + banner.banner_id;
-            $(node).attr('id', uid);
-            if (cache[uid]) {
-                return;
+        }
+    };
+
+    var on_after_render = function () {
+        console.log(cache_obj);
+        var banners_view = $$('banners_view');
+        var size = banners_view.count();
+        for (var i = 0; i < size; i++) {
+            var banner = banners_view.getItem(banners_view.getIdByIndex(i));
+            var idByIndex = banner.id;
+            var uid = 'banner' + banner.id;
+
+            $(banners_view.getItemNode(idByIndex)).find('.image-view').eq(0).attr('id', uid);
+            if (cache_obj['' + banner.id]) {
+                continue;
             }
 
+            console.log(uid);
             upload.$bind_upload(uid, function (data) {
                 if (data.code === '00000' && data.data != null) {
-                    banner.image_url = data.data['raw_url'];
-                    console.log(banner);
-                    $$('banners_view').updateItem(id, banner);
-                    //$$('banners_view').render(id);
-                    cache[uid] = undefined;
+                    console.log(JSON.stringify(data));
+                    var obj_id = data.tab.match(/banner(.*)/)[1];
+                    console.log(obj_id);
+                    var last_obj = banners_view.getItem(obj_id);
+                    console.log(JSON.stringify(last_obj));
+                    last_obj.image_url = data.data['raw_url'];
+                    banners_view.updateItem(last_obj.id, last_obj);
+
+                    cache_obj = JSON.parse(JSON.stringify({}));
+                    banners_view.render();
                 }
             });
-            cache[uid] = true;
-            setTimeout(function () {
-                $(node).click();
-            }, 1);
+            cache_obj['' + banner.id] = true;
         }
     };
 
@@ -105,11 +116,38 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
         container: "dataA",
         drag: true,
         type: {
-            width: 761,
-            height: 334,
+            width: 396,
+            height: 165,
             template: "http->views/store_banner_template.html"
         },
-        onClick: on_event
+        onClick: on_event,
+        on: {
+            onAfterRender: function () {
+                setTimeout(on_after_render, 300);
+            },
+            onAfterDrop: function (context) {
+
+                cache_obj = JSON.parse(JSON.stringify({}));
+
+                var banners_view = $$('banners_view');
+                var size = banners_view.count();
+                var last_rank = 0, is_mod = false;
+
+                for (var k = 0; k < size; k++) {
+                    var banner = banners_view.getItem(banners_view.getIdByIndex(k));
+                    if (last_rank > banner.rank) {
+                        is_mod = true;
+                    }
+                    last_rank = banner.rank;
+                }
+
+                if (is_mod) {
+                    $('div[view_id="rerange_view"]').show();
+                } else {
+                    $('div[view_id="rerange_view"]').hide();
+                }
+            }
+        }
     };
 
     var add_one_view = {
@@ -117,22 +155,26 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
         view: "button",
         container: "dataB",
         label: "添加一个",
-        type: {
-            width: 761,
-            height: 100
-        },
+        width: 390,
         click: function (e, id, node) {
             var banners_view = $$('banners_view');
             var size = banners_view.count();
             if (size > 0) {
 
-                var banner = banners_view.getItem(banners_view.getIdByIndex(size - 1));
+                var abort = false;
+                for (var i = 0; i < size; i++) {
+                    var banner = banners_view.getItem(banners_view.getIdByIndex(i));
+                    if (!banner.banner_id) {
+                        abort = true;
+                        break;
+                    }
+                }
 
-                if (!banner.banner_id) {
+                if (abort) {
                     webix.alert({
                         text: "还有一条记录未入库！", ok: "是的"
                     });
-                    return;
+                    return false;
                 }
 
             }
@@ -143,6 +185,9 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
                 rank: size + 1
             };
             banners_view.add(add_data, size);
+            cache_obj = JSON.parse(JSON.stringify({}));
+            banners_view.render();
+            banners_view.scrollTo(0, 9999);
         }
     };
 
@@ -151,17 +196,15 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
         view: "button",
         container: "dataC",
         label: "重新排序",
-        type: {
-            width: 761,
-            height: 100
-        },
+        width: 390,
         click: function (e, id, node) {
             var banners_view = $$('banners_view');
             var size = banners_view.count();
             var order = [], last_rank = 0, is_mod = false;
 
             for (var i = 0; i < size; i++) {
-                var banner = banners_view.getItem(banners_view.getIdByIndex(i));
+                var idByIndex = banners_view.getIdByIndex(i);
+                var banner = banners_view.getItem(idByIndex);
                 if (last_rank > banner.rank) {
                     is_mod = true;
                 }
@@ -177,7 +220,7 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
             }
 
             webix.confirm({
-                text: "重新排序<br/> 确定?", ok: "是的", cancel: "取消",
+                text: "重新排序<br/>没有提交的数据将不会被保存<br/>确定?", ok: "是的", cancel: "取消",
                 callback: function (res) {
                     if (res) {
                         base.postReq("/v2/api/store/banner/rerange", {order: order}, function () {
@@ -199,14 +242,19 @@ define(["views/modules/base", "views/modules/upload"], function (base, upload) {
             }
             console.log(banners);
             $$('banners_view').parse(banners);
-        })
+            $('div[view_id="rerange_view"]').hide();
+        });
     };
 
     var layout = {
         paddingY: 15,
         paddingX: 15,
         cols: [{
-            margin: 15, type: "clean", rows: [data_view, add_one_view, rerange_view]
+            margin: 15, type: "clean", rows: [data_view,
+                {
+                    cols: [add_one_view, rerange_view]
+                }
+            ]
         }]
     };
 
