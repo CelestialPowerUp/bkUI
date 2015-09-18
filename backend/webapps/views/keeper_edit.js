@@ -26,7 +26,7 @@ define(["views/modules/base",
     var elements = [
         {view:"text",id:"keeper_id",name:"keeper_id",hidden:true},
         {view: "text", label:"管家姓名",name:"name", placeholder: "请输入管家姓名",width:350,value:""},
-        {view: "text",type:"password", label:"登陆密码",name:"password",placeholder: "需要修改密码才填写此项", width:350,value:""},
+        //{view: "text",type:"password", label:"登陆密码",name:"password",placeholder: "需要修改密码才填写此项", width:350,value:""},
         {view: "text", label:"电话号码",name:"phone_num", placeholder: "请输入管家电话",width:350,value:""},
         {view: "text", label:"身份证号",name:"identity_card_number", placeholder: "请输入二代身份证号",width:350,value:""},
         {view: "text", label:"驾照号",name:"driver_license", placeholder: "请输入驾照号",width:350,value:""},
