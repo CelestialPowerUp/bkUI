@@ -7,15 +7,6 @@ define(["views/modules/base"],function(base){
         {id:"counts", header:"访问量",width:150}
     ];
 
-    var on_event = {
-        "onCheck":function(rwo, column, state){
-            var item = $$("table_list").getItem(rwo);
-            base.postReq("api_statistics.json",item,function(data){
-                webix.message("接口信息更新成功");
-            })
-        }
-    };
-
     var table_ui = {
         id:"table_list",
         view:"datatable",
@@ -24,7 +15,6 @@ define(["views/modules/base"],function(base){
         autowidth:true,
         leftSplit:1,
         rowHeight:35,
-        on:on_event,
         hover:"myhover",
         columns:elements
     }
@@ -32,22 +22,34 @@ define(["views/modules/base"],function(base){
     var search_ui = {
         cols:[
 
-            {view:"text",label:"结果数：", labelWidth:75,width:130},
-            {view:"datepicker", timepicker:true, label:"起止时间：", labelWidth:90,name:"start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" , width:350,
+            {id:"search_result_size",view:"text",label:"结果数：", labelWidth:75,width:130,value:50,keyPressTimeout:500,
                 on:{
-                    "onChange":function(){
-                        search();
+                    "onTimedKeyPress":function(){
+                        search_data();
                     }
                 }
             },
-            {view:"datepicker", timepicker:true, label:"--", name:"end_time",labelWidth:30, stringResult:true, format:"%Y-%m-%d %H:%i:%s" , width:290,
+            {id:"search_start_time",view:"datepicker", timepicker:true, label:"起止时间：", labelWidth:90,name:"start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" , width:350,
                 on:{
                     "onChange":function(){
-                        search();
+                        search_data();
                     }
                 }
             },
-            {view:"checkbox",label:"从高到低",checkValue:"asc",uncheckValue:"desc"},
+            {id:"search_end_time",view:"datepicker", timepicker:true, label:"--", name:"end_time",labelWidth:30, stringResult:true, format:"%Y-%m-%d %H:%i:%s" , width:290,
+                on:{
+                    "onChange":function(){
+                        search_data();
+                    }
+                }
+            },
+            {id:"search_sort_type",view:"checkbox",label:"访问量低到高",checkValue:"asc",uncheckValue:"desc",labelWidth:110,width:150,
+                on:{
+                    "onChange":function(){
+                        search_data();
+                    }
+                }
+            },
         ]
     };
 
@@ -58,26 +60,29 @@ define(["views/modules/base"],function(base){
             {margin:15, type:"clean", rows:[search_ui,table_ui]},{}]
     };
 
-    var init_data = function(){
+    var search_data = function(){
         $$("table_list").clearAll();
-        base.getReq("api_statistics.json",function(datas){
+        var url = "api_statistics.json?";
+        var search_result_size = $$("search_result_size").getValue();
+        var search_start_time = $$("search_start_time").getValue();
+        var search_end_time = $$("search_end_time").getValue();
+        var search_sort_type = $$("search_sort_type").getValue();
+
+        if(search_result_size){
+            url = url+"&result_size="+search_result_size;
+        }
+        if(search_start_time){
+            url = url+"&start_time="+base.format_time(search_start_time);
+        }
+        if(search_end_time){
+            url = url+"&end_time="+base.format_time(search_end_time);
+        }
+        if(search_sort_type){
+            url = url+"&sort_type="+search_sort_type;
+        }
+
+        base.getReq(url,function(datas){
             $$("table_list").parse(datas);
-        });
-    };
-
-    var search = function(){
-        var init_data = function(){
-            $$("table_list").clearAll();
-            base.getReq("api_statistics.json",function(datas){
-                $$("table_list").parse(datas);
-            });
-        };
-    }
-
-    var syc_api = function(){
-        base.getReq("check_new_api.json",function(data){
-            webix.message("同步完成,发现新接口："+data+"个");
-            init_data();
         });
     };
 
@@ -85,7 +90,7 @@ define(["views/modules/base"],function(base){
         $ui:layout,
         $oninit:function(app,config){
             webix.$$("title").parse({title: "系统管理", details: "接口统计"});
-            init_data();
+            search_data();
         }
     }
 });
