@@ -36,6 +36,15 @@ define(["views/modules/base",
             }
             base.$msg.error("非社区店不支持该服务");
         },
+        "fa-credit-card":function(e, id, node){
+            var item = $$("table_list").getItem(id);
+            //编辑次卡商品
+            if(item.supplier_mold==='community'){
+                this.$scope.show("/supplier_times_card_list:id="+item.supplier_id);
+                return;
+            }
+            base.$msg.error("非社区店不支持该服务");
+        },
         "fa-user-md":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商管理人员
