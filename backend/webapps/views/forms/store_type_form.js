@@ -2,10 +2,14 @@ define(["views/modules/base",
     "views/modules/upload",
     "views/forms/store_product"],function(base,upload,store_product){
 
+    var type_options = [
+        {id:"store_home_ware",value:"商城单品"},
+        {id:"times_card",value:"次卡单品"}
+    ];
 
     var elements = [
         {view:"text",id:"ware_type_id",name:"ware_type_id",hidden:true},
-        {view:"text",id:"ware_type_code",name:"ware_type_code",value:"store_home_ware",hidden:true},
+        {view: "richselect", id:"ware_type_code",name:"ware_type_code",options:type_options,label:"单品分类",placeholder:"请选择单品类别",width:350},
         {view: "text", label:"单品标题",name:"ware_type_name", placeholder: "请输入单品标题",width:350,value:""},
     ];
 

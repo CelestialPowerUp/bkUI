@@ -116,8 +116,8 @@ define(["views/modules/base",
         }}]
     };
 
-    var init_data = function(ware_type_id){
-        base.getReq("/v2/api/store/ware_type_list.json?ware_type_code=store_home_ware",function(data){
+    var init_data = function(ware_type_id,type_code){
+        base.getReq("/v2/api/store/ware_type_list.json?ware_type_code="+type_code,function(data){
             var list = $$("ware_type_id").getPopup().getList();
             list.clearAll();
             for(var i=0;i<data.length;i++){

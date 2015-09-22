@@ -49,10 +49,6 @@ define(["views/modules/base",
     };
 
     var elements = [
-        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='编辑' class='webix_icon fa-pencil'></span>"},
-        {id:"supplier_type", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
-        {id:"product_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
-        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
         {id:"supplier_id",header:"ID",width:80},
         {id:"name", header:"名称",minWidth:350,fillspace:true},
         {id:"supplier_mold", header:"服务类型",width:80,fillspace:false,template:function(obj){
@@ -79,7 +75,12 @@ define(["views/modules/base",
             }else{
                 return "<span class='status status0'>停业中</span>";
             }}
-        }
+        },
+        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商编辑' class='webix_icon fa-pencil'></span>"},
+        {id:"supplier_type", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
+        {id:"product_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
+        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='次卡编辑' class='webix_icon fa-credit-card'></span>"},
+        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
     ];
 
     var table_ui = {
@@ -89,7 +90,7 @@ define(["views/modules/base",
         rowHeight:35,
         autoheight:true,
         hover:"myhover",
-        leftSplit:4,
+        rightSplit:5,
         columns:elements,
         data:[],
         onClick:on_event

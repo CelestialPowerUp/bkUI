@@ -20,7 +20,7 @@ define(["views/modules/base",
         "fa-pencil":function(e, id, node){
             var item = $$("table_list").getItem(id);
             this.$scope.ui(store_form.$ui).show();
-            store_form.$init_data(item.ware_id);
+            store_form.$init_data(item.ware_id,item.ware_type_code);
             store_form.$add_submit_callback(function(){
                 refresh_table();
             });
@@ -60,12 +60,24 @@ define(["views/modules/base",
         return '<span class="webix_icon_btn fa-check-square-o list_icon" style="max-width:32px;"></span>'
     };
 
+    var type_options = [
+        {id:"store_home_ware",value:"商城单品"},
+        {id:"times_card",value:"次卡单品"}
+    ];
+
     var filter_ui = {
         margin:15,
         cols:[
+            {view: "richselect", id:"type_code",name:"type_code",options:type_options,label:"单品分类",placeholder:"请选择单品类别",value:"store_home_ware",width:250,
+            on:{
+                onChange:function(newv,oldv){
+                    refresh_table();
+                }
+            }
+            },
             { view: "button", type: "iconButton", icon: "plus", label: "添加单品", width: 105, click: function(){
                 this.$scope.ui(store_form.$ui).show();
-                store_form.$init_data();
+                store_form.$init_data(null,$$("type_code").getValue());
                 store_form.$add_submit_callback(function(){
                     refresh_table();
                 });
@@ -89,7 +101,7 @@ define(["views/modules/base",
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("/v2/api/store/ware_list_by_type.json?ware_type_code=store_home_ware",function(ware_list){
+        base.getReq("/v2/api/store/ware_list_by_type.json?ware_type_code="+$$("type_code").getValue(),function(ware_list){
             $$("table_list").parse(ware_list);
         })
     };
