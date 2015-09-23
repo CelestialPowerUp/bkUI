@@ -60,10 +60,11 @@ define(["views/modules/base"],function(base){
 	
 	var init_data = function(times_card){
 		base.getReq("/v2/api/store/ware_list_by_type.json?ware_type_code=times_card",function(wares){
+			console.log(wares);
 			var list = $$("store_ware_id").getPopup().getList();
 			list.clearAll();
 			for(var i=0;i<wares.length;i++){
-				list.add({id:wares[i].ware_id,value:wares[i].ware_type_name});
+				list.add({id:wares[i].ware_id,value:wares[i].ware_name+"("+wares[i].product_name+" ￥"+wares[i].ware_mark_price+")"});
 			}
 			if(typeof(times_card)==='undefined'|| times_card===null){
 				$$("supplier_id").setValue(base.get_url_param("id"));
