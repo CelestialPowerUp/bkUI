@@ -127,7 +127,7 @@ define(["views/modules/base","views/modules/table_page_m",
 							var p = {};
 							p.id = item.id;
 							p.operator_id = base.getUserId();
-							base.postReq("order/update.json",p,function(data){
+							base.postReq("/v3/api/order/update.json",p,function(data){
 								webix.$$("unbelong_order_table").remove(id);
 								webix.$$("unprocessed_order_table").add(item);
 							});
