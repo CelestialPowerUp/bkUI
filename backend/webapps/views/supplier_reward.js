@@ -24,7 +24,7 @@ define(["views/modules/base"],function(base){
         {id:"customer_name", header:"订单用户",width:120,fillspace:false},
         {id:"car_number", header:"车牌号",width:150,fillspace:false},
         {id:"reward_note", header:"奖励原因",width:150,fillspace:false},
-        {id:"order_create_time", header:"车牌号",width:185,fillspace:false},
+        {id:"order_create_time", header:"订单完成",width:185,fillspace:false},
         {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
     ];
 
