@@ -19,7 +19,7 @@ define(["views/modules/base"],function(base){
         {id:"order_number", header:"订单号",width:120,fillspace:false},
         {id:"supplier_name", header:"社区店",minWidth:250,fillspace:true},
         {id:"supplier_id", header:"社区店ID",width:80,fillspace:false},
-        {id:"order_cost", header:"订单流水",width:120,format:base.priceFormat,fillspace:false},
+        {id:"order_cost", header:"订单流水",width:120,format:base.priceFormat,fillspace:false,sort:"string"},
         {id:"order_reward", header:"订单奖励",width:120,format:base.priceFormat,fillspace:false},
         {id:"customer_name", header:"订单用户",width:120,fillspace:false},
         {id:"car_number", header:"车牌号",width:150,fillspace:false},
