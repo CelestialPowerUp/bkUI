@@ -6,8 +6,7 @@ define(["views/modules/base"],function(base){
         {id:"method",header:"请求方式", width:150},
         {id:"urls", header:["接口地址", {content:"textFilter"} ], width:350},
         {id:"needAuth", header:"是否token验证", width:150,template:"{common.checkbox()}", checkValue:true, uncheckValue:false},
-        {id:"disabled", header:"接口是否有效",width:150,template:"{common.checkbox()}", checkValue:false, uncheckValue:true},
-        {id:"counts", header:"访问量",width:150,sort:"int"}
+        {id:"disabled", header:"接口是否有效",width:150,template:"{common.checkbox()}", checkValue:false, uncheckValue:true}
     ];
 
     var on_event = {
