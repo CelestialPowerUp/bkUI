@@ -38,7 +38,11 @@ define(["../modules/base"],function(base){
 
 	var init_data = function(){
 		base.getReq("user_tree_menu.json",function(data){
-			$$("app:menu").parse(webix.copy(data));
+			var treedata = webix.copy(data);
+			for(var i=0;i<treedata.length;i++){
+				treedata[i].open = false;
+			}
+			$$("app:menu").parse(treedata);
 		});
 	};
 	
