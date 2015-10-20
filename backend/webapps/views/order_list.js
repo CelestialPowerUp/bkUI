@@ -66,9 +66,21 @@ define(["views/modules/base","views/modules/table_page_m",
 					{id:"customer_name", header:["姓名", {content:"textFilter"} ], sort:"string"},
 					{id:"customer_phone_number",header:["电话号码", {content:"textFilter"} ],width:120, sort:"string"},
 					{id:"car_number", header:["车牌号", {content:"textFilter"} ], sort:"string"},
-					{id:"car_model", header:"车型号", sort:"string",width:380,fillspace:1},
+					{id:"service_Type",header:"服务类型",sort:"string",template:function(obj){
+						if(obj.service_Type=="self"){
+							return "<span class='status status1'>自驾到店</span>";
+						}
+						return "<span class='status status2'>管家接车</span>";
+					}},
+					//{id:"car_model", header:"车型号", sort:"string",width:380,fillspace:1},
 					{id:"keeper", header:["管家", {content:"textFilter"} ], width:150},
-					{id:"operator", header:["客服", {content:"textFilter"} ], width:150},
+					{id:"supplier_mold",header:"店类型",sort:"string",template:function(obj){
+						if(obj.supplier_mold=="comprehensive"){
+							return "<span class='status status1'>综合店</span>";
+						}
+						return "<span class='status status2'>社区店</span>";
+					}},
+					{id:"operator", header:["客服", {content:"textFilter"} ], width:120},
 					{id:"peer_source", header:"来源", width:90},
 					{id:"paid",header:"支付状态",sort:"string",template:function(obj){
 						if(obj.pay_status==1){
@@ -82,6 +94,8 @@ define(["views/modules/base","views/modules/table_page_m",
 						}
 						return "未知";
 					}},
+					{id:"refund_status_value",header:"退款状态",sort:"string"},
+					{id:"order_status_value", header:["订单状态", {content:"textFilter"} ], width:90},
 					//{id:"place_time", header:"下单时间",sort:"string",width:210},
 					{id:"place_time", header:"接车时间",sort:"string",template:function(obj){
 						return base.time_period_format(obj.pick_start_time,obj.pick_end_time);

@@ -11,6 +11,13 @@
     padding-left: 8px;
     font-size: 25px;
 }
+
+.big_strong_text span{
+    display:inline-block;
+    width: 250px;
+    margin-left: 20px;
+}
+
 .light_text{
     font-weight: 500;
     line-height:15px;
