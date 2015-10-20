@@ -73,17 +73,17 @@ define(["views/modules/base"],function(base){
                         }
                     }
                 },
-                {view: "richselect", id:"s_year",options:[{id:2015,value:2015}],label:"年份:",labelWidth:50,placeholder:"请选择年份",value:"2015",width:250,
+                {view:"datepicker", timepicker:true, label:"时间：", id:"start_time",labelWidth:60, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
                     on:{
-                        onChange:function(newv,oldv){
+                        "onChange":function(){
                             refresh_table();
                         }
                     }
                 },
-                {view: "richselect", id:"s_week",options:[],label:"第几周:",placeholder:"请选择周数",labelWidth:65,value:"",width:350,
+                {view:"datepicker", timepicker:true, label:"--", id:"end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:210,
                     on:{
-                        onChange:function(newv,oldv){
-                            refresh_table();
+                        "onChange":function(){
+                           refresh_table();
                         }
                     }
                 }
@@ -169,12 +169,13 @@ define(["views/modules/base"],function(base){
     var refresh_table = function(){
         $$("table_list").clearAll();
         var supplier = $$("s_supplier").getValue();
-        var year = $$("s_year").getValue();
-        var week = $$("s_week").getValue();
-        if(week === "" || supplier===""){
+        var start = $$("start_time").getValue();
+        var end = $$("end_time").getValue();
+        if(start === "" || end===""){
             return "";
         }
-        base.getReq("community/order_rewards.json?supplier_id="+supplier+"&year="+year+"&week="+week,function(data){
+        var param = {supplier_id:supplier,start:base.format_time(start),end:base.format_time(end)};
+        base.postReq("community/order_rewards.json",param,function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
             countPrice();
@@ -194,7 +195,7 @@ define(["views/modules/base"],function(base){
                 $$("s_supplier").setValue(communities[0].supplier_id);
             }
         });
-        base.getReq("pub_data/weeks.json",function(weeks){
+        /*base.getReq("pub_data/weeks.json",function(weeks){
             var list = $$("s_week").getPopup().getList();
             list.clearAll();
             for(var i=0;i<weeks.length;i++){
@@ -203,7 +204,7 @@ define(["views/modules/base"],function(base){
             if(weeks.length>0){
                 $$("s_week").setValue(weeks[0]);
             }
-        });
+        });*/
     };
 
     return {
