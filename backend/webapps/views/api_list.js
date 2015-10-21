@@ -4,7 +4,7 @@ define(["views/modules/base"],function(base){
         {id:"type",width:50,hidden:true},
         {id:"name", header:["接口名称", {content:"textFilter"} ], width:250},
         {id:"method",header:"请求方式", width:150},
-        {id:"urls", header:["接口地址", {content:"textFilter"} ], width:350},
+        {id:"urls", header:["接口地址", {content:"textFilter"} ], minWidth:350,fillspace:true},
         {id:"needAuth", header:"是否token验证", width:150,template:"{common.checkbox()}", checkValue:true, uncheckValue:false},
         {id:"disabled", header:"接口是否有效",width:150,template:"{common.checkbox()}", checkValue:false, uncheckValue:true}
     ];
@@ -22,9 +22,8 @@ define(["views/modules/base"],function(base){
         id:"table_list",
         view:"datatable",
         select:false,
-        autoheight:true,
-        autowidth:true,
-        leftSplit:1,
+        autoConfig:true,
+        rightSplit:2,
         rowHeight:35,
         on:on_event,
         hover:"myhover",
@@ -41,12 +40,7 @@ define(["views/modules/base"],function(base){
         ]
     };
 
-    var layout = {
-        paddingY:15,
-        paddingX:15,
-        cols:[
-            {margin:15, type:"clean", rows:[button_ui,table_ui]},{}]
-    };
+    var layout = {paddingY:15, paddingX:15, rows:[button_ui,table_ui]};
 
     var init_data = function(){
         $$("table_list").clearAll();
