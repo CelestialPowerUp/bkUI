@@ -17,6 +17,17 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
         return content;
     };
 
+    var update_sale_persion = function(sale_person){
+        base.getReq("users_by_role_code.json?role_code=UserRoles_SaleUsers",function(data) {
+            var list = $$("sale_id").getPopup().getList();
+            list.clearAll();
+            for (var i = 0; i < data.length; i++) {
+                list.add({id: data[i]['id'], value: data[i]['user_name']});
+            }
+            $$("sale_id").setValue(sale_person);
+            $$("sale_id").refresh();
+        });
+    }
 
     var parse_address_info = function(address){
         var map = $$("map").map;
@@ -76,6 +87,13 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             { value:"停业中", id:'true' }
         ]},
         {view: "text", label:"综合评分",name:"rating", placeholder: "",placeholder: "新建服务商默认4分",width:350,value:4,required:true,disabled:true},
+        {view: "richselect", id:"sale_id", name:"sale_id", label:"负责销售",placeholder:"这里面选择销售人员", width:350,required:true,
+            options: [],
+            on:{"onAfterRender":function(){
+
+            }}
+        },
+        {view: "text", label:"银行卡号",id:"bank_card",name:"bank_card",placeholder:"这里面填写银行卡号", width:350,required:true},
 
         {
             paddingY:15,
@@ -157,6 +175,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             return;
         }
         base.getReq("/v2/api/supplier.json/"+id,function(data){
+            update_sale_persion(data['sale_id']);
             data.layoff = data.layoff.toString();
             $$("form_view").parse(data);
             var address = {};
@@ -174,6 +193,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             setTimeout( function(){
                 init_data();
             },1000);
+
         }
     };
 });
