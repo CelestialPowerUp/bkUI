@@ -4,9 +4,9 @@ define(["views/modules/base"],function(base){
 
         "fa-pencil":function(e, id, node){
             var item = $$("table_list").getItem(id);
-            //±à¼­·şÎñÉÌ
+            //ç¼–è¾‘æœåŠ¡å•†
             base.postForm("community/order_reward_repair.json",item,function(data){
-                base.$msg.info("Êı¾İĞŞ¸´³É¹¦");
+                base.$msg.info("æ•°æ®ä¿®å¤æˆåŠŸ");
                 refresh_table();
             });
         }
@@ -14,18 +14,18 @@ define(["views/modules/base"],function(base){
     };
 
     var elements = [
-        {id:"reward_id",header:"½±ÀøID",width:80},
-        {id:"order_id",header:"¶©µ¥ID",width:80},
-        {id:"order_number", header:"¶©µ¥ºÅ",width:120,fillspace:false},
-        {id:"supplier_name", header:"ÉçÇøµê",minWidth:250,fillspace:true},
-        {id:"supplier_id", header:"ÉçÇøµêID",width:80,fillspace:false},
-        {id:"order_cost", header:"¶©µ¥Á÷Ë®",width:120,format:base.priceFormat,fillspace:false,sort:"string"},
-        {id:"order_reward", header:"¶©µ¥½±Àø",width:120,format:base.priceFormat,fillspace:false},
-        {id:"customer_name", header:"¶©µ¥ÓÃ»§",width:120,fillspace:false},
-        {id:"car_number", header:"³µÅÆºÅ",width:150,fillspace:false},
-        {id:"reward_note", header:"½±ÀøÔ­Òò",width:150,fillspace:false},
-        {id:"order_create_time", header:"¶©µ¥Íê³É",width:185,fillspace:false},
-        {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='ĞŞ¸´Êı¾İ' class='webix_icon fa-pencil'></span>"}
+        {id:"reward_id",header:"å¥–åŠ±ID",width:80},
+        {id:"order_id",header:"è®¢å•ID",width:80},
+        {id:"order_number", header:"è®¢å•å·",width:120,fillspace:false},
+        {id:"supplier_name", header:"ç¤¾åŒºåº—",minWidth:250,fillspace:true},
+        {id:"supplier_id", header:"ç¤¾åŒºåº—ID",width:80,fillspace:false},
+        {id:"order_cost", header:"è®¢å•æµæ°´",width:120,format:base.priceFormat,fillspace:false,sort:"string"},
+        {id:"order_reward", header:"è®¢å•å¥–åŠ±",width:120,format:base.priceFormat,fillspace:false},
+        {id:"customer_name", header:"è®¢å•ç”¨æˆ·",width:120,fillspace:false},
+        {id:"car_number", header:"è½¦ç‰Œå·",width:150,fillspace:false},
+        {id:"reward_note", header:"å¥–åŠ±åŸå› ",width:150,fillspace:false},
+        {id:"order_create_time", header:"è®¢å•å®Œæˆ",width:185,fillspace:false},
+        {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='ä¿®å¤æ•°æ®' class='webix_icon fa-pencil'></span>"}
     ];
 
     var table_ui = {
@@ -44,25 +44,22 @@ define(["views/modules/base"],function(base){
     var filter_ui = {
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
-                {view:"label", align:"left",label:"ÉçÇøµêÁ÷Ë®½±Àø",height:30},
-                {view:"label",id: "total_revenue", height:30,label:"×ÜÁ÷Ë®",width:160},
-                {view:"label",id: "total_reward", height:30,label:"½±Àø",width:160},
-                {view:"label",id: "total_price", height:30,label:"×Ü½ğ¶î",width:160},
-                {view: "richselect", id:"s_supplier",options:[],label:"ÉçÇøµê:",placeholder:"ÇëÑ¡ÔñÉçÇøµê",labelWidth:65,value:"",width:350,
+                {view:"label", align:"left",label:"ç¤¾åŒºåº—å¥–åŠ±ç»“ç®—",height:30},
+                {view: "richselect", id:"s_supplier",options:[],label:"ç¤¾åŒºåº—:",placeholder:"è¯·é€‰æ‹©ç¤¾åŒºåº—",labelWidth:65,value:"",width:350,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
                         }
                     }
                 },
-                {view: "richselect", id:"s_year",options:[{id:2015,value:2015}],label:"Äê·İ:",labelWidth:50,placeholder:"ÇëÑ¡ÔñÄê·İ",value:"2015",width:250,
+                {view: "richselect", id:"s_year",options:[{id:2015,value:2015}],label:"å¹´ä»½:",labelWidth:50,placeholder:"è¯·é€‰æ‹©å¹´ä»½",value:"2015",width:250,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
                         }
                     }
                 },
-                {view: "richselect", id:"s_week",options:[],label:"µÚ¼¸ÖÜ:",placeholder:"ÇëÑ¡ÔñÖÜÊı",labelWidth:65,value:"",width:350,
+                {view: "richselect", id:"s_week",options:[],label:"ç¬¬å‡ å‘¨:",placeholder:"è¯·é€‰æ‹©å‘¨æ•°",labelWidth:65,value:"",width:350,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
@@ -81,28 +78,7 @@ define(["views/modules/base"],function(base){
     };
 
     var refresh_table = function(){
-        $$("table_list").clearAll();
-        var supplier = $$("s_supplier").getValue();
-        var year = $$("s_year").getValue();
-        var week = $$("s_week").getValue();
-        if(week === "" || supplier===""){
-            return "";
-        }
-        base.getReq("community/order_rewards.json?supplier_id="+supplier+"&year="+year+"&week="+week,function(data){
-            $$("table_list").clearAll();
-            $$("table_list").parse(data);
-            var total_revenue = 0;
-            var total_reward = 0;
-            var total_price = 0;
-            for(var i=0;i<data.length;i++){
-                total_revenue += data[i].order_cost;
-                total_reward += data[i].order_reward;
-            }
-            total_price = total_revenue+total_reward;
-            $$("total_revenue").setHTML("×ÜÁ÷Ë®£¤"+total_revenue);
-            $$("total_reward").setHTML("½±Àø£¤"+total_reward);
-            $$("total_price").setHTML("×Ü½ğ¶î£¤"+total_price);
-        })
+
     };
 
     var init_data = function(){
@@ -120,7 +96,7 @@ define(["views/modules/base"],function(base){
             var list = $$("s_week").getPopup().getList();
             list.clearAll();
             for(var i=0;i<weeks.length;i++){
-                list.add({id:weeks[i],value:"µÚ"+weeks[i]+"ÖÜ"});
+                list.add({id:weeks[i],value:"ç¬¬"+weeks[i]+"å‘¨"});
             }
             if(weeks.length>0){
                 $$("s_week").setValue(weeks[0]);
@@ -131,7 +107,7 @@ define(["views/modules/base"],function(base){
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "·şÎñÉÌ¹ÜÀí", details: "ÉçÇøµêÁ÷Ë®½±Àø"});
+            webix.$$("title").parse({title: "æœåŠ¡å•†ç®¡ç†", details: "ç¤¾åŒºåº—å¥–åŠ±"});
             init_data();
         }
     }

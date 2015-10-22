@@ -182,8 +182,6 @@ define(["views/modules/base"],function(base){
         })
     };
 
-
-
     var init_data = function(){
         base.getReq("communities.json",function(communities){
             var list = $$("s_supplier").getPopup().getList();
@@ -195,22 +193,12 @@ define(["views/modules/base"],function(base){
                 $$("s_supplier").setValue(communities[0].supplier_id);
             }
         });
-        /*base.getReq("pub_data/weeks.json",function(weeks){
-            var list = $$("s_week").getPopup().getList();
-            list.clearAll();
-            for(var i=0;i<weeks.length;i++){
-                list.add({id:weeks[i],value:"第"+weeks[i]+"周"});
-            }
-            if(weeks.length>0){
-                $$("s_week").setValue(weeks[0]);
-            }
-        });*/
     };
 
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "服务商管理", details: "社区店流水奖励"});
+            webix.$$("title").parse({title: "服务商管理", details: "社区店流水"});
             init_data();
         }
     }
