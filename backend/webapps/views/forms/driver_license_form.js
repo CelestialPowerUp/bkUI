@@ -5,7 +5,7 @@ define(["views/modules/base",
         if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
             return '<img src="http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF" class="content" ondragstart="return false"/>';
         }
-        return '<img src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
+        return '<img onclick="window.open(\''+obj.raw_url+'\')" src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
     };
 
     var recg_pic = function(){
