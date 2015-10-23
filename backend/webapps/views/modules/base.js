@@ -337,6 +337,21 @@ define(["../forms/login"],function(login){
         return time;
 	};
 
+	var format_date = function(time){
+		if(check_empty(time)){
+			return "";
+		}
+		var timeArr=time.split("T");
+		var d=timeArr[0].split("-");
+		var t=timeArr[1].split(":");
+		var data = new Date(d[0],(d[1]-1),d[2],t[0],t[1],"");
+		var year = data.getFullYear();  //获取年
+		var month = data.getMonth() + 1;    //获取月
+		var day = data.getDate(); //获取日
+		time = year + "-" + month + "-" + day;
+		return time;
+	};
+
 	var show_time = function(time){
 		if(check_empty(time)){
 			return "";
@@ -421,6 +436,7 @@ define(["../forms/login"],function(login){
 	
 	var request_upload_token = function(){
 			getReq("media/uptoken.json",function(data){
+				debugger;
 				console.log("获取上传图片token"+data);
 				webix.storage.session.put("upload_token",data);
 			});
@@ -495,8 +511,6 @@ define(["../forms/login"],function(login){
 		return true;
 	}
 	
-	check_upload_token();
-
 	//座席登陆
 	var agentLogin = function(){
 		var user_id = getUserId();
@@ -674,6 +688,7 @@ define(["../forms/login"],function(login){
 		agentLogin:agentLogin,
 		getUserInfoByPhone:getUserInfoByPhone,
 		priceFormat:priceFormat,
+		format_date:format_date,
 		time_period_format:time_period_format
 	};
 });
