@@ -2,10 +2,29 @@ define(["views/modules/base",
     "views/modules/upload"],function(base,upload){
 
     var img_fomat = function(obj){
-        if(typeof obj.thumbnail_url === 'undefined' || obj.raw_url === ""){
+        if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
             return '<img src="http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF" class="content" ondragstart="return false"/>';
         }
         return '<img src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
+    };
+
+    var recg_pic = function(){
+        var img_url = $$("img_url").getValue();
+        if(img_url.length<=0){
+            base.$msg.error("未找到识别的行驶证，请重新上传行驶证");
+            return;
+        }
+        base.$msg.info("正在尝试识别行驶证内容,请稍后");
+        base.postForm("cars/driving_license_discern_url.json",{url:img_url},function(disc){
+            base.$msg.info("行驶证内容识别完成");
+            var formdata = $$("form_view").getValues();
+            for(var p in disc){
+                if(typeof(disc[p]) !== 'function' ){
+                    formdata[p] = disc[p];
+                }
+            }
+            $$("form_view").parse(formdata);
+        });
     };
 
     var driver_pic_ui = {rows:[
@@ -18,9 +37,14 @@ define(["views/modules/base",
                         item.img_id = item.id;
                         $$("cover_img").parse(item);
                         $$("img_id").setValue(item.img_id);
+                        $$("img_url").setValue(item.raw_url);
+                        recg_pic();
                     }
                 });
-            }}}
+            }}},
+        {view:"label", align:"left",css:"warning", label:"注：图片上传后行驶证识别过程可能会有点慢"},
+        {view:"label", align:"left",css:"warning", label:"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;图片上传后请耐心等待10秒左右..."},
+        {}
     ]};
 
     var elements = [
@@ -28,6 +52,7 @@ define(["views/modules/base",
             {margin:3,rows:[
                 {view:"text",id:"car_id",name:"car_id",hidden:true},
                 {view:"text",id:"img_id",name:"img_id",hidden:true},
+                {view:"text",id:"img_url",name:"img_url",hidden:true},
                 {view: "text", label:"车牌号",name:"plate_no",width:160, placeholder: "车牌号",value:""},
                 {view: "text", label:"使用性质",name:"use_character",width:160, placeholder: "使用性质",value:""},
                 {view: "datepicker",timepicker:false,format:"%Y-%m-%d 00:00:00",stringResult:true, label:"注册日期",name:"register_date", placeholder: "注册日期",width:160,value:""},
@@ -44,7 +69,7 @@ define(["views/modules/base",
             driver_pic_ui
         ]},
         {view: "text", label:"品牌型号",name:"model", placeholder: "品牌型号",value:""},
-        {view:"text",name:"address",label:"地址",placeholder: "地址"}
+        {view:"text",name:"address",label:"地址",placeholder: "地址"},
     ];
 
     var from_ui = {

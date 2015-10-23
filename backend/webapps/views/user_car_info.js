@@ -14,9 +14,11 @@ define(["views/modules/base",
     var elements = [
         {id:"car_id",header:"车辆ID",width:80},
         {id:"car_number", header:"车牌号",width:120,fillspace:true},
-        {id:"engine_number", header:"发动机编号",minWidth:250,fillspace:true},
-        {id:"phone_number", header:"用户电话",width:80,fillspace:true},
-        {id:"car_user_name", header:"用户姓名",width:120,fillspace:true},
+        //{id:"engine_number", header:"发动机编号",minWidth:250,fillspace:true},
+        {id:"phone_number", header:"车主电话",width:80,fillspace:true},
+        {id:"owner", header:"车主姓名",width:120,fillspace:true},
+        {id:"register_date", header:"注册日期",width:120,fillspace:true},
+        {id:"model", header:"车品牌型号",width:120,fillspace:true},
         {id:"trash", header:"行驶证", width:80, template:"<span class='fa fa-car' style=' cursor:pointer;text-decoration: underline;' title='核对行驶证信息'> 核对</span>"}
     ];
 
@@ -33,22 +35,93 @@ define(["views/modules/base",
         onClick:on_event
     }
 
+    var IsNum = function(s)
+    {
+        if (s!=null && s!="")
+        {
+            return !isNaN(s);
+        }
+        return false;
+    };
+
+    var getTime = function(index){
+        var p = {};
+        for(var i = 0;i<arr.length;i++){
+            var v = $$(arr[i]+index).getValue();
+            p[arr[i]+index] = parseInt(v, 10);
+        }
+        return p;
+    };
+
+    var arr = ['starty','startd','endy','endd'];
+
+    var show_time_ui = function(index){
+        for(var i = 0;i<arr.length;i++){
+            $$(arr[i]+index).show();
+        }
+        $$("search_text").hide();
+    };
+
+    var hide_time_ui = function(index){
+        for(var i = 0;i<arr.length;i++){
+            $$(arr[i]+index).hide();
+        }
+        $$("search_text").show();
+    };
+
     var filter_ui = {
         rows:[
-            {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
-                {view:"label", align:"left",label:"车辆信息核对",height:30},
-                {view:"search",id:"s_car_number",width:250,placeholder:"请输入车牌号",keyPressTimeout:1000,on:{
-                    "onTimedKeyPress":function(){
-                        $$("s_car_id").setValue("");
+            {view:"toolbar",id:"tool_data",css: "highlighted_header header5",height:45, elements:[
+                {view: "richselect", id:"filter_search",label:"车辆信息:",labelWidth:80,value:"car_number",options:[
+                    {id:"car_number",value:"车辆车牌号"},
+                    {id:"plate_no",value:"行驶证车牌号"},
+                    {id:"create_user_name",value:"创建人"},
+                    {id:"register_date",value:"注册日期"},
+                    {id:"owner",value:"行驶证的姓名"},
+                    {id:"car_id",value:"车ID"}
+                ],placeholder:"选择关键字",width:250, on:{"onChange":function(n,o){
+                    search_type();
+                }}},
+                {view:"text",id:"search_text",width:180,placeholder:"输入查询关键字",keyPressTimeout:500,on:{
+                    onTimedKeyPress:function(){
                         refresh_table();
                     }
                 }},
-                {view:"search",id:"s_car_id",width:250,placeholder:"请输入车ID",keyPressTimeout:1000,on:{
-                    "onTimedKeyPress":function(){
-                        $$("s_car_number").setValue("");
-                        refresh_table();
+                {view:"text",id:"starty1",width:50,placeholder:"月",keyPressTimeout:500,on:{
+                    onTimedKeyPress:function(){
+                        var v = this.getValue();
+                        if(!(v.length>0 && IsNum(v) && parseInt(v, 10)<=12 && parseInt(v, 10)>=1)){
+                            base.$msg.error("日期输入不合法");
+                        }
                     }
                 }},
+                {view:"text",id:"startd1",width:75,label:"/",labelWidth:25,placeholder:"日",keyPressTimeout:500,on:{
+                    onTimedKeyPress:function(){
+                        var v = this.getValue();
+                        if(!(v.length>0 && IsNum(v) && parseInt(v, 10)>=1 && parseInt(v, 10)<=31)){
+                            base.$msg.error("日期输入不合法");
+                        }
+                    }
+                }},
+                {view:"text",id:"endy1",width:85,label:"--",labelWidth:35,placeholder:"月",keyPressTimeout:500,on:{
+                    onTimedKeyPress:function(){
+                        var v = this.getValue();
+                        if(!(v.length>0 && IsNum(v) && parseInt(v, 10)<=12 && parseInt(v, 10)>=1)){
+                            base.$msg.error("日期输入不合法");
+                        }
+                    }
+                }},
+                {view:"text",id:"endd1",width:75,label:"/",labelWidth:25,placeholder:"日",keyPressTimeout:500,on:{
+                    onTimedKeyPress:function(){
+                        var v = this.getValue();
+                        if(!(v.length>0 && IsNum(v) && parseInt(v, 10)>=1 && parseInt(v, 10)<=31)){
+                            base.$msg.error("日期输入不合法");
+                        }
+                    }
+                }},
+                { view: "button", label: "查询", width: 50,click:function(){
+                    refresh_table();
+                }}
             ]}
         ]
     };
@@ -60,17 +133,37 @@ define(["views/modules/base",
             {margin:0, type:"clean", rows:[filter_ui,table_ui]}]
     };
 
-    var refresh_table = function(){
-        if($$("s_car_number").getValue().length==0||$$("s_car_number").getValue().length>=3){
-            base.getReq("cars/info_list.json?car_number="+$$("s_car_number").getValue()+"&car_id="+$$("s_car_id").getValue(),function(data){
-                $$("table_list").clearAll();
-                $$("table_list").parse(data);
-            })
+    var search_type = function(){
+        var type = $$("filter_search").getValue();
+        if(type.indexOf('date')>=0){
+            show_time_ui(1);
+        }else{
+            hide_time_ui(1);
         }
+        $$("search_text").setValue("");
+    }
+
+    var refresh_table = function(){
+        var type = $$("filter_search").getValue();
+        var param = "";
+        if(type.indexOf('date')>=0){
+            var time1 = getTime(1);
+            param = "register_date_start="+time1.starty1+"-"+time1.startd1+"&register_date_end="+time1.endy1+"-"+time1.endd1;
+        }else{
+            if($$("search_text").getValue().length<=0){
+                return;
+            }
+            param = type+"="+$$("search_text").getValue();
+        }
+        base.getReq("cars/info_list.json?"+param,function(data){
+            base.$msg.info("数据 "+data.length);
+            $$("table_list").clearAll();
+            $$("table_list").parse(data);
+        });
     };
 
     var init_data = function(){
-
+        search_type();
     };
 
     return {
