@@ -14,7 +14,7 @@ define(["views/modules/base",
     var elements = [
         {id:"car_id",header:"车辆ID",width:80},
         {id:"car_number", header:"车牌号",width:120,fillspace:true},
-        {id:"plate_no", header:"行驶证车牌还",width:120,fillspace:true},
+        {id:"plate_no", header:"行驶证车牌号",width:120,fillspace:true},
         {id:"phone_number", header:"车主电话",width:80,fillspace:true},
         {id:"owner", header:"车主姓名",width:120,fillspace:true},
         {id:"register_date", header:"注册日期",width:120,fillspace:true},
