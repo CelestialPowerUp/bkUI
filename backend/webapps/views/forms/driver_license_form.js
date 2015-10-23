@@ -84,6 +84,7 @@ define(["views/modules/base",
             data.register_date = base.format_date(data.register_date);
             data.issue_date = base.format_date(data.issue_date);
             $$("form_view").parse(data);
+            $$("cover_img").parse(data.img);
         });
     };
 

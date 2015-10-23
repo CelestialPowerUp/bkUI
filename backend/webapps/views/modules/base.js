@@ -436,7 +436,6 @@ define(["../forms/login"],function(login){
 	
 	var request_upload_token = function(){
 			getReq("media/uptoken.json",function(data){
-				debugger;
 				console.log("获取上传图片token"+data);
 				webix.storage.session.put("upload_token",data);
 			});
