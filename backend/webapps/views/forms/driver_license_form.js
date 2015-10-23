@@ -95,7 +95,7 @@ define(["views/modules/base",
         formdata.issue_date=base.format_time(formdata.issue_date);
         var action = "car_driving_license/update.json";
         base.postReq(action,formdata,function(){
-            webix.message("单品数据提交成功");
+            webix.message("行驶证数据提交成功");
             webix.$$("pop_win").close();
         });
     }},
