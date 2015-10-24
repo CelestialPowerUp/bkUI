@@ -58,7 +58,7 @@ define(["views/modules/base",
                 {view:"text",id:"img_id",name:"img_id",hidden:true},
                 {view:"text",id:"img_url",name:"img_url",hidden:true},
                 {view: "text", label:"车牌号",name:"plate_no",width:160, placeholder: "车牌号",value:""},
-                {view: "text", label:"使用性质",name:"use_character",width:160, placeholder: "使用性质",value:""},
+                {view: "text", label:"使用性质",name:"use_character",width:160, placeholder: "使用性质",value:"非运营"},
                 {view: "datepicker",timepicker:false,format:"%Y-%m-%d 00:00:00",stringResult:true, label:"注册日期",name:"register_date", placeholder: "注册日期",width:160,value:""},
                 {view: "text", label:"姓名",name:"owner", placeholder: "姓名", width:160,value:""},
                 {view: "text", label:"信息创建人",name:"create_user_name", placeholder: "信息创建人", width:160,value:"",disabled:true}
