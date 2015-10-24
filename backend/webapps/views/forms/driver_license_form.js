@@ -15,7 +15,9 @@ define(["views/modules/base",
             return;
         }
         base.$msg.info("正在尝试识别行驶证内容,请稍后");
+        $$("rec_button").disable();
         base.postForm("cars/driving_license_discern_url.json",{url:img_url},function(disc){
+            $$("rec_button").enable();
             base.$msg.info("行驶证内容识别完成");
             var formdata = $$("form_view").getValues();
             for(var p in disc){
@@ -24,6 +26,8 @@ define(["views/modules/base",
                 }
             }
             $$("form_view").parse(formdata);
+        },function(){
+            $$("rec_button").enable();
         });
     };
 
@@ -38,7 +42,7 @@ define(["views/modules/base",
                         $$("cover_img").parse(item);
                         $$("img_id").setValue(item.img_id);
                         $$("img_url").setValue(item.raw_url);
-                        recg_pic();
+                        //recg_pic();
                     }
                 });
             }}},
@@ -83,9 +87,11 @@ define(["views/modules/base",
         rules:{}
     };
 
-
-
-    var button_ui = {margin:20,cols:[{},{view:"button",label:"确定",width:80,click:function(){
+    var button_ui = {margin:20,cols:[{},
+        {view:"button",id:"rec_button",label:"图片识别",width:120,click:function(){
+            recg_pic();
+        }},
+        {view:"button",label:"确定",width:80,click:function(){
         if (!$$("form_view").validate()){
             base.$msg.error("请输入正确的参数");
             return;
@@ -98,16 +104,18 @@ define(["views/modules/base",
             webix.message("行驶证数据提交成功");
             webix.$$("pop_win").close();
         });
-    }},
+        }},
         {view:"button",label:"取消",width:80,click:function(){
             webix.$$("pop_win").close();
         }}]
     };
 
     var init_data = function(car_id){
+        $$("car_id").setValue(car_id);
         base.getReq("car/"+car_id+"/driving_license.json",function(data){
             data.register_date = base.format_date(data.register_date);
             data.issue_date = base.format_date(data.issue_date);
+            data.car_id = car_id;
             $$("form_view").parse(data);
             $$("cover_img").parse(data.img);
         });
