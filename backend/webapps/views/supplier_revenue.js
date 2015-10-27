@@ -28,15 +28,21 @@ define(["views/modules/base"],function(base){
         {id:"car_number", header:"车牌号",width:150,fillspace:false},
         //{id:"reward_note", header:"奖励原因",width:150,fillspace:false},
         {id:"order_cost", header:"订单流水",width:120,format:base.priceFormat,fillspace:false,sort:"string"},
-        {id:"order_reward", header:"订单奖励",width:120,format:base.priceFormat,fillspace:false},
-        {id:"settled_check",header:"结算",template:function(obj,common){
-            if(obj.settled){
+        {id:"settled_check",header:"流水结算",template:function(obj,common){
+            if(obj.cost_settled){
                 return "<span class='status status1'>已结算</span>";
             }
             return common.checkbox(obj, common, obj.settled_check,{checkValue:true});
         },width:95,checkValue:true},
-        {id:"order_complete_time", header:"订单完成",width:185,fillspace:false},
-        {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
+        {id:"order_reward", header:"订单奖励",width:120,format:base.priceFormat,fillspace:false},
+        {id:"reward_settled", header:"奖励结算",template:function(obj){
+            if(obj.reward_settled){
+                return "<span class='status status1'>已结算</span>";
+            }
+            return "<span class='status status0'>未结算</span>";
+        },width:120,fillspace:false},
+        {id:"order_complete_time", header:"订单完成",width:185,fillspace:false}
+        //{id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
     ];
 
     var price_template = {total_revenue:0,total_reward:0,total_price:0,
@@ -95,7 +101,7 @@ define(["views/modules/base"],function(base){
         rows:[
             {
                 id: "price_show",
-                height: 50,
+                height: 60,
                 template:"<div class='big_strong_text'><span>总流水：￥#total_revenue#</span><span>已结算流水：￥#settled_revenue#</span><span>未结算流水：￥#not_settled_revenue#</span><span>待结算流水：￥#wait_settled_revenue#</span></div>",
                 //"<div class='big_strong_text'><span>总流水：￥#total_revenue#</span><span>总奖励：￥#total_reward#</span><span>总金额：￥#total_price#</span></div>"
                 //+"<div class='big_strong_text'><span>已结算流水：￥#settled_revenue#</span><span>已结算奖励：￥#settled_reward#</span><span>已结算金额：￥#settled_price#</span></div>"
@@ -103,8 +109,28 @@ define(["views/modules/base"],function(base){
                 //+"<div class='big_strong_text'><span>待结算流水：￥#wait_settled_revenue#</span><span>待结算奖励：￥#wait_settled_reward#</span><span>待结算金额：￥#wait_settled_price#</span></div>",
                 data: webix.copy(price_template)
             },
-            {cols:[
+            {margin:15,cols:[
                 {},
+                {view:"button",label:"选中全部",width:120,click:function(){
+                    $$("table_list").eachRow(function(row){
+                        var item = $$("table_list").getItem(row);
+                        if(!item.cost_settled){
+                            item.settled_check = true;
+                        }
+                    });
+                    $$("table_list").refresh();
+                    countPrice();
+                }},
+                {view:"button",label:"清除选中",width:120,click:function(){
+                    $$("table_list").eachRow(function(row){
+                        var item = $$("table_list").getItem(row);
+                        if(!item.cost_settled){
+                            item.settled_check = false;
+                        }
+                    });
+                    $$("table_list").refresh();
+                    countPrice();
+                }},
                 {view:"button",label:"确认结算",width:120,click:function(){
                     webix.confirm({
                         text:"结算选择的订单项<br/> 确定?", ok:"是", cancel:"取消",
@@ -144,7 +170,7 @@ define(["views/modules/base"],function(base){
         var price  = webix.copy(price_template);
         $$("table_list").eachRow(function(row){
             var item = $$("table_list").getItem(row);
-            if(item.settled){
+            if(item.cost_settled){
                 price.settled_revenue += item.order_cost*1;
                 //price.settled_reward += item.order_reward*1;
             }else{
@@ -178,7 +204,7 @@ define(["views/modules/base"],function(base){
         base.postReq("community/order_revenue.json",param,function(data){
             $$("table_list").clearAll();
             for(var a in data){
-                if(data[a].reward_code === 'every_order_percent_reward'){
+                if(data[a].reward_code !== 'first_order_reward'){
                     $$("table_list").add(data[a]);
                 }
             }
