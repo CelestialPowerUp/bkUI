@@ -41,14 +41,14 @@ define(["views/modules/base",
         {id:"create_time", header:"创建时间",template:function(obj){
             return base.$show_time(obj.create_time);
         }, width:160,sort:"string"},
-        {id:"note", header:"备注",editor:"text",width:500,sort:"string"}
+        {id:"note", header:"备注",editor:"text",minWidth:500,fillspace:true,sort:"string"}
     ];
 
     var table_ui = {
         id:"activity_table_list",
         view:"datatable",
         select:true,
-        autowidth:true,
+        autoConfig:true,
         rowHeight:35,
         editable:true,
         editaction:"dblclick",
@@ -96,8 +96,7 @@ define(["views/modules/base",
     var layout = {
         paddingY:15,
         paddingX:15,
-        cols:[
-            {margin:15, type:"clean", rows:[filter_ui,table_ui]},{}]
+        rows:[filter_ui,table_ui]
     };
 
     var init_activity_select = function(){

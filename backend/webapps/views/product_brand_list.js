@@ -17,7 +17,6 @@ define([
 	};
 	
 	var page_call_back = function(page){
-		console.log("点击了第"+page+"页");
 		serch_producs(page);
 	};
 	
@@ -34,7 +33,7 @@ define([
 	var button_ui = {height:40,
 			cols:[
 			      {view:"search",id:"search",width:250,placeholder:"输入品牌名称"},
-					{ view: "button", type: "iconButton", icon: "external-link", label: "收索", width: 80,click:function(){
+					{ view: "button", type: "iconButton", icon: "external-link", label: "搜索", width: 80,click:function(){
 						serch_producs(1);
 				  }},
 				  { view: "button", type: "iconButton", icon: "plus", label: "添加品牌", width: 110, click: function(){
