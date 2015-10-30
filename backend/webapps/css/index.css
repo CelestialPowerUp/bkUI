@@ -14,8 +14,8 @@
 
 .big_strong_text span{
     display:inline-block;
-    width: 250px;
-    margin-left: 20px;
+    width: 350px;
+    margin-left: 25px;
 }
 
 .light_text{
@@ -23,6 +23,20 @@
     line-height:15px;
     padding-top: 5px;
     font-size: 13px;
+}
+
+.normal_text{
+    font-weight: 600;
+    white-space: nowrap;
+    padding-top: 8px;
+    padding-left: 8px;
+    font-size: 12px;
+}
+
+.normal_text span{
+    display:inline-block;
+    width: 180px;
+    margin-left: 5px;
 }
 
 .links{

@@ -169,7 +169,7 @@ define(["views/modules/base"], function(base){
 	    	  var p = {};
 				p.id = webix.$$("order_id").getValue();
 				p.operator_id = base.getUserId();
-				base.postReq("/v3/api/order/update.json",p,function(data){
+				base.postReq("order/operator_received.json",p,function(data){
 					webix.message("认领成功订单成功");
 					$$("grab_order_button").disable();
 					$$("grab_order_button").refresh();

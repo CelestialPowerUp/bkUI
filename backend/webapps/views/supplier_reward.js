@@ -96,55 +96,18 @@ define(["views/modules/base"],function(base){
         wait_settled_revenue:0,wait_settled_reward:0,wait_settled_price:0
     };
 
-    var check_settle_status = function(){
-        var complated = true;
-        $$("table_list").eachRow(function(row){
-            var item = $$("table_list").getItem(row);
-            if(!item.reward_settled && !item.settled_check){
-                complated = false;
-            }
-        });
-        return complated;
-    };
-
     var footer_ui = {
         rows:[
             {
                 id: "price_show",
-                height: 60,
-                template:"<div class='big_strong_text'><span>总奖励：￥#rewardTotalPrice#</span>" +
-                "<span>好评率：#goodOrderRating#</span>" +
-                "<span>结算系数：#accountCoefficient#</span>" +
-                "<span>应结算奖励：#accountTotalPrice#</span></div>",
-                data: {rewardTotalPrice:"数据获取中...",goodOrderRating:"数据获取中...",accountCoefficient:"数据获取中...",accountTotalPrice:"数据获取中..."}
+                height: 120,
+                template:"<div class='big_strong_text'><span>总奖励：￥#reward_total_price#</span><span>好评率：#good_order_rating#</span><span>结算系数：#account_coefficient#</span></div>"
+                +"<div class='big_strong_text'><span>应结算(X系数)：￥#account_total_price#</span><span>已结算：￥#settled_price#</span><span>未结算：￥#un_settled_price#</span></div>",
+                data: {reward_total_price:"数据获取中...",good_order_rating:"数据获取中...",account_coefficient:"数据获取中...",account_total_price:"数据获取中...",settled_price:"数据获取中...",un_settled_price:"数据获取中..."}
             },
             {cols:[
                 {},
-                /*{view:"button",label:"选中全部",width:120,click:function(){
-                    $$("table_list").eachRow(function(row){
-                        var item = $$("table_list").getItem(row);
-                        if(!item.reward_settled){
-                            item.settled_check = true;
-                        }
-                    });
-                    $$("table_list").refresh();
-                    countPrice();
-                }},
-                {view:"button",label:"清除选中",width:120,click:function(){
-                    $$("table_list").eachRow(function(row){
-                        var item = $$("table_list").getItem(row);
-                        if(!item.reward_settled){
-                            item.settled_check = false;
-                        }
-                    });
-                    $$("table_list").refresh();
-                    countPrice();
-                }},*/
                 {view:"button",label:"确认结算",width:120,click:function(){
-                    /*if(!check_settle_status()){
-                        base.$msg.error("还有未结算项未勾选");
-                        return;
-                    }*/
                     webix.confirm({
                         text:"结算余下未结算的订单奖励<br/> 确定?", ok:"是", cancel:"取消",
                         callback:function(res){
@@ -206,6 +169,9 @@ define(["views/modules/base"],function(base){
             return "";
         }
         base.getReq("community/order_rewards.json?supplier_id="+supplier+"&year="+year+"&week="+week,function(result){
+            if(typeof result.good_order_rating === 'undefined' || result.good_order_rating === null){
+                result.good_order_rating = '--'
+            }
             $$("price_show").parse(result);
             var data = result.items;
             $$("table_list").clearAll();

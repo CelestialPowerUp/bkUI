@@ -565,61 +565,59 @@ define(["views/modules/base",
 					}
 				  }
 			]};
+
+	var update_refund_req = function(status){
+		var comment = $$("refund_comment").getValue();
+		if(comment.length<6){
+			base.$msg.error("警告：说明长度不能低于6");
+			return;
+		}
+		$$(status+"_bt").disable();
+		$$(status+"_bt").refresh();
+		var param = {order_id:$$("order_id").getValue()};
+		param.note = comment;
+		param.refund_status = status;
+		base.postReq("order_refund_status/update.json",param,function(data){
+			initdata($$("order_id").getValue());
+			base.$msg.info("请求处理成功");
+			/*$$(status+"_bt").enable();
+			$$(status+"_bt").refresh();*/
+		},function(){
+			/*$$(status+"_bt").enable();
+			$$(status+"_bt").refresh();*/
+		});
+	}
 	
-	var take_car_time = {
-			type:"space",
-			rows:[{type:"header",id:"pick_time",template:"接车时间"},
-			      {cols:[{
-		        		id:"pick_time",
-		        		view:"list",
-		        		height:250,
-		        		width:250,
-		        		template:"<div class='strong_text'>#pick_time#</div><div class='light_text'>#pick_time_segment#</div>",
-		        		type:{height:80,width:250},
-		        		select:true
-		    		},{}]}
-			      ]
+	var refund_ui = {
+			id:"refund_tab",
+			type:"clean",
+			hidden:true,
+			rows:[{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
+					{view:"label", align:"left",label:"退款处理",height:30},
+					{view:"text",label:"退款状态",id:"refund_status_value",disabled:true,width:200}
+					]},
+			      {type:"form",cols:[
+					  {view:"textarea",name:"refund_status_note",id:"refund_comment",label:"退款说明",placeholder:"输入退款说明"},
+					  {view:"button",label:"同意退款",type: "iconButton",icon: "fa fa-angellist",id:"processing_bt",width:120,click:function(){
+						  update_refund_req("processing");
+					  }},
+					  {view:"button",label:"拒绝退款",type: "iconButton",icon: "fa fa-times",id:"canceled_bt",width:120,click:function(){
+						  update_refund_req("canceled");
+					  }}
+				  ]}
+			]
 	};
 	
 	var submit_ui = {
 			cols:[{},
-				//屏蔽完成按钮
-				/*{view:"button",label:"完成",width:120,click:function(){
-					webix.confirm({
-						text:"将订单状态更改为已完成<br/> 确定?", ok:"是", cancel:"取消",
-						callback:function(res){
-							if(res){
-								var item = $$("order_base_data").getValues();
-								var p = {};
-								p.id = item.id;
-								p.order_status = "complete";
-								base.postReq("order/update.json",p,function(data){
-									console.log(data);
-									base.$msg.info("修改成功");
-								});
-							}
-						}
-					});
-				}},*/
+
 				{view:"button",label:"提交订单修改",width:120,click:function(){
 				//基本信息
 				var order = $$("order_base_data").getValues();
-				/*order.take_time = base.format_time(order.take_time);
-				order.give_back_time = base.format_time(order.give_back_time);*/
+
 				order.pick_start_time=base.format_time(order.pick_start_time);
 				order.pick_end_time = base.format_time(order.pick_end_time);
-			/*	//供应商信息
-				var suppliers = $$("supplier_table").serialize();
-				order.supplier_ids = [];
-				for(var i=0;i<suppliers.length;i++){
-					if(typeof(suppliers[i]['supplier_id'])==="undefined" || suppliers[i]['supplier_id'] === ""){
-						order.supplier_ids.push(suppliers[i]['id']);
-						continue;
-					}
-					order.supplier_ids.push(suppliers[i]['supplier_id']);
-				}
-				*/
-				//维护过程信息
+
 				order.inspections=[];
 				
 				//外观检测first_check_data
@@ -641,17 +639,19 @@ define(["views/modules/base",
 				var ui = this.$scope;
 				base.postReq("/v3/api/order/update.json",order,function(data){
 					webix.message("更新订单成功");
-					ui.show("order_edit:id="+data.id);
+					initdata($$("order_id").getValue());
+					//ui.show("order_edit:id="+data.id);
 				});
 			}}]
 	}
 	
 	var layout = {
-		type:"from",
+		type:"space",
 		margin:15,
 		rows:[
 			customer_base_info_ui,
 			order_product_ui,
+			refund_ui,
 			suppliers_ui,
 			//take_car_time,
 			first_check_ui,
@@ -687,17 +687,32 @@ define(["views/modules/base",
 				//初始化检测项目信息
 				parse_check_data(order);
 			
-				//初始化接车时间
-				//parse_take_time_info(order);
-				
-				//初始化商品类别
-				//get_product_data(order);
-
 				//赋值管家接车时间信息
 				old_pick_time = order.pick_time;
 				old_current_keeper_id = order.current_keeper_id;
 			}
 		});
+	};
+
+	var refund_confirm_bt_enable = function(){
+		$$("processing_bt").enable();
+		$$("processing_bt").refresh();
+		$$("canceled_bt").disable();
+		$$("canceled_bt").refresh();
+	};
+
+	var refund_confirm_bt_disable = function(){
+		$$("processing_bt").disable();
+		$$("processing_bt").refresh();
+		$$("canceled_bt").enable();
+		$$("canceled_bt").refresh();
+	};
+
+	var refund_double_disable = function(){
+		$$("canceled_bt").disable();
+		$$("canceled_bt").refresh();
+		$$("processing_bt").disable();
+		$$("processing_bt").refresh();
 	};
 
 	/**
@@ -712,21 +727,21 @@ define(["views/modules/base",
 		if(order.supplier_mold === 'community'){
 			$$("add_supplier_button").disable();
 		}
+		if("applying,processing,part_completed,completed".indexOf(order.refund_status)>=0){
+			//显示退款处理的请求
+			$$("refund_tab").show();
+		}
+		if("completed"===order.refund_status){
+			refund_double_disable();
+		}else if("applying"===order.refund_status){
+			refund_confirm_bt_enable();
+		}else{
+			refund_confirm_bt_disable();
+		}
+		//显示退款说明
+		$$("refund_status_value").setValue(order.refund_status_value);
+		$$("refund_comment").setValue(order.refund_status_note);
 	}
-	
-	var parse_take_time_info = function(order){
-		//接车刷新时间
-    	base.getReq("time_segments.json?keeper_type=keeper",function(data){
-    		for(var a=0;a<data.length;a++){
-    			for(var b=0;b<data[a]['data'].length;b++){
-    				var item = {};
-        			item.pick_time=data[a]['key'];
-        			item.pick_time_segment = data[a]['data'][b];
-        			$$("pick_time").add(item);
-    			}
-    		}
-    	});
-	};
 	
 	var parse_suppliers = function(order){
 		$$("supplier_table").clearAll();

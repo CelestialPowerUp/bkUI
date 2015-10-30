@@ -40,6 +40,12 @@ define(["views/modules/base","views/modules/table_page_m",
 		if(tabCheckId==='processed'){
 			action += "&order_status=completed";
 		}
+		if(tabCheckId==='refund'){
+			action += "&tab=refund_applying";
+		}
+		if(tabCheckId==='invalid'){
+			action +="&tab=invalid";
+		}
 		base.getReq(action,function(data){
 			parse_table_data(data);
 		});
@@ -122,7 +128,13 @@ define(["views/modules/base","views/modules/table_page_m",
 	
 	var complated_colums = webix.copy(columns);
 	complated_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
-	
+
+	var refund_applying_colums = webix.copy(columns);
+	refund_applying_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
+
+	var invalid_colums = webix.copy(columns);
+	invalid_colums.splice(0,0,{id:"trash", header:"操作",width:120, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u></span>"});
+
 	var onClick = {
 			"views":function(e,id,node){
 				var item = this.getItem(id);
@@ -141,7 +153,7 @@ define(["views/modules/base","views/modules/table_page_m",
 							var p = {};
 							p.id = item.id;
 							p.operator_id = base.getUserId();
-							base.postReq("/v3/api/order/update.json",p,function(data){
+							base.postReq("order/operator_received.json",p,function(data){
 								webix.$$("unbelong_order_table").remove(id);
 								webix.$$("unprocessed_order_table").add(item);
 							});
@@ -232,11 +244,41 @@ define(["views/modules/base","views/modules/table_page_m",
 		onClick:onClick
 	};
 
+	var refund_table = {
+		id:"refund_order_table",
+		view:"datatable",
+		autoConfig:true,
+		scrollX:true,
+		select:true,
+		leftSplit:1,
+		autoheight:true,
+		hover:"myhover",
+		columns:refund_applying_colums,
+		onClick:onClick
+	};
+
+	var invalid_table = {
+		id:"invalid_order_table",
+		view:"datatable",
+		autoConfig:true,
+		scrollX:true,
+		select:true,
+		leftSplit:1,
+		autoheight:true,
+		hover:"myhover",
+		columns:invalid_colums,
+		onClick:onClick
+	};
+
 	var unbelong_page_table = table_page.$create_page_table("unbelong_page_list",unbelong_table);
 
 	var unprocessed_page_table = table_page.$create_page_table("unprocessed_page_list",unprocessed_table);
 
 	var processed_page_table = table_page.$create_page_table("processed_page_list",processed_table);
+
+	var refund_page_table = table_page.$create_page_table("refund_page_list",refund_table);
+
+	var invalid_page_table = table_page.$create_page_table("invalid_page_list",invalid_table);
 
 	var tabview = {
 			id:"tabviewdata",
@@ -275,7 +317,25 @@ define(["views/modules/base","views/modules/table_page_m",
 							   processed_page_table
 						   ]
 					   }
-			       }
+			       },
+				{
+					header:"退款待审核",
+					body:{
+						id:"refund",
+						rows:[
+							refund_page_table
+						]
+					}
+				},
+				{
+					header:"失效订单",
+					body:{
+						id:"invalid",
+						rows:[
+							invalid_page_table
+						]
+					}
+				}
 			]
 	};
 
