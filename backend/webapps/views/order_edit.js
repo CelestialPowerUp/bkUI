@@ -733,10 +733,8 @@ define(["views/modules/base",
 		}
 		if("completed"===order.refund_status){
 			refund_double_disable();
-		}else if("applying"===order.refund_status){
-			refund_confirm_bt_enable();
-		}else{
-			refund_confirm_bt_disable();
+		}else if("applying"!==order.refund_status){
+			refund_double_disable();
 		}
 		//显示退款说明
 		$$("refund_status_value").setValue(order.refund_status_value);
