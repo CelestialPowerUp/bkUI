@@ -85,13 +85,7 @@ define(["views/modules/base"],function(base){
                             refresh_table();
                         }
                     }
-                },
-                { view: "button", type: "iconButton", icon: "fa fa-file-excel-o", label: "数据导出", width: 120,click:function(){
-                    webix.toExcel($$("table_list"), {
-                        filename:$$("s_supplier").getText()+$$("s_year").getText()+$$("s_week").getText(),
-                        name:"社区店奖励流水"
-                    });
-                }}
+                }
             ]}
         ]
     };
