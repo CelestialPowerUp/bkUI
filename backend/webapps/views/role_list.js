@@ -16,29 +16,36 @@ define(["views/modules/base",
     };
 
     var elements = [
-        {id:"trash", header:"操作", width:210, template:"<span><u class='views'>角色接口</u><u class='edit'> 角色菜单</u></span>"},
         {id:"role_type",width:50,hidden:true},
         {id:"name", header:"角色名称", width:250},
-        {id:"code", header:"角色编码", width:250}
+        {id:"code", header:"角色编码", width:250},
+        {id:"trash", header:"", width:100, template:"<span><u class='views'>角色接口</u></span>"},
+        {id:"trash1", header:"", width:100, template:"<span><u class='edit'> 角色菜单</u></span>"}
     ];
 
     var table_ui = {
         id:"table_list",
         view:"datatable",
         select:false,
-        autoheight:true,
         autowidth:true,
+        autoheight:true,
         rowHeight:35,
         hover:"myhover",
         columns:elements,
         onClick:onClick
     }
 
+    var header = {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
+        {view:"label", align:"left",label:"系统角色列表",height:30},
+    ]};
+
     var layout = {
         paddingY:15,
         paddingX:15,
+        type:"space",
         cols:[
-            {margin:15, type:"clean", rows:[table_ui]},{}]
+            {},{margin:0, type:"clean", rows:[header,table_ui]},{}
+        ]
     };
 
     var init_data = function(){
