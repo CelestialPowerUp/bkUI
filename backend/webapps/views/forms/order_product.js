@@ -19,7 +19,6 @@ define(["views/modules/base"],function(base){
         		select:true,
         		on:{"onItemClick":function(id, e, node){
         			var item = this.getItem(id);
-					console.log(item);
         			$$("price").setValue(item['price']);
         			$$("product_name").setValue(item['product_name']);
         			$$("product_info").setValue(item['product_info']);
@@ -86,6 +85,12 @@ define(["views/modules/base"],function(base){
 									count_total_price();
 								}}},
 								{ view:"text", name:"price",id:"price", label:"单价" ,disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
+									if($$("product_name").getValue().indexOf("补差价")){
+										base.$msg.error("补差价的商品不支持改价格，请调整数量核对价格");
+										$$("price").setValue(1);
+										$$("price").refresh();
+										return;
+									}
 									count_total_price();
 								}}},
 								{ view:"text", name:"labour_price",id:"labour_price", label:"工时费",disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
@@ -150,7 +155,7 @@ define(["views/modules/base"],function(base){
 				type:"space",
 				rows:[
 					{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
-						{view:"label", align:"left",css:"warning", label:"编辑页面添加商品直接提交服务器,不能二次修改，请核对数据再提交",height:30}
+						{view:"label", align:"left",css:"warning", label:"注：补差价商品只能更改数量，不能更改价格！！！",height:30}
 					]},
 					{type:"space",cols:[]}
 				]

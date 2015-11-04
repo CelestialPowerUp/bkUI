@@ -41,8 +41,8 @@ define(["views/modules/base"],function(base){
             }
             return "<span class='status status0'>未结算</span>";
         },width:120,fillspace:false},
-        {id:"order_complete_time", header:"订单完成",width:185,fillspace:false}
-        //{id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
+        {id:"order_complete_time", header:"订单完成",width:185,fillspace:false},
+        {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
     ];
 
     var price_template = {total_revenue:0,total_reward:0,total_price:0,
