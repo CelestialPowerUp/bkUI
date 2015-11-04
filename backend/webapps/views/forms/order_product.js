@@ -85,7 +85,7 @@ define(["views/modules/base"],function(base){
 									count_total_price();
 								}}},
 								{ view:"text", name:"price",id:"price", label:"单价" ,disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
-									if($$("product_name").getValue().indexOf("补差价")){
+									if($$("product_name").getValue().indexOf("补差价")>=0){
 										base.$msg.error("补差价的商品不支持改价格，请调整数量核对价格");
 										$$("price").setValue(1);
 										$$("price").refresh();
