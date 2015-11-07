@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/webapps/app.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/activity_list.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/advertisement.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/api_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/coupon_send.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/channel_edit.js" charset="UTF-8" />
@@ -11,6 +12,7 @@
     <file url="file://$PROJECT_DIR$/webapps/views/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/keeper_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/menus/open_sidebar.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/menus/popup_menu.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/modules/base_amount.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/open.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/role_list.js" charset="UTF-8" />

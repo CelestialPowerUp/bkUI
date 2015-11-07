@@ -93,7 +93,7 @@
     border-color: #bbb;
 }
 .nav_list .webix_dataview_item.webix_selected{
-    background-color: #eee;
+    background-color: orange;
 }
 
 .webix_table_radio.checked{

@@ -1,5 +1,6 @@
 define([
 	"../libs/engine",
+	"views/menus/popup_menu",
 	"views/menus/search",
 	"views/menus/mail",
 	"views/menus/message",
@@ -14,7 +15,7 @@ define([
 	"views/windows/call_in_win",
 	"views/webix/icon",
 	"views/webix/menutree"
-],function(engine,search, mail, message,activity_message, profile, sidebar,copy,call_out,call_in,agent_menu,callcenter,call_in_win){
+],function(engine,popup_menu,search, mail, message,activity_message, profile, sidebar,copy,call_out,call_in,agent_menu,callcenter,call_in_win){
 
 	var user_info = webix.storage.local.get("user_info");
 	
@@ -130,6 +131,7 @@ define([
 			scope.ui(copy.$ui);
 			scope.ui(call_out.$ui);
 			scope.ui(call_in.$ui);
+			scope.ui(popup_menu.$ui);
 			scope.ui(agent_menu.$ui);
 			sidebar.$init_data();
 			callcenter.addCallback(showCallInWin);
