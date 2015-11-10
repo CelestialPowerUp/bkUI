@@ -30,7 +30,7 @@ define(["views/modules/base","views/modules/table_page_m",
 		}
 		var tabCheckId = $$("tabviewdata").getValue();
 		var order_status = 0;
-		var action = "/v3/api/orders.json?user_type=operator&operator_id="+base.getUserId()+"&page_size=16"+get_page_url()+get_search_url();
+		var action = "/v3/api/orders.json?show_content_type="+$$("show_content_type").getValue()+"&user_type=operator&operator_id="+base.getUserId()+"&page_size=16"+get_page_url()+get_search_url();
 		if(tabCheckId === 'unbelong'){
 			action += "&received=0";
 		}
@@ -65,8 +65,6 @@ define(["views/modules/base","views/modules/table_page_m",
 	};
 
 
-	var paid_options = [{id:"true",value:"已支付"},{id:"false",value:"未支付"}];
-	
 	var columns = [
 					{id:"number",header:["订单号", {content:"textFilter"} ], width:180},
 					{id:"customer_name", header:["姓名", {content:"textFilter"} ], sort:"string"},
@@ -121,7 +119,6 @@ define(["views/modules/base","views/modules/table_page_m",
 	
 	var unprocessed_colums = webix.copy(columns);
 
-	//<u class='complate row_button'> 完成</u>
 	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:160,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
 
 	unprocessed_colums.splice(1,0,{id:"assign",header:"分配",width:65,template:custom_checkbox});
@@ -372,6 +369,12 @@ define(["views/modules/base","views/modules/table_page_m",
 			{ view: "button", label: "查询", width: 50,click:function(){
 				search(1);
 			}},
+			{ view:"radio", name:"show_content_type",id:"show_content_type", label:"查询范围",value:"own", width:250,options:[
+				{ value:"仅自己", id:'own' },
+				{ value:"全部", id:'all' }
+			],on:{"onChange":function(n,o){
+				search(1);
+			}}},
 			{},
 			{ view: "button", label: "订单分配", width: 120,click:function(){
 				this.$scope.ui(role_user.$ui).show();

@@ -17,7 +17,7 @@ define(["views/modules/base",
         css: "nav_list",
         select: true,
         scroll: true,
-        type: {width: 400, height: 260},
+        type: {width: 350, height: 260},
         template: img_fomat,
         on:{"onItemClick":function(id, e, node){
             var item = this.getItem(id);

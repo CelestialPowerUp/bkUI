@@ -50,7 +50,8 @@ define(["views/modules/base",
             { value:"启用", id:'true' },
             { value:"停用", id:'false' }
         ]},
-        {view:"text",label:"链接地址",placeholder: "http://",id:"link_href",name:"link_href",required:true},
+        {view:"text",label:"按钮文字",placeholder: "输入按钮显示文字",id:"button_name",name:"button_name",required:true},
+        {view:"text",label:"链接地址",placeholder: "http://",id:"link_href",name:"link_href",required:true}
     ];
 
     var from_ui = {
@@ -64,7 +65,8 @@ define(["views/modules/base",
         rules:{
             "bg_img_id":webix.rules.isNumber,
             "link_href":webix.rules.isNotEmpty,
-            "enable":webix.rules.isNotEmpty
+            "enable":webix.rules.isNotEmpty,
+            "button_name":webix.rules.isNotEmpty
         }
     };
 
