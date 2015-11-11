@@ -121,7 +121,7 @@ define(["views/modules/base",
             var list = $$("ware_type_id").getPopup().getList();
             list.clearAll();
             for(var i=0;i<data.length;i++){
-                list.add({id:data[i].ware_type_id,value:data[i].ware_type_name});
+                list.add({id:data[i].ware_type_id,value:data[i].sub_name});
             }
             if(typeof(ware_type_id)==='undefined'|| ware_type_id===null){
                 return;

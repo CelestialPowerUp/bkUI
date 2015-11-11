@@ -56,7 +56,7 @@ define(["views/modules/base",
 
     return {
         $ui:layout,
-        $oninit:function(app,config){
+        $oninit:function(app,scope){
             webix.$$("title").parse({title: "系统管理", details: "角色列表"});
             init_data();
         }

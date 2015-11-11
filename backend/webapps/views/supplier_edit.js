@@ -86,14 +86,15 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             { value:"营业中", id:'false' },
             { value:"停业中", id:'true' }
         ]},
-        {view: "text", label:"综合评分",name:"rating", placeholder: "",placeholder: "新建服务商默认4分",width:350,value:4,required:true,disabled:true},
-        {view: "richselect", id:"sale_id", name:"sale_id", label:"负责销售",placeholder:"这里面选择销售人员", width:350,required:true,
+        {view: "text", label:"综合评分",name:"rating", placeholder: "新建服务商默认4分",width:350,value:4,required:true,disabled:true},
+        {view: "richselect", id:"sale_id", name:"sale_id", label:"负责销售",placeholder:"这里面选择销售人员", width:350,
             options: [],
             on:{"onAfterRender":function(){
 
             }}
         },
-        {view: "text", label:"银行卡号",id:"bank_card",name:"bank_card",placeholder:"这里面填写银行卡号", width:350,required:true},
+        {view: "text", label:"首单奖励",name:"first_order_reward",placeholder: "首单奖励金额",width:350,required:true},
+        {view: "text", label:"银行卡号",id:"bank_card",name:"bank_card",placeholder:"这里面填写银行卡号", width:350},
 
         {
             paddingY:15,
@@ -172,6 +173,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
         var id = base.get_url_param("id");
         if(typeof(id)==='undefined' || id===null || id === ""){
             parse_address_info(null);
+            update_sale_persion('');
             return;
         }
         base.getReq("/v2/api/supplier.json/"+id,function(data){
