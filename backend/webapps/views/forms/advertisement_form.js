@@ -8,29 +8,6 @@ define(["views/modules/base",
         return '<img onclick="window.open(\''+obj.raw_url+'\')" src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
     };
 
-    var recg_pic = function(){
-        var img_url = $$("img_url").getValue();
-        if(img_url.length<=0){
-            base.$msg.error("未找到识别的行驶证，请重新上传行驶证");
-            return;
-        }
-        base.$msg.info("正在尝试识别行驶证内容,请稍后");
-        $$("rec_button").disable();
-        base.postForm("cars/driving_license_discern_url.json",{url:img_url},function(disc){
-            $$("rec_button").enable();
-            base.$msg.info("行驶证内容识别完成");
-            var formdata = $$("form_view").getValues();
-            for(var p in disc){
-                if(typeof(disc[p]) !== 'function' ){
-                    formdata[p] = disc[p];
-                }
-            }
-            $$("form_view").parse(formdata);
-        },function(){
-            $$("rec_button").enable();
-        });
-    };
-
     var elements = [
         {view:"text",id:"advertisement_id",name:"advertisement_id",hidden:true},
         {view:"text",id:"bg_img_id",name:"bg_img_id",hidden:true},
@@ -50,8 +27,8 @@ define(["views/modules/base",
             { value:"启用", id:'true' },
             { value:"停用", id:'false' }
         ]},
-        {view:"text",label:"按钮文字",placeholder: "输入按钮显示文字",id:"button_name",name:"button_name",required:true},
-        {view:"text",label:"链接地址",placeholder: "http://",id:"link_href",name:"link_href",required:true}
+        {view:"text",label:"按钮文字",placeholder: "输入按钮显示文字",id:"button_name",name:"button_name"},
+        {view:"text",label:"链接地址",placeholder: "http://",id:"link_href",name:"link_href"}
     ];
 
     var from_ui = {
@@ -64,9 +41,9 @@ define(["views/modules/base",
         elements:elements,
         rules:{
             "bg_img_id":webix.rules.isNumber,
-            "link_href":webix.rules.isNotEmpty,
+            //"link_href":webix.rules.isNotEmpty,
             "enable":webix.rules.isNotEmpty,
-            "button_name":webix.rules.isNotEmpty
+            //"button_name":webix.rules.isNotEmpty
         }
     };
 

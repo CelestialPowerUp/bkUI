@@ -1,6 +1,7 @@
 define(["views/modules/base",
     "views/modules/upload",
-    "views/forms/store_product"],function(base,upload,store_product){
+    "views/forms/store_product",
+    "views/menus/popup_menu"],function(base,upload,store_product,menu){
 
     var img_fomat = function(obj){
         return '<img src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
@@ -20,9 +21,10 @@ define(["views/modules/base",
             height: 65
         },
         template: img_fomat,
-        on:{"onItemClick":function(id){
+        on:{"onItemClick":function(id, e, node){
             var item = this.getItem(id);
-            window.open(item.original_url);
+            //window.open(item.original_url);
+            $$("pp_menu").show(e);
         }}
     };
 
@@ -116,7 +118,20 @@ define(["views/modules/base",
         }}]
     };
 
+    var menus = [
+        {value:"delete",label:"查看",click:function(){
+            var item = $$("img_list").getSelectedItem();
+            window.open(item.original_url);
+        }},
+        {value:"delete",label:"删除",click:function(){
+            $$("img_list").remove($$("img_list").getSelectedId());
+            var item = $$("img_list").getSelectedItem();
+            console.log(item);
+        }}
+    ];
+
     var init_data = function(ware_type_id,type_code){
+        menu.$add_menus(menus);
         base.getReq("/v2/api/store/ware_type_list.json?ware_type_code="+type_code,function(data){
             var list = $$("ware_type_id").getPopup().getList();
             list.clearAll();
