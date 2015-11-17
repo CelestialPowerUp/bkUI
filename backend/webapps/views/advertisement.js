@@ -70,7 +70,6 @@ define(["views/modules/base",
         $ui:layout,
         $oninit:function(app,scope){
             webix.$$("title").parse({title: "商城管理", details: "广告弹窗"});
-            //scope.ui(menu.$ui);
             menu.$add_menus(menus);
             form.$addCallBack(function(){
                 refresh();
