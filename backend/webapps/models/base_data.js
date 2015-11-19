@@ -55,9 +55,31 @@ define([],function(){
 	                     {id:15,value:"制动液"},
 	                     {id:16,value:"电瓶"},
 	                     {id:17,value:"正时皮带"},
-	                     {id:18,value:"空滤"},
+	                     {id:18,value:"空调滤芯"},
 	                     {id:19,value:"火花塞"}
                  ];
+
+	var car_part_type_for_model = [
+					{id:11,value:"空气滤"},
+					{id:9,value:"机油"},
+					{id:10,value:"机滤"},
+					{id:12,value:"汽滤"},
+					{id:1,value:"左前轮胎"},
+					{id:2,value:"右前轮胎"},
+					{id:3,value:"左后轮胎"},
+					{id:4,value:"右后轮胎"},
+					{id:5,value:"前刹车片"},
+					{id:6,value:"后刹车片"},
+					{id:7,value:"雨刮片"},
+					//{id:8,value:"雨刮器"},
+					{id:13,value:"变数油箱"},
+					{id:14,value:"转向助力液"},
+					{id:15,value:"制动液"},
+					{id:16,value:"电瓶"},
+					{id:17,value:"正时皮带"},
+					{id:18,value:"空调滤芯"},
+					{id:19,value:"火花塞"}
+				];
 
 	var audio_order = [
 		{id:"default",value:"assets/audio/order.mp3"},
@@ -76,6 +98,7 @@ define([],function(){
 	return {
 		citys:citys,
 		$car_part_type:car_part_type,
+		$car_part_type_for_model:car_part_type_for_model,
 		$audio_order:audio_order,
 		$audio_callcenter:audio_callcenter
 	};

@@ -109,7 +109,7 @@ define(["views/modules/base",
 											var form_data = $$("post_form").getValues();
 											post_data.base_msg = form_data;
 											//部件信息
-											var part_types = data_store.$car_part_type;
+											var part_types = data_store.$car_part_type_for_model;
 											for(var i=0;i<part_types.length;i++){
 												var part_form_data = $$("part_form_"+part_types[i].id).getValues();
 												post_data.parts.push(part_form_data);
@@ -158,7 +158,7 @@ define(["views/modules/base",
 		var rowsItem = submit_form_ui.elements[0].rows;
 		var lastView = rowsItem.pop();
 		//添加部件元素
-		var part_types = data_store.$car_part_type;
+		var part_types = data_store.$car_part_type_for_model;
 		for(var i=0;i<part_types.length;){
 			var arrayLength = part_types.length;
 			if((i%2)==0){
