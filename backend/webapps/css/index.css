@@ -177,6 +177,10 @@
     color: #fff;
 }
 
+.text_delete{
+    text-decoration: line-through;
+}
+
 /**
 
 **/

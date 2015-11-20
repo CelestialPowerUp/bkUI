@@ -72,9 +72,17 @@ define([],function(){
 		{id:"callin_2",value:"assets/audio/callin2.mp3"},
 		{id:"callin_3",value:"assets/audio/callin3.mp3"}
 	];
+
+	var ware_type_options = [
+		{id:"store_home_ware",value:"商城单品"},
+		{id:"coupon_package",value:"优惠券卡包"},
+		{id:"times_card",value:"次卡单品"},
+		{id:"le_jia_yuan",value:"乐家园"}
+	];
 	
 	return {
 		citys:citys,
+		ware_type_options:ware_type_options,
 		$car_part_type:car_part_type,
 		$audio_order:audio_order,
 		$audio_callcenter:audio_callcenter

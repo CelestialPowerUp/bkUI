@@ -1,10 +1,6 @@
 define(["views/modules/base"],function(base){
 
-    var type_options = [
-        {id:"store_home_ware",value:"商城单品"},
-        {id:"times_card",value:"次卡单品"},
-        {id:"le_jia_yuan",value:"乐家园"}
-    ];
+
 
     var elements = [
         {view:"text",id:"ware_type_id",name:"ware_type_id",hidden:true},

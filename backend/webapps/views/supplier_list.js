@@ -1,6 +1,7 @@
 define(["views/modules/base",
     "views/modules/table_page_m",
-    "views/forms/supplier_type"],function(base,table_page,supplier_type){
+    "views/forms/supplier_type",
+    "views/windows/supplier_coupon_package_win"],function(base,table_page,supplier_type,coupon_package){
 
     var cur_page = 1;
 
@@ -53,8 +54,17 @@ define(["views/modules/base",
                 return;
             }
             base.$msg.error("非社区店不支持该服务");
+        },
+        "fa-gift":function(e, id, node){
+            var item = $$("table_list").getItem(id);
+            //编辑服务商管理人员
+            if(item.supplier_mold==='community'){
+                this.$scope.ui(coupon_package.$ui).show();
+                coupon_package.$init_data(item.supplier_id);
+                return;
+            }
+            base.$msg.error("非社区店不支持该服务");
         }
-
     };
 
     var elements = [
@@ -85,11 +95,12 @@ define(["views/modules/base",
                 return "<span class='status status0'>停业中</span>";
             }}
         },
-        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商编辑' class='webix_icon fa-pencil'></span>"},
-        {id:"supplier_type", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
-        {id:"product_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
-        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='次卡编辑' class='webix_icon fa-credit-card'></span>"},
-        {id:"user_manager", header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商编辑' class='webix_icon fa-pencil'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='优惠卡包' class='webix_icon fa-gift'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='次卡编辑' class='webix_icon fa-credit-card'></span>"},
+        {header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='用户管理' class='webix_icon fa-user-md'></span>"}
     ];
 
     var table_ui = {

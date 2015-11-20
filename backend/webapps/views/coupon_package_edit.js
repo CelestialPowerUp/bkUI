@@ -13,11 +13,18 @@ define(["views/modules/base",
             "</div>";
     };
 
+    var note_ui = {
+        cols:[
+            { view: "icon", icon: "fa fa-exclamation-triangle"},
+            {view:"label", align:"left",css:"warning", label:"提交后的卡包项支持编辑但不支持删除，请确认后再提交数据！！！",height:30}
+        ]
+    };
 
     var coupon_item_list_ui = {
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"优惠券卡包项",height:30},
+                note_ui,
                 { view: "button", type: "iconButton", icon: "plus", label: "新增卡包项", width: 135, click: function(){
                     //todo
                     webix.ui(item_form.$ui).show();
@@ -104,8 +111,6 @@ define(["views/modules/base",
         }}]
     };
 
-
-
     var win_ui = {
             type:"space",
             rows:[form_ui,coupon_item_list_ui,button_ui]
@@ -149,13 +154,12 @@ define(["views/modules/base",
         });
     }
 
-    menu.$add_menus(menus);
-
     return {
         $ui:win_ui,
         $oninit:function(app,config){
             webix.$$("title").parse({title: "优惠券管理", details: "优惠券卡包编辑"});
             init_data();
+            menu.$add_menus(menus);
         }
     };
 });
