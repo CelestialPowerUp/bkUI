@@ -215,26 +215,24 @@
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0,#edeff4), color-stop(1, #e1e4ea));
     box-shadow: 0px 1px 1px #d4d7de;
 }
-.item_label{
-    font-size: 14px;
-    color:#df6910;
-    font-weight:bold;
-    float: left;
-    line-height:20px;
-    height:35px;
-}
-.item_value{
+
+.items{
     height:35px;
     line-height:20px;
     overflow:hidden;
     font-weight:bold;
-    float: left;
     padding-left: 5px;
-    width: 200px;
 }
-.year{
-    width: 210px;
-    text-align:right;
+
+.items label{
+    padding-left: 5px;
+    color:#df6910;
 }
+
+.items span{
+    padding-left: 5px;
+    width: 150px;
+}
+
 /**
 **/

@@ -3,6 +3,8 @@ define(["views/modules/base",
     "views/forms/store_product",
     "views/menus/popup_menu"],function(base,upload,store_product,menu){
 
+    var __type_code = null;
+
     var img_fomat = function(obj){
         return '<img src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
     };
@@ -131,6 +133,7 @@ define(["views/modules/base",
     ];
 
     var init_data = function(ware_type_id,type_code){
+        __type_code = type_code;
         menu.$add_menus(menus);
         base.getReq("/v2/api/store/ware_type_list.json?ware_type_code="+type_code,function(data){
             var list = $$("ware_type_id").getPopup().getList();

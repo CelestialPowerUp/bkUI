@@ -4,12 +4,9 @@ define(["views/modules/base",
 
     var item_fomat = function(obj){
         return "<div class='overall'>" +
-            "<div class='item_label'>卡包项名：</div><div class='item_value'>"+obj.coupon_package_item_name+"</div>"+
-            "<div class='item_label'>过期时间：</div><div class='item_value'>"+obj.expired_time+"</div>"+
-            "<div class='item_label'>关联类型：</div><div class='item_value'>"+obj.link_type_text+"</div>" +
-            "<div class='item_label'>关联项：</div><div class='item_value'>"+obj.link_info+"</div>"+
-            "<div class='item_label'>优惠类型：</div><div class='item_value'>"+obj.discount_type_text+"</div>"+
-            "<div class='item_label'>优惠值：</div><div class='item_value'>"+obj.discount_value+"</div>"+
+            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+obj.expired_time+"</span></div>"+
+            "<div class='items'><label>关联类型：</label><span>"+obj.link_type_text+"</span><label>关联项：</label><span>"+obj.link_info+"</span></div>"+
+            "<div class='items'><label>优惠类型：</label><span>"+obj.discount_type_text+"</span><label>优惠值：</label><span>"+obj.discount_value+"</span></div>"+
             "</div>";
     };
 
@@ -39,7 +36,7 @@ define(["views/modules/base",
                 css: "movies",
                 select: true,
                 scroll: true,
-                type: {width: 600, height: 120},
+                type: {width: 450, height: 120},
                 template: item_fomat,
                 on:{"onItemClick":function(id, e, node){
                     var item = this.getItem(id);
@@ -67,9 +64,10 @@ define(["views/modules/base",
                 view:"form",
                 elementsConfig:{
                     labelWidth: 80,
+                    width:250,
                     labelPosition:"left"
                 },
-                cols:form_elements,
+                rows:form_elements,
                 rules:{
                     price:webix.rules.isNumber
                 }
@@ -77,34 +75,44 @@ define(["views/modules/base",
         ]
     }
 
+    var submit_data = function(){
+        if (!$$("form_view").validate()){
+            base.$msg.error("请输入正确的参数");
+            return;
+        }
+        //卡包基本数据
+        var formdata = $$("form_view").getValues();
+        formdata.cost = formdata.price;
+
+        //卡包项数据
+        var datas = $$("coupon_item_list").serialize();
+        if(datas.length<=0){
+            base.$msg.error("请至少添加一个成卡包优惠项");
+            return;
+        }
+        var postdata = {coupon_package:formdata,package_items:datas};
+        var action = "coupon_packages/update.json";
+        if(formdata.id.length===0){
+            action = "coupon_packages/create.json";
+        }
+        base.postReq(action,postdata,function(backdata){
+            base.$msg.info("数据提交成功");
+            pars_data(backdata);
+        });
+    }
+
 
     var button_ui = {margin:20,cols:[{},
         {view:"button",label:"确定",width:80,click:function(){
-            if (!$$("form_view").validate()){
-                base.$msg.error("请输入正确的参数");
-                return;
-            }
-            //卡包基本数据
-            var formdata = $$("form_view").getValues();
-            formdata.cost = formdata.price;
-            console.log(formdata);
-
-            //卡包项数据
-            var datas = $$("coupon_item_list").serialize();
-            if(datas.length<=0){
-                base.$msg.error("请至少添加一个成卡包优惠项");
-                return;
-            }
-            var postdata = {coupon_package:formdata,package_items:datas};
-            console.log(postdata);
-            var action = "coupon_packages/update.json";
-            if(formdata.id.length===0){
-                action = "coupon_packages/create.json";
-            }
-            base.postReq(action,postdata,function(backdata){
-                base.$msg.info("数据提交成功");
-                pars_data(backdata);
+            webix.confirm({
+                text:"确定提交修改<br/> 确定?", ok:"是的", cancel:"取消",
+                callback:function(res){
+                    if(res){
+                        submit_data();
+                    }
+                }
             });
+
         }},
         {view:"button",label:"取消",width:80,click:function(){
             webix.$$("pop_win").close();
@@ -113,7 +121,7 @@ define(["views/modules/base",
 
     var win_ui = {
             type:"space",
-            rows:[form_ui,coupon_item_list_ui,button_ui]
+            rows:[{margin:15,cols:[coupon_item_list_ui,form_ui]},button_ui]
         };
 
     var menus = [
@@ -149,9 +157,11 @@ define(["views/modules/base",
 
     var init_data = function(){
         var id = base.get_url_param("id")
-        base.getReq("coupon_packages/"+id,function(data){
-           pars_data(data);
-        });
+        if(id){
+            base.getReq("coupon_packages/"+id,function(data){
+                pars_data(data);
+            });
+        }
     }
 
     return {
