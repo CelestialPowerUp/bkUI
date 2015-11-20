@@ -8,7 +8,7 @@ define(['../modules/base','../../models/base_data'],function(base,base_data){
 			var car = order.car;
 			obj.model = car.brand+car.category+car.model;
 			obj.order_id = order.id;
-            webix.message({expire:-1,type:"notify",text:"亲,有新的订单,快去查看认领吧"});
+            webix.message({expire:5000,type:"notify",text:"亲,有新的订单,快去查看认领吧"});
 			webix.$$("new_order_list").add(obj);
             if(order.peer_source){
                 play_info(order.peer_source);

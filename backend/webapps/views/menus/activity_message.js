@@ -6,7 +6,7 @@ define(['../modules/base','../../models/base_data'],function(base,base_data){
 
 		base.getReq("/activity_record.json?activity_record_id="+order_id,function(order){
 
-            webix.message({expire:-1,type:"notify",text:"亲,"+order.activity_name+"活动有新的订单了，快去看看吧！"});
+            webix.message({expire:5000,type:"notify",text:"亲,"+order.activity_name+"活动有新的订单了，快去看看吧！"});
 
 			order.id = order.activity_record_id;
 
