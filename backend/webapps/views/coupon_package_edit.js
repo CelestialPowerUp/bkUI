@@ -4,9 +4,9 @@ define(["views/modules/base",
 
     var item_fomat = function(obj){
         return "<div class='overall'>" +
-            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+obj.expired_time+"</span></div>"+
+            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+obj.expired_time+"天</span></div>"+
             "<div class='items'><label>关联类型：</label><span>"+obj.link_type_text+"</span><label>关联项：</label><span>"+obj.link_info+"</span></div>"+
-            "<div class='items'><label>优惠类型：</label><span>"+obj.discount_type_text+"</span><label>优惠值：</label><span>"+obj.discount_value+"</span></div>"+
+            "<div class='items'><label>优惠类型：</label><span>"+obj.discount_type_text+"</span><label>优惠值：￥</label><span>"+obj.discount_value+"</span></div>"+
             "</div>";
     };
 
