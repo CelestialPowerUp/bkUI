@@ -40,7 +40,7 @@ define(["views/modules/base"],function(base){
     var note_ui = {
         cols:[
             { view: "icon", icon: "fa fa-exclamation-triangle"},
-            {view:"label", align:"left",css:"warning", label:"每个卡包必须选择一个卡包项！！",height:30}
+            {view:"label", align:"left",css:"warning", label:"每个卡包必须选择一个卡包项！打杠的卡包项标识该社区店不支持该服务项",height:30}
         ]
     };
 
@@ -50,6 +50,11 @@ define(["views/modules/base"],function(base){
             console.log(data);
             $$("item_list").clearAll();
             $$("item_list").parse(data['package_items']);
+            if(data.supplier_product){
+                $$("supplier_product_name").setValue(data.supplier_product.supplier_product_name);
+                $$("supplier_price").setValue(data.supplier_product.supplier_price);
+                $$("supplier_cost").setValue(data.supplier_product.supplier_cost);
+            }
         });
     };
 
@@ -85,7 +90,7 @@ define(["views/modules/base"],function(base){
         var items = $$("item_list").serialize();
         var form_data = $$("form_view").getValues();
         var post_data = {supplier_product:form_data,link_package_items:items};
-        base.postReq("supplier/coupon_package/create.json",post_data,function(){
+        base.postReq("supplier/coupon_package/update.json",post_data,function(){
             base.$msg.info("数据提交成功");
             if(typeof(submit_call_back)==='function'){
                 submit_call_back();
@@ -110,7 +115,7 @@ define(["views/modules/base"],function(base){
             }
             if(coupon_package_id){
                 $$("product_id").setValue(coupon_package_id);
-                $$("coupon_package_id").refresh();
+                $$("product_id").refresh();
                 $$("product_id").disable();
             }
         });

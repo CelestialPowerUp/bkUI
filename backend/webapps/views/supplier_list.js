@@ -1,7 +1,8 @@
 define(["views/modules/base",
     "views/modules/table_page_m",
     "views/forms/supplier_type",
-    "views/windows/supplier_coupon_package_win"],function(base,table_page,supplier_type,coupon_package){
+    "views/windows/supplier_coupon_package_win",
+    "views/windows/supplier_product_win"],function(base,table_page,supplier_type,coupon_package,supplier_product){
 
     var cur_page = 1;
 
@@ -30,9 +31,10 @@ define(["views/modules/base",
         },
         "fa-list-ul":function(e, id, node){
             var item = $$("table_list").getItem(id);
-            //编辑服务商品
+            //编辑服务商管理人员
             if(item.supplier_mold==='community'){
-                this.$scope.show("/supplier_product_list:id="+item.supplier_id);
+                this.$scope.ui(supplier_product.$ui).show();
+                supplier_product.$init_data(item.supplier_id);
                 return;
             }
             base.$msg.error("非社区店不支持该服务");

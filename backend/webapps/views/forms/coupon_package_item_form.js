@@ -58,7 +58,16 @@ define(["views/modules/base",
         {view: "richselect",label:"优惠类型",placeholder:"选择优惠券类型",value:"reduce_price",options:[
             {id:"fixed_price",value:"定额券"},
             {id:"reduce_price",value:"金额抵扣券"}
-        ],name:"discount_type",id:"discount_type",required:true},
+        ],on:{
+            onChange:function(newv, oldv){
+                if($$("link_type").getValue()!=='product'&&newv==='fixed_price'){
+                    //
+                    base.$msg.error("只有特定商品可以使用定额券");
+                    $$("discount_type").setValue("reduce_price");
+                    $$("reduce_price").refresh();
+                }
+            }
+        },name:"discount_type",id:"discount_type",required:true},
         {view:"text",label:"优惠价格",placeholder: "请输入优惠价格",name:"discount_value",required:true},
         {view:"text",label:"过期时间",placeholder: "输入优惠券过期时间（天）",name:"expired_time",required:true}
     ]
