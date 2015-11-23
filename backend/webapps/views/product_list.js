@@ -1,7 +1,7 @@
 define([
 	"views/modules/base",
 	"views/forms/product",
-	"views/modules/table_page"
+	"views/modules/table_page_m"
 	], function(base,product,table_page){
 	
 	var cur_page = 1;
@@ -17,7 +17,6 @@ define([
 	};
 	
 	var page_call_back = function(page){
-		console.log("点击了第"+page+"页");
 		serch_producs(page);
 	};
 	
@@ -28,7 +27,7 @@ define([
 		for(var i=0;i<items.length;i++){
 			$$("product_list").add(items[i]);
 		}
-		table_page.$update_page_items(pages);
+		table_page.$update_page_items("product_list_table",pages);
 		table_page.$add_page_callback(page_call_back);
 	};
 	
@@ -76,7 +75,7 @@ define([
 		  view:"datatable",
 		  select:false,
 		  autoheight:true,
-		  autowidth:true,
+		  autoConfig:true,
 		  rowHeight:35,
 		  hover:"myhover",
 		  onClick:onClick,
@@ -84,14 +83,14 @@ define([
 					{id:"id",width:50,hidden:true},
 					{id:"product_brand_name", header:"品牌", width:150},
 					{id:"product_category_name", header:"商品类别", width:150},
-					{id:"product_name", header:"商品名称", width:250},
+					{id:"product_name", header:"商品名称", width:250,fillspace:true},
 					{id:"cost", header:"成本",width:150},
 					{id:"price", header:"售价", width:150},
 					{id:"trash", header:"操作", width:80, template:"<span><u class='edit'> 编辑</u><u class='delete'> 删除</u></span>"}
 				]
 	};
 	
-	var product_list_ui = table_page.$create_page_table(product_data_table);
+	var product_list_ui = table_page.$create_page_table("product_list_table",product_data_table);
 	
 	var layout = {
 			type:"space",
