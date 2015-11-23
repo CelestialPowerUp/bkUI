@@ -5,7 +5,12 @@ define(["views/modules/base",
 
     var __type_code = null;
 
+    var __category_code = 'normal';
+
     var img_fomat = function(obj){
+        if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
+            return '<img src="http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF" class="content" ondragstart="return false"/>';
+        }
         return '<img src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
     };
 
@@ -36,7 +41,7 @@ define(["views/modules/base",
         {view: "richselect", id:"ware_type_id",name:"ware_type_id",options:[],label:"单品分类",placeholder:"请选择单品类别",width:350},
         {view: "text", label:"关联商品",id:"product_info",name:"product_info", placeholder: "单机选择关联的商品",width:350,readonly:true,click:function(){
             this.$scope.ui(store_product.$ui).show();
-            store_product.$init_data($$("product_id").getValue());
+            store_product.$init_data($$("product_id").getValue(),__category_code);
             store_product.$add_callback(function(choose_data){
                 for(var i=0;i<choose_data.length;i++){
                     $$("product_info").setValue(choose_data[i]['product_category_name']+"-"+choose_data[i]['product_name']);
@@ -127,13 +132,14 @@ define(["views/modules/base",
         }},
         {value:"delete",label:"删除",click:function(){
             $$("img_list").remove($$("img_list").getSelectedId());
-            var item = $$("img_list").getSelectedItem();
-            console.log(item);
         }}
     ];
 
     var init_data = function(ware_type_id,type_code){
         __type_code = type_code;
+        if(__type_code === 'coupon_package'){
+            __category_code = 'coupon_package';
+        }
         menu.$add_menus(menus);
         base.getReq("/v2/api/store/ware_type_list.json?ware_type_code="+type_code,function(data){
             var list = $$("ware_type_id").getPopup().getList();

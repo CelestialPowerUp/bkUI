@@ -81,8 +81,11 @@ define(["views/modules/base"],function(base){
 			}
 		};
 	
-	var init_data = function(choose_id){
-		base.getReq("meta_products.json",function(data){
+	var init_data = function(choose_id,category_code){
+		if(!category_code){
+			category_code = 'normal';
+		}
+		base.getReq("meta_products.json?category_code="+category_code,function(data){
 			for(var i=0;i<data.length;i++){
 				$$("ware_products_list").add(parse_check_data(data[i],choose_id));
 			}
