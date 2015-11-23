@@ -1,6 +1,7 @@
 define(["views/modules/base",
     "views/forms/store_form",
-    "views/forms/store_type_form",],function(base,store_form,store_type_form){
+    "views/forms/store_type_form",
+    "models/base_data"],function(base,store_form,store_type_form,base_data){
 
     var on_event = {
         "fa-trash-o":function(e, id, node){
@@ -60,16 +61,10 @@ define(["views/modules/base",
         return '<span class="webix_icon_btn fa-check-square-o list_icon" style="max-width:32px;"></span>'
     };
 
-    var type_options = [
-        {id:"store_home_ware",value:"商城单品"},
-        {id:"times_card",value:"次卡单品"},
-        {id:"le_jia_yuan",value:"乐家园"}
-    ];
-
     var filter_ui = {
         margin:15,
         cols:[
-            {view: "richselect", id:"type_code",name:"type_code",options:type_options,label:"单品分类",placeholder:"请选择单品类别",value:"store_home_ware",width:250,
+            {view: "richselect", id:"type_code",name:"type_code",options:base_data.ware_type_options,label:"单品分类",placeholder:"请选择单品类别",value:"store_home_ware",width:250,
             on:{
                 onChange:function(newv,oldv){
                     refresh_table();

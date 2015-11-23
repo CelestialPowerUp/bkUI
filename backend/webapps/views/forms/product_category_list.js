@@ -5,7 +5,7 @@ define(["views/modules/base"],function(base){
 	var list_ui = {
 			view: "list",
 			css: "tasks_list",
-			id:"ware_products_list",
+			id:"product_category_list",
 			height:450,
 			width:650,
 			type: {
@@ -15,23 +15,22 @@ define(["views/modules/base"],function(base){
 				},
 				check:  webix.template('<span class="webix_icon_btn fa-{obj.$check?check-:}square-o list_icon" style="max-width:32px;"></span>'),
 				template: function(obj,type){
-					return "<div class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text'>"+obj.product_name+" ( "+obj.product_category_name+" ) </div>";
+					return "<div class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text'>"+obj.category_name+" ( "+obj.category_code+" ) </div>";
 				}
 			},
 			data: [],
 			on: {
 				onItemClick:function(id){
 					var item = this.getItem(id);
-					var datas = $$("ware_products_list").serialize();
+					var datas = $$("product_category_list").serialize();
 					for(var i=0;i<datas.length;i++){
-						if(datas[i].product_id === item.product_id){
+						if(datas[i].current_category_type === item.current_category_type){
 							datas[i].$check = true;
 							continue;
 						}
 						datas[i].$check = false;
 					}
-					//$$("ware_products_list").parse(datas);
-					$$("ware_products_list").refresh();
+					$$("product_category_list").refresh();
 				}
 			}
 	};
@@ -40,23 +39,23 @@ define(["views/modules/base"],function(base){
 		{view:"text",label:"请输入查找的内容:",css:"fltr",labelWidth:135,on:{
 			onTimedKeyPress:function(){
 				var value = this.getValue().toLowerCase();
-				var datas = $$("ware_products_list").serialize();
+				var datas = $$("product_category_list").serialize();
 				for(var i=0;i<datas.length;i++){
 					try{
-						var str1 = datas[i].product_name+datas[i].product_category_name;
+						var str1 = datas[i].category_name;
 						datas[i].value_weight = base.$value_weight(value,str1);
 					}catch(e){
 						console.log(datas[i]);
 					}
 				}
-				$$("ware_products_list").sort("#value_weight#","desc");
-				$$("ware_products_list").scrollTo(0,0);
+				$$("product_category_list").sort("#value_weight#","desc");
+				$$("product_category_list").scrollTo(0,0);
 			}
 		}},
 	]};
 
 	var button_ui = {cols:[{},{view:"button",label:"确定",width:80,click:function(){
-								var datas = $$("ware_products_list").serialize();
+								var datas = $$("product_category_list").serialize();
 								var checkdata = [];
 								for(var i=0;i<datas.length;i++){
 									if(datas[i]['$check']){
@@ -74,27 +73,25 @@ define(["views/modules/base"],function(base){
 	
 	var layout = {
 			view:"window", modal:true, id:"model_win", position:"center",
-			head:"选择商品",
+			head:"选择商品类型",
 			body:{
 				type:"space",
 				rows:[filter,list_ui,button_ui]
 			}
 		};
 	
-	var init_data = function(choose_id,category_code){
-		if(!category_code){
-			category_code = 'normal';
-		}
-		base.getReq("meta_products.json?category_code="+category_code,function(data){
+	var init_data = function(choose_id){
+		base.getReq("coupon_packages/link_product_category.json",function(data){
+			console.log(data);
 			for(var i=0;i<data.length;i++){
-				$$("ware_products_list").add(parse_check_data(data[i],choose_id));
+				$$("product_category_list").add(parse_check_data(data[i],choose_id));
 			}
 		});
 	};
 	
 	var parse_check_data = function(obj,choose_id){
 		obj.$check = false;
-		if(obj.product_id===choose_id){
+		if(obj.current_category_type===choose_id){
 			obj.$check = true;
 		}
 		return obj;

@@ -5,6 +5,7 @@
     <file url="file://$PROJECT_DIR$/webapps/views/activity_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/advertisement.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/api_list.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/coupon_package_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/coupon_send.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/channel_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_form.js" charset="UTF-8" />

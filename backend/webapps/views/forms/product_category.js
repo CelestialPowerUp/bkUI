@@ -100,6 +100,7 @@ define(["views/modules/base"],function(base){
 			view:"form", 
 			id:"category_form1",
 			elements:[
+						{view:"text",name:"category_code",value:"normal",hidden:true},
 					    {view:"text",name:"category_name",label:"一级分类名称",placeholder:"找不到一级分类在这添加"},
 					    {
 							margin:10,
@@ -134,11 +135,12 @@ define(["views/modules/base"],function(base){
 			id:"category_form2",
 			elements:[
 		          		{view:"text",name:"current_category_type",hidden:true},
+						{view:"text",name:"category_code",value:"normal",hidden:true},
 					    {view: "richselect", name: "parent_category_type",id:"parent_category_type",label:"一级分类",options:[],placeholder:"选择一级分类",width:250,
 		          			on:{"onAfterRender":function(){
 		          				uodate_parent_category_data();
 		          			}}},
-					    {view:"text",name:"category_name",label:"二级分类",placeholder:"输入二级分类名称"},
+					    {view:"text",name:"category_name",label:"二级分类",placeholder:"输入二级分类名称"}
 					],
 			rules:{
 				"category_name":webix.rules.isNotEmpty,
