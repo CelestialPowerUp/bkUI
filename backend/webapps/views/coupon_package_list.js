@@ -9,7 +9,9 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
-
+                        base.postReq("coupon_packages/delete.json?coupon_package_id="+item.coupon_package_id,"",function(){
+                            $$("table_list").remove(id);
+                        });
                     }
                 }
             });
