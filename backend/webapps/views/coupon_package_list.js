@@ -9,6 +9,7 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
+
                     }
                 }
             });
@@ -33,8 +34,8 @@ define(["views/modules/base",
             return result;
         }},
         {id:"create_time", header:"创建时间",width:150,format:base.$show_time,fillspace:false},
-        {id:"edit", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='编辑优惠券卡包' class='webix_icon fa-pencil'></span>"},
-        {id:"delete", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='删除优惠券卡包' class='webix_icon fa-times'></span>"}
+        {id:"edit", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-pencil' title='卡包编辑'>编辑</span>"},
+        {id:"delete", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-times trash' title='删除卡包'>删除</span>"}
     ];
 
     var table_ui = {
@@ -80,7 +81,7 @@ define(["views/modules/base",
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "服务商管理", details: "服务商管理人员"});
+            webix.$$("title").parse({title: "优惠券管理", details: "优惠券卡包摸版"});
             refresh_table();
         }
     }

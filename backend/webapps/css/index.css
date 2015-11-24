@@ -181,6 +181,12 @@
     text-decoration: line-through;
 }
 
+.trash{
+    cursor:pointer;
+    text-decoration: underline;
+    font-size: 12px;
+}
+
 /**
 
 **/

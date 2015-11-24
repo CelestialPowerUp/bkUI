@@ -45,11 +45,7 @@ define(["views/modules/base"],function(base){
         {id:"repair", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='修复数据' class='webix_icon fa-pencil'></span>"}
     ];
 
-    var price_template = {total_revenue:0,total_reward:0,total_price:0,
-        settled_revenue:0,settled_reward:0,settled_price:0,
-        not_settled_revenue:0,not_settled_reward:0,not_settled_price:0,
-        wait_settled_revenue:0,wait_settled_reward:0,wait_settled_price:0
-    };
+    var price_template = {total_revenue:0, settled_revenue:0, not_settled_revenue:0, wait_settled_revenue:0};
 
     var table_ui = {
         id:"table_list",
@@ -103,10 +99,6 @@ define(["views/modules/base"],function(base){
                 id: "price_show",
                 height: 60,
                 template:"<div class='big_strong_text'><span>总流水：￥#total_revenue#</span><span>已结算流水：￥#settled_revenue#</span><span>未结算流水：￥#not_settled_revenue#</span><span>待结算流水：￥#wait_settled_revenue#</span></div>",
-                //"<div class='big_strong_text'><span>总流水：￥#total_revenue#</span><span>总奖励：￥#total_reward#</span><span>总金额：￥#total_price#</span></div>"
-                //+"<div class='big_strong_text'><span>已结算流水：￥#settled_revenue#</span><span>已结算奖励：￥#settled_reward#</span><span>已结算金额：￥#settled_price#</span></div>"
-                //+"<div class='big_strong_text'><span>未结算流水：￥#not_settled_revenue#</span><span>未结算奖励：￥#not_settled_reward#</span><span>未结算金额：￥#not_settled_price#</span></div>"
-                //+"<div class='big_strong_text'><span>待结算流水：￥#wait_settled_revenue#</span><span>待结算奖励：￥#wait_settled_reward#</span><span>待结算金额：￥#wait_settled_price#</span></div>",
                 data: webix.copy(price_template)
             },
             {margin:15,cols:[
@@ -172,23 +164,14 @@ define(["views/modules/base"],function(base){
             var item = $$("table_list").getItem(row);
             if(item.cost_settled){
                 price.settled_revenue += item.order_cost*1;
-                //price.settled_reward += item.order_reward*1;
             }else{
                 price.not_settled_revenue += item.order_cost*1;
-                //price.not_settled_reward += item.order_reward*1;
             }
             if(item.settled_check){
                 price.wait_settled_revenue += item.order_cost*1;
-                //price.wait_settled_reward += item.order_reward*1;
             }
             price.total_revenue += item.order_cost*1;
-            //price.total_reward += item.order_reward*1;
-            //$$("price_show").parse(price);
         });
-        //price.total_price = price.total_revenue+price.total_reward;
-        //price.settled_price = price.settled_revenue+price.settled_reward;
-        //price.not_settled_price = price.not_settled_revenue+price.not_settled_reward;
-        //price.wait_settled_price = price.wait_settled_revenue+price.wait_settled_reward;
         $$("price_show").parse(price);
     }
 
