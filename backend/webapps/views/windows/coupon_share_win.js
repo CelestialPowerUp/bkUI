@@ -1,11 +1,10 @@
-define(["views/modules/base",
-	"views/forms/supplier_product"],function(base,supplier_product){
+define(["views/modules/base"],function(base){
 
 	var __call_back = null;
 
 	var note_ui = {
 		cols:[
-			{ view: "icon", icon: "fa fa-exclamation-triangle"},
+			{view: "icon", icon: "fa fa-exclamation-triangle"},
 			{view:"label", align:"left",css:"warning", label:"每条文案之间用换行（回车键--Enter）分割"}
 		]
 	};
@@ -21,7 +20,8 @@ define(["views/modules/base",
 			{ view:"text",name:"coupon_share_id",hidden:true,required:true},
 			{ view:"text", label:'分型名称:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
 			{ view: "richselect", id:"coupon_package_id",name:"coupon_package_id",options:[],label:"选择卡包:",required:true,placeholder:"请选择分享卡包",value:""},
-			{ view:"textarea",label:"分享文案:", name:"note_list",id:"note_list",height:150,required:true,placeholder:"输入文案",value:"" }
+			{ view:"textarea",label:"分享文案:", name:"note_list",id:"note_list",height:150,required:true,placeholder:"输入文案",value:"" },
+			{ view:"text",label:"分享地址:", name:"share_url",id:"share_url",height:150,required:true,placeholder:"分享地址",value:"" }
 		]
 	};
 
