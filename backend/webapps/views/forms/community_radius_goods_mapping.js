@@ -59,7 +59,7 @@ define(["views/modules/base"],function(base){
 
     var layout = {
         view:"window", modal:true, id:"model_win", position:"center",
-        head:"服务商类型配置",
+        head:"商品关联管理",
         body:{
             type:"space",
             rows:[list_ui,button_ui]

@@ -24,9 +24,7 @@ define(["views/modules/base",
 			//编辑服务商类型
 			this.$scope.ui(community_radius_goods_mapping.$ui).show();
 			community_radius_goods_mapping.$init_data(item.goods_id);
-			store_form.$add_submit_callback(function(){
-				refresh_table();
-			});
+			webix.addCallback(refresh_table());
 		}
 	};
 
