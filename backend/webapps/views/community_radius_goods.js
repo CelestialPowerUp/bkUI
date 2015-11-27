@@ -1,8 +1,9 @@
 define(["views/modules/base",
 	"views/modules/table_page_m",
 	"views/forms/community_radius_goods_mapping",
+	"views/forms/store_form",
 	"views/windows/supplier_coupon_package_win",
-	"views/windows/supplier_product_win"],function(base,table_page,community_radius_goods_mapping,coupon_package,supplier_product){
+	"views/windows/supplier_product_win"],function(base,table_page,community_radius_goods_mapping,coupon_package,supplier_product,store_form){
 
 	var cur_page = 1;
 
@@ -23,6 +24,9 @@ define(["views/modules/base",
 			//编辑服务商类型
 			this.$scope.ui(community_radius_goods_mapping.$ui).show();
 			community_radius_goods_mapping.$init_data(item.goods_id);
+			store_form.$add_submit_callback(function(){
+				refresh_table();
+			});
 		}
 	};
 
@@ -72,14 +76,6 @@ define(["views/modules/base",
 			});
 		})
 	};
-
-	var load_table = function(data){
-		var i=0;
-		while(i<data.length){
-			$$("table_list").rows.push(data[i]);
-			i++;
-		}
-	}
 
 	return {
 		$ui:layout,
