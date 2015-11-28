@@ -167,7 +167,7 @@ define(["views/modules/base",
 											check_conflict_order();
 										}
 									}
-								},
+								}
 							]},
 							/*{view:"datepicker", timepicker:true, label:"还车时间：", name:"give_back_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:350},*/
                    			{view:"textarea",name:"comment",label:"客户备注",placeholder:"客户备注",disabled:true},
