@@ -22,7 +22,6 @@ define(["views/modules/base",
 		"fa-pencil":function(e, id){
 			var item = $$("supplier_coupon_package_list").getItem(id);
 			//编辑优惠券卡包
-			console.log(item);
 			webix.ui(supplier_coupon_package.$ui).show();
 			supplier_coupon_package.$init_data(item.supplier_id,item.product_id);
 			supplier_coupon_package.$add_submit_callback(function(){

@@ -57,7 +57,6 @@ define(["views/modules/base",
         "fa-hand-o-right":function(e, id){
             var item = $$("table_list").getItem(id);
             webix.ui(system_work_order_win.$ui).show();
-            console.log(item.userId);
             system_work_order_win.$init_data(item.userId);
         }
     };

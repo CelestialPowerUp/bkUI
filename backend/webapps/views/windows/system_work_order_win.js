@@ -4,10 +4,10 @@
 define(["views/modules/base"],function (base) {
 
     var elements = [
-        {id:"supplier_id",header:"车牌",width:100,template:function(obj){
+        {id:"p_number",header:"车牌",width:100,template:function(obj){
             return obj.province+obj.number;
         }},
-        {id:"product_id", header:"用户",width:150,template:function(obj){
+        {id:"customer_phone_s", header:"用户",width:150,template:function(obj){
             return obj.customerName+" "+obj.customer_phone_number;
 
         },fillspace:false},
@@ -15,13 +15,16 @@ define(["views/modules/base"],function (base) {
         {id:"boughtDate", header:"购车时间",width:150,format:base.$show_time,fillspace:false},
         {id:"serviceTime", header:"保养时间",width:150,format:base.$show_time,fillspace:false},
         {id:"procStatus", header:"状态",width:100,fillspace:false},
-        {id:"$check", header:"确认",width:50,template:function(obj,common){
+        {id:"$check", header:"确认",width:100,template:function(obj,common){
+            if(obj.workStatus===0){
+                return "已录入";
+            }
             return common.checkbox(obj, common, obj.$check,{checkValue:true});
         },fillspace:false}
     ];
 
-    var system_work_order_table_ui = {
-        id:"system_work_order_table",
+    var work_order_table_ui = {
+        id:"work_order_table",
         view:"datatable",
         headerRowHeight:35,
         autoConfig:true,
@@ -39,7 +42,18 @@ define(["views/modules/base"],function (base) {
             {},
             { view: "button", type: "iconButton", icon: "check-square-o", label: "确认录入", width: 110, click: function(){
                 //todo workorder/update
-
+                var datas = $$("work_order_table").serialize();
+                var arr = [];
+                for(var a in datas){
+                    arr.push(datas[a].id);
+                }
+                if(arr.length<=0){
+                    return ;
+                }
+                base.postReq("workorder/updateId",arr,function(data){
+                    base.$msg.info("录入成功");
+                    $$("system_work_order_win").close();
+                });
             }}
         ]
 
@@ -57,15 +71,16 @@ define(["views/modules/base"],function (base) {
                 { view:"button", label: 'X', width: 35, align: 'right', click:"$$('system_work_order_win').close();"}
             ]},
         body:{
-            rows:[system_work_order_table_ui,button_ui]
+            rows:[work_order_table_ui,button_ui]
         }
     };
 
     var init_data = function(car_id){
-        $$("system_work_order_table").clearAll();
         base.getReq("workorder/getWorkOrderByCarUserId/"+car_id,function(data){
-            $$("system_work_order_table").parse(data);
-            console.log(data);
+            $$("work_order_table").clearAll();
+            for(var a in data){
+                $$("work_order_table").add(data[a]);
+            }
         });
     }
 

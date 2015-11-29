@@ -1,9 +1,15 @@
-define(["views/modules/base"],function(base){
+define(["views/modules/base",
+    "views/modules/table_page_m"],function(base,table_page){
+
+    var cur_page = 1;
+
+    var page_size = 10;
 
     var table_elements = [
-        {id:"时间", header:"推送人群",width:100},
-        {id:"hand_user_name", header:"推送人群",width:100},
-        {id:"hand_coupon_name", header:"推送内容",fillspace:true}
+        {id:"create_time", header:"推送时间",width:100},
+        {id:"target_type", header:"推送类型",width:100},
+        {id:"info_users_id", header:"推送人群",width:100},
+        {id:"msg", header:"推送内容",fillspace:true}
     ];
 
     var table_ui = {
@@ -16,6 +22,8 @@ define(["views/modules/base"],function(base){
         columns:table_elements,
         data:[]
     }
+
+    var page_table_ui = table_page.$create_page_table("table_page_list",table_ui);
 
     var layout ={
         rows:[
@@ -33,22 +41,24 @@ define(["views/modules/base"],function(base){
             ]},
             {
                 margin:15,cols:[
-                    table_ui,
+                    page_table_ui,
                     {
                         rows:[
-                            {view:"textarea",id:"send_msg",label:"发送信息",labelPosition:"top",height:450,placeholder: "输入发送的电话号码,用换行分割"},
+                            {view:"textarea",id:"send_msg",label:"发送信息",labelPosition:"top",height:450,required:true,placeholder: "输入发送的电话号码,用换行分割"},
                             {margin:15,cols:[
                                 {},
-                                {view:"button",label:"短信发送",click:function(){
+                                {view:"button",label:"短信发送",disabled:true,click:function(){
                                     // workorder/actionPushMsgToUsers
+                                    $$("send_msg").validate();
                                     base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
-                                        console.log(data);
+                                        base.$msg.info("发送成功");
+                                        refresh_table();
                                     });
                                 }},
                                 {view:"button",label:"APP发送",click:function(){
                                     base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
-
-                                        console.log(data);
+                                        base.$msg.info("发送成功");
+                                        refresh_table();
                                     });
                                 }}
                             ]},
@@ -61,8 +71,14 @@ define(["views/modules/base"],function(base){
     };
 
     var refresh_table = function(){
-        base.getReq("workorder/getAllPushMsg?page=1&page_size=10",function(data){
-            console.log(data);
+        $$("table_list").clearAll();
+        base.getReq("workorder/getAllPushMsg?page="+cur_page+"&page_size="+page_size,function(data){
+            $$("table_list").parse(data.items);
+            table_page.$update_page_items("table_page_list",data);
+            table_page.$add_page_callback(function(page){
+                cur_page = page;
+                refresh_table();
+            });
         });
     };
 
