@@ -3,33 +3,21 @@
  */
 define(["views/modules/base"],function (base) {
 
-    var on_event = {
-        "fa-times":function(e, id){
-            var item = $$("system_work_order_table").getItem(id);
-            webix.confirm({
-                text:"删除该记录<br/> 确定?", ok:"是的", cancel:"取消",
-                callback:function(res){
-                    if(res){
-                        //删除资源
-
-                    }
-                }
-            });
-        },
-        "fa-pencil":function(e, id){
-            var item = $$("system_work_order_table").getItem(id);
-
-        }
-    };
-
     var elements = [
-        {id:"supplier_id",header:"车牌",width:80},
-        {id:"product_id", header:"用户",width:80,fillspace:false},
-        {id:"supplier_product_name", header:"创建原因",width:200,fillspace:false},
-        {id:"supplier_price", header:"购车时间",width:100,format:base.priceFormat,fillspace:false},
-        {id:"supplier_cost", header:"保养周期",width:100,format:base.priceFormat,fillspace:false},
-        {id:"supplier_cost", header:"状态",width:100,format:base.priceFormat,fillspace:false},
-        {id:"supplier_cost", header:"确认转工单",width:100,format:base.priceFormat,fillspace:false}
+        {id:"supplier_id",header:"车牌",width:100,template:function(obj){
+            return obj.province+obj.number;
+        }},
+        {id:"product_id", header:"用户",width:150,template:function(obj){
+            return obj.customerName+" "+obj.customer_phone_number;
+
+        },fillspace:false},
+        {id:"serviceType", header:"创建原因",width:150,fillspace:false},
+        {id:"boughtDate", header:"购车时间",width:150,format:base.$show_time,fillspace:false},
+        {id:"serviceTime", header:"保养时间",width:150,format:base.$show_time,fillspace:false},
+        {id:"procStatus", header:"状态",width:100,fillspace:false},
+        {id:"$check", header:"确认",width:50,template:function(obj,common){
+            return common.checkbox(obj, common, obj.$check,{checkValue:true});
+        },fillspace:false}
     ];
 
     var system_work_order_table_ui = {
@@ -42,8 +30,7 @@ define(["views/modules/base"],function (base) {
         hover:"myhover",
         scrollY:true,
         columns:elements,
-        data:  [],
-        onClick:on_event
+        data:  []
     };
 
   
@@ -51,7 +38,7 @@ define(["views/modules/base"],function (base) {
         cols:[
             {},
             { view: "button", type: "iconButton", icon: "check-square-o", label: "确认录入", width: 110, click: function(){
-                //todo
+                //todo workorder/update
 
             }}
         ]
@@ -74,7 +61,16 @@ define(["views/modules/base"],function (base) {
         }
     };
 
+    var init_data = function(car_id){
+        $$("system_work_order_table").clearAll();
+        base.getReq("workorder/getWorkOrderByCarUserId/"+car_id,function(data){
+            $$("system_work_order_table").parse(data);
+            console.log(data);
+        });
+    }
+
     return {
-        $ui:win_ui
+        $ui:win_ui,
+        $init_data : init_data
     };
 });

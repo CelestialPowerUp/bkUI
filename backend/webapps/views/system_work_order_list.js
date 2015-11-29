@@ -5,7 +5,11 @@
  * Created by Administrator on 2015/11/25.
  */
 define(["views/modules/base",
-        "views/windows/system_work_order_win"],function(base,system_work_order_win){
+    "views/modules/table_page_m",
+    "views/windows/system_work_order_win"],function(base,table_page,system_work_order_win){
+
+    /*分页相关*/
+    var cur_page = 1;
 
     var search_ui =
     {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
@@ -16,62 +20,90 @@ define(["views/modules/base",
             {id:"3",value:"验车"},
             {id:"4",value:"维修"}
         ],placeholder:"选择工单类型", on:{"onChange":function(n,o){
-            //todo
-
+            refresh_table();
         }}
         },
-        {view:"datepicker", timepicker:false, label:"处理周期", name:"pick_start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
+        {view:"datepicker", timepicker:false, label:"处理周期", id:"start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
             on:{
                 "onChange":function(){
-
+                    refresh_table();
                 }
             }
         },
-        {view:"datepicker", timepicker:false, label:"--", name:"pick_end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:200,
+        {view:"datepicker", timepicker:false, label:"--", id:"end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:200,
             on:{
                 "onChange":function(){
-
+                    refresh_table();
                 }
             }
-        },
-        { view: "button", type: "iconButton", icon: "fa-apple", label: "进入", width: 135, click: function(){
-            //todo
-            webix.ui(system_work_order_win.$ui).show();
-        }}
+        }
     ]};
 
     var table_columns = [
-        {id:"1",header:"工单号"},
-        {id:"2", header:"车牌"},
-        {id:"3", header:"车型号"},
-        {id:"4", header:"用户名"},
-        {id:"5", header:"手机号"},
-        {id:"6", header:"创建时间"},
-        {id:"7", header:"客服"},
-        {id:"8", header:"创建原因"},
-        {id:"9", header:"处理方案"}
+        {id:"number", header:"车牌",template:function(obj){
+            return obj.province+obj.number;
+        }},
+        {id:"customerName", header:"客户名称",width:150},
+        {id:"customer_phone_number", header:"客户手机号",width:200},
+        {id:"full", header:"车型",width:200,fillspace:true},
+        {id:"serviceTime", header:"服务时间",width:180},
+        {id:"9", header:"",template:function(obj){
+            return "<span class='trash webix_icon fa-hand-o-right'>进入</a>";
+        },width:80}
     ];
 
+
+    var onClick = {
+        "fa-hand-o-right":function(e, id){
+            var item = $$("table_list").getItem(id);
+            webix.ui(system_work_order_win.$ui).show();
+            console.log(item.userId);
+            system_work_order_win.$init_data(item.userId);
+        }
+    };
+
     var table_ui = {
-        id:"data_list",
+        id:"table_list",
         view:"datatable",
         select:false,
-        rowHeight:45,
+        rowHeight:35,
         autoConfig:true,
         hover:"myhover",
-        rowLineHeight:25,
-        //onClick:onClick,
+        onClick:onClick,
         columns:table_columns
     };
+    var table_page_ui = table_page.$create_page_table("table_page_list",table_ui);
 
     var layout = {
         paddingX:15,
         paddingY:15,
         rows:[
-            search_ui,table_ui
+            search_ui,table_page_ui
         ]
     }
+    var refresh_table = function(){
 
+        $$("table_list").clearAll();
+
+        var type = $$("filter_search").getValue();
+
+        var start = $$("start_time").getValue();
+
+        var end = $$("end_time").getValue();
+
+        if(start === "" || end===""){
+            return "";
+        }
+        base.getReq("/v1/api/workorder/getWorkOrderPageList.json?page="+cur_page+"&type="+type+"&start_time="+base.format_time(start)+"&end_time="+base.format_time(end)+"&page=1&page_size=10",function(data){
+            console.log(data.items);
+            $$("table_list").parse(data.items);
+            table_page.$update_page_items("table_page_list",data);
+            table_page.$add_page_callback(function(page){
+                cur_page = page;
+                refresh_table();
+            });
+        })
+    };
     return {
         $ui:layout,
         $oninit:function(app,scope){

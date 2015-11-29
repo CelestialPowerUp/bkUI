@@ -11,12 +11,11 @@ define(["views/modules/base"],function(base){
             width:450
         },
         rows: [
-            { view:"text",name:"id",hidden:true,required:true},
-            { view:"text", label:'车牌:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
-            { view:"text", label:'车型:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
-            { view:"text", label:'用户:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
-            { view:"text", label:'状态:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
-            { view:"text", label:'客服:', name:"coupon_share_name",placeholder: "分享名称",value:"",required:true},
+            { view:"text",name:"user_id",hidden:true,required:true},
+            { view:"text", label:'车牌:', name:"service_type",placeholder: "分享名称",value:"",required:true},
+            { view:"text", label:'车型:', name:"service_time",placeholder: "分享名称",value:"",required:true},
+            { view:"text", label:'用户:', name:"operator_id",placeholder: "分享名称",value:"",required:true},
+            { view:"text", label:'状态:', name:"description",placeholder: "分享名称",value:"",required:true},
             { view: "richselect", name:"coupon_package_id",options:[],label:"理由:",required:true,placeholder:"请选择分享卡包",value:""},
             { view:"textarea",label:"备注:", name:"share_url",id:"share_url",height:150,required:true,placeholder:"分享地址",value:"" }
         ]

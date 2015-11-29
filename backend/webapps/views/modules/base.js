@@ -5,6 +5,9 @@ define(["../forms/login"],function(login){
 	if(window.location.href.indexOf("/ws/bk")>=0){
 		server = "/ws";
 	}
+	if(window.location.href.indexOf("/hsj/bk")>=0){
+		server = "/hsj";
+	}
 	if(window.location.href.indexOf("/develop/bk")>=0){
 		server = "/develop";
 	}
