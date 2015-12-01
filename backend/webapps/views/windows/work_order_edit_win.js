@@ -68,8 +68,6 @@ define(["views/modules/base"],function(base){
                         webix.$$("work_order_edit_win").close();
                     });
                 }
-
-
             }},
             {view:"button",label:"取消",width:80,click:function(){
                 webix.$$("work_order_edit_win").close();

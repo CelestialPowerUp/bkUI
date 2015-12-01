@@ -42,12 +42,11 @@ define(["views/modules/base"],function (base) {
         },fillspace:false}
     ];
 
-    var work_order_table_ui = {
-        id:"work_order_table",
+    var system_order_list_ui = {
+        id:"system_order_list",
         view:"datatable",
         headerRowHeight:35,
         autoConfig:true,
-        autowidth:true,
         checkboxRefresh:true,
         hover:"myhover",
         scrollY:true,
@@ -59,9 +58,13 @@ define(["views/modules/base"],function (base) {
     var button_ui = {
         cols:[
             {},
+            { view: "button", type: "iconButton", icon: "backward", label: "返回列表", width: 120, click: function(){
+                //todo
+                this.$scope.show("/system_work_order_list");
+            }},
             { view: "button", type: "iconButton", icon: "check-square-o", label: "确认录入", width: 110, click: function(){
                 //todo workorder/update
-                var datas = $$("work_order_table").serialize();
+                var datas = $$("system_order_list").serialize();
                 var arr = [];
                 for(var a in datas){
                     arr.push(datas[a].id);
@@ -78,33 +81,27 @@ define(["views/modules/base"],function (base) {
 
     }
 
-    var win_ui = {
-        view:"window",
-        modal:true,
-        id:"system_work_order_win",
-        height:450,
-        position:"center",
-        head:{
-            view:"toolbar",height:40, cols:[
-                {view:"label", label: "工单筛选" },
-                { view:"button", label: 'X', width: 35, align: 'right', click:"$$('system_work_order_win').close();"}
-            ]},
-        body:{
-            rows:[work_order_table_ui,button_ui]
-        }
-    };
+    var header  = {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
+        {view:"label",label:"工单筛选"}
+    ]}
 
-    var init_data = function(car_id){
-        base.getReq("workorder/getWorkOrderByCarUserId/"+car_id,function(data){
-            $$("work_order_table").clearAll();
-            for(var a in data){
-                $$("work_order_table").add(data[a]);
-            }
-        });
+    var win_ui = {rows:[header,system_order_list_ui,button_ui]};
+
+
+    var init_data = function(){
+        var user_car_id = base.get_url_param("id");
+        if(user_car_id){
+            base.getReq("workorder/getWorkOrderByCarUserId/"+user_car_id,function(orders){
+                $$("system_order_list").parse(orders)
+            });
+        }
     }
 
     return {
         $ui:win_ui,
-        $init_data : init_data
+        $oninit:function(app,scope){
+            webix.$$("title").parse({title: "工单管理", details: "工单筛选"});
+            init_data();
+        }
     };
 });

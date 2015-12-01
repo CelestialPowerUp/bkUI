@@ -1,4 +1,5 @@
-define(["views/modules/base"],function(base){
+define(["views/modules/base",
+        "views/windows/supplier_revenue_excel_win"],function(base,excel_win){
 
     var on_event = {
 
@@ -75,20 +76,23 @@ define(["views/modules/base"],function(base){
                         }
                     }
                 },
-                {view:"datepicker", timepicker:true, label:"时间：", id:"start_time",labelWidth:60, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
+                {view:"datepicker", timepicker:false, label:"时间：", id:"start_time",labelWidth:60, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
                     on:{
                         "onChange":function(){
                             refresh_table();
                         }
                     }
                 },
-                {view:"datepicker", timepicker:true, label:"--", id:"end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:210,
+                {view:"datepicker", timepicker:false, label:"--", id:"end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:210,
                     on:{
                         "onChange":function(){
                            refresh_table();
                         }
                     }
-                }
+                },
+                {view:"button",type: "iconButton", icon: "file-excel-o",label:"Excel导出",width:120,click:function(){
+                    webix.ui(excel_win.$ui).show();
+                }}
             ]}
         ]
     };

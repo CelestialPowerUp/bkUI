@@ -5,11 +5,14 @@
  * Created by Administrator on 2015/11/25.
  */
 define(["views/modules/base",
-    "views/modules/table_page_m",
-    "views/windows/system_work_order_win"],function(base,table_page,system_work_order_win){
+    "views/modules/table_page_m"],function(base,table_page){
 
     /*分页相关*/
     var cur_page = 1;
+
+    var __start_time = "";
+
+    var __end_time = "";
 
     var search_ui =
     {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
@@ -56,8 +59,7 @@ define(["views/modules/base",
     var onClick = {
         "fa-hand-o-right":function(e, id){
             var item = $$("table_list").getItem(id);
-            webix.ui(system_work_order_win.$ui).show();
-            system_work_order_win.$init_data(item.userId);
+            this.$scope.show("/system_work_order_details:id="+item.userId);
         }
     };
 
@@ -86,27 +88,39 @@ define(["views/modules/base",
 
         var type = $$("filter_search").getValue();
 
-        var start = $$("start_time").getValue();
+        if($$("start_time").getValue() && $$("end_time").getValue()){
+            __start_time = $$("start_time").getValue();
 
-        var end = $$("end_time").getValue();
+            __end_time = $$("end_time").getValue();
 
-        if(start === "" || end===""){
-            return "";
+            base.getReq("/v1/api/workorder/getWorkOrderPageList.json?page="+cur_page+"&type="+type+"&start_time="+base.format_time(__start_time)+"&end_time="+base.format_time(__end_time)+"&page=1&page_size=10",function(data){
+                console.log(data.items);
+                $$("table_list").parse(data.items);
+                table_page.$update_page_items("table_page_list",data);
+                table_page.$add_page_callback(function(page){
+                    cur_page = page;
+                    refresh_table();
+                });
+            })
         }
-        base.getReq("/v1/api/workorder/getWorkOrderPageList.json?page="+cur_page+"&type="+type+"&start_time="+base.format_time(start)+"&end_time="+base.format_time(end)+"&page=1&page_size=10",function(data){
-            console.log(data.items);
-            $$("table_list").parse(data.items);
-            table_page.$update_page_items("table_page_list",data);
-            table_page.$add_page_callback(function(page){
-                cur_page = page;
-                refresh_table();
-            });
-        })
+    };
+
+    var init_data = function(){
+        console.log('""',""?true:false);
+        console.log(0,0?true:false);
+        console.log("null",null?true:false);
+        console.log("undefined",undefined?true:false);
+        console.log("{}",{}?true:false);
+        console.log("[]",[]?true:false);
+        console.log(1,1?true:false);
+        $$("start_time").setValue(__start_time);
+        $$("end_time").setValue(__end_time);
     };
     return {
         $ui:layout,
         $oninit:function(app,scope){
             webix.$$("title").parse({title: "工单管理", details: "系统工单"});
+            init_data();
         }
     }
 });
