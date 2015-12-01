@@ -44,7 +44,7 @@ define(["views/modules/base",
             return obj.province+obj.number;
         }},
         {id:"customerName", header:"客户名称",width:150},
-        {id:"customer_phone_number", header:"客户手机号",width:200},
+        {id:"customerPhoneNumber", header:"客户手机号",width:200},
         {id:"full", header:"车型",width:200,fillspace:true},
         {id:"serviceTime", header:"服务时间",width:180},
         {id:"9", header:"",template:function(obj){

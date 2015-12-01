@@ -8,13 +8,32 @@ define(["views/modules/base"],function (base) {
             return obj.province+obj.number;
         }},
         {id:"customer_phone_s", header:"用户",width:150,template:function(obj){
-            return obj.customerName+" "+obj.customer_phone_number;
+            return obj.customerName+" "+obj.customerPhoneNumber;
 
         },fillspace:false},
-        {id:"serviceType", header:"创建原因",width:150,fillspace:false},
+        {id:"serviceType", header:"创建原因",template:function(obj,common){
+            if(obj.serviceType===1){
+                return "保养";
+            }else  if(obj.serviceType===2){
+                return "续保";
+            }else  if(obj.serviceType===3){
+                return "验车";
+            }else  if(obj.serviceType===4){
+                return "维修";
+            }else{
+                return "失效";
+            }
+        },width:150,fillspace:false},
         {id:"boughtDate", header:"购车时间",width:150,format:base.$show_time,fillspace:false},
         {id:"serviceTime", header:"保养时间",width:150,format:base.$show_time,fillspace:false},
-        {id:"procStatus", header:"状态",width:100,fillspace:false},
+        {id:"work_status", header:"状态",template:function(obj,common){
+            if(obj.workStatus===0){
+                return "完成";
+            }else if(obj.workStatus==1){
+                return "处理中";
+            }
+
+        },width:100,fillspace:false},
         {id:"$check", header:"确认",width:100,template:function(obj,common){
             if(obj.workStatus===0){
                 return "已录入";

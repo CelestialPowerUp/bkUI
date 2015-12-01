@@ -57,16 +57,32 @@ define(["views/modules/base",
         }}
     ]};
 
+
+
     var table_columns = [
-        {id:"1",header:"工单号"},
-        {id:"2", header:"车牌"},
-        {id:"3", header:"车型号"},
-        {id:"4", header:"用户名"},
-        {id:"5", header:"手机号"},
-        {id:"6", header:"创建时间"},
-        {id:"7", header:"客服"},
-        {id:"8", header:"创建原因"},
-        {id:"9", header:"处理方案"}
+        {id:"serviceNum",header:"工单号"},
+        {id:"number", header:"车牌",template:function(obj){
+            return obj.province+obj.number;
+        }},
+        {id:"full", header:"车型号"},
+        {id:"customerName", header:"用户名"},
+        {id:"customerPhoneNumber", header:"手机号"},
+        {id:"createTime", header:"创建时间"},
+        {id:"operatorName", header:"客服姓名"},
+        {id:"serviceType", header:"创建原因",template:function(obj,common){
+            if(obj.serviceType===1){
+                return "保养";
+            }else  if(obj.serviceType===2){
+                return "续保";
+            }else  if(obj.serviceType===3){
+                return "验车";
+            }else  if(obj.serviceType===4){
+                return "维修";
+            }else{
+                return "失效";
+            }
+        }},
+        {id:"procScheme", header:"处理方案"}
     ];
 
     var table_ui = {
@@ -90,15 +106,26 @@ define(["views/modules/base",
     }
 
     var refresh_table = function(){
-        var type = $$("switch_table").getValue();
-        var work_status = $$("create_type").getValue();
-        var cond = $$("key_type").getValue()+ "|" +$$("search_text").getValue();
+
+        $$("data_list").clearAll();
+        var type = $$("create_type").getValue();
+        var work_status = $$("switch_table").getValue();
+        var _type=$$("key_type").getValue();
+        var inputText=null;
+        if(_type!=0){
+            inputText=$$("search_text").getValue();
+            if(null==inputText){
+                return;
+            }
+        }
+        var cond = _type+ "|" +inputText;
         if($$("key_type").getValue() === "0"){
             cond = $$("key_type").getValue();
         }
         if(type && work_status && cond){
             base.getReq("workorder/getWorkOrderPageListByType.json?type="+type+"&work_status="+work_status+"&cond="+cond+"&page=1"+"&page_size="+10,function(data){
                 console.log(data);
+                $$("data_list").parse(data.items);
             });
         }
     };
