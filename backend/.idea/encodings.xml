@@ -7,6 +7,7 @@
     <file url="file://$PROJECT_DIR$/webapps/views/api_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/coupon_package_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/coupon_send.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/data_push_page.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/channel_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_form.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_type_form.js" charset="UTF-8" />
