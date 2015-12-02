@@ -23,9 +23,18 @@ define(["views/modules/base",
         data:[]
     }
 
-    var page_table_ui = table_page.$create_page_table("table_page_list",table_ui);
+    var page_table_ui = {
+        rows:[
+            {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
+                {view:"label",label:"推送历史"}
+            ]},
+            table_page.$create_page_table("table_page_list",table_ui)
+        ]
+    }
 
-    var layout ={
+
+
+    var push_layout = {
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
                 {view:"label",label:"推送系统"},
@@ -39,34 +48,38 @@ define(["views/modules/base",
                 }}
                 }
             ]},
-            {
-                margin:15,cols:[
-                    page_table_ui,
-                    {
-                        rows:[
-                            {view:"textarea",id:"send_msg",label:"发送信息",labelPosition:"top",height:450,required:true,placeholder: "输入发送的电话号码,用换行分割"},
-                            {margin:15,cols:[
-                                {},
-                                {view:"button",label:"短信发送",disabled:true,click:function(){
-                                    // workorder/actionPushMsgToUsers
-                                    $$("send_msg").validate();
-                                    base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
-                                        base.$msg.info("发送成功");
-                                        refresh_table();
-                                    });
-                                }},
-                                {view:"button",label:"APP发送",click:function(){
-                                    base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
-                                        base.$msg.info("发送成功");
-                                        refresh_table();
-                                    });
-                                }}
-                            ]},
-                            {}
-                        ]
-                    }
-                ]
-            }
+
+            {view:"textarea",id:"send_msg",label:"发送信息",labelPosition:"top",height:450,required:true,placeholder: "输入发送的电话号码,用换行分割"},
+
+            {margin:15,type:"space",cols:[
+                {},
+                {view:"button",label:"短信发送",disabled:true,click:function(){
+                    // workorder/actionPushMsgToUsers
+                    $$("send_msg").validate();
+                    base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
+                        base.$msg.info("发送成功");
+                        refresh_table();
+                    });
+                }},
+                {view:"button",label:"APP发送",click:function(){
+                    base.postForm("workorder/actionPushMsgToUsers",{type:$$("user_type").getValue(),msg:$$("send_msg").getValue()},function(data){
+                        base.$msg.info("发送成功");
+                        refresh_table();
+                    });
+                }}
+            ]},
+            {}
+        ]
+    }
+
+    var layout ={
+        paddingX:15,
+        paddingY:15,
+        type:"space",
+        margin:15,
+        cols:[
+            page_table_ui,
+            push_layout
         ]
     };
 

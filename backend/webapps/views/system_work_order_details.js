@@ -6,11 +6,11 @@ define(["views/modules/base"],function (base) {
     var elements = [
         {id:"p_number",header:"车牌",width:100,template:function(obj){
             return obj.province+obj.number;
-        }},
+        },fillspace:true},
         {id:"customer_phone_s", header:"用户",width:150,template:function(obj){
             return obj.customerName+" "+obj.customerPhoneNumber;
 
-        },fillspace:false},
+        },fillspace:false,fillspace:true},
         {id:"serviceType", header:"创建原因",template:function(obj,common){
             if(obj.serviceType===1){
                 return "保养";
@@ -35,10 +35,11 @@ define(["views/modules/base"],function (base) {
 
         },width:100,fillspace:false},
         {id:"$check", header:"确认",width:100,template:function(obj,common){
-            if(obj.workStatus===0){
-                return "已录入";
+            if(obj.workStatus===1){
+                return common.checkbox(obj, common, obj.$check,{checkValue:true});
             }
-            return common.checkbox(obj, common, obj.$check,{checkValue:true});
+            return "已录入";
+
         },fillspace:false}
     ];
 
@@ -54,6 +55,7 @@ define(["views/modules/base"],function (base) {
         data:  []
     };
 
+
   
     var button_ui = {
         cols:[
@@ -67,9 +69,12 @@ define(["views/modules/base"],function (base) {
                 var datas = $$("system_order_list").serialize();
                 var arr = [];
                 for(var a in datas){
-                    arr.push(datas[a].id);
+                    if(datas[a].workStatus===0 && datas[a].$check){
+                        arr.push(datas[a].id);
+                    }
                 }
                 if(arr.length<=0){
+                    base.$msg.error("没有选择可录入的项");
                     return ;
                 }
                 base.postReq("workorder/updateId",arr,function(data){

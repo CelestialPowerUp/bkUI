@@ -3,8 +3,6 @@
  */
 define(["views/modules/base"],function(base){
 
-
-
     var button_ui = {
         margin:15,
         cols:[

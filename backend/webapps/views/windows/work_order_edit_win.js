@@ -30,13 +30,13 @@ define(["views/modules/base"],function(base){
             { view:"text",id:"user_id",name:"user_id",hidden:true,required:true},
             {view: "text",keyPressTimeout:100,label:"手机号码", id: "user_phone_number", placeholder: "输入手机号获取用户信息",value:"",required:true,on:{
                 "onTimedKeyPress":function(){
-                    var list = $$("car_id").getPopup().getList();
-                    list.clearAll();
+                    /*var list = $$("car_id").getPopup().getList();
+                    list.clearAll();*/
                     if($$("user_phone_number").getValue().length==11){
                         base.getReq("meta_user/"+$$("user_phone_number").getValue(),function(data){
                             base.$msg.info("用户信息获取成功");
                             $$("user_id").setValue(data.user_id);
-                            update_car_model_list(data.user_id);
+                            //update_car_model_list(data.user_id);
                         },function(data){
                             if(data.code==="20004"){
                                 base.$msg.error("用户未注册，请到新建订单页面注册用户并添加车型");
@@ -45,14 +45,15 @@ define(["views/modules/base"],function(base){
                     }
                 }
             }},
-            { view: "richselect", id:"car_id", name:"car_id",options:[],label:"用户车辆:",required:true,placeholder:"请选择用户车辆",value:""},
+            {view:"datepicker", timepicker:true, label:"服务时间：", name:"service_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s"},
+            //{ view: "richselect", id:"car_id", name:"car_id",options:[],label:"用户车辆:",required:true,placeholder:"请选择用户车辆",value:""},
             { view: "richselect", name:"service_type",options:[
                 {id:"1",value:"保养"},
                 {id:"2",value:"续保"},
                 {id:"3",value:"验车"},
                 {id:"4",value:"维修"}
             ],label:"理由:",required:true,placeholder:"请选择分享卡包",value:""},
-            { view:"textarea",label:"备注:", name:"share_url",id:"share_url",height:150,required:true,placeholder:"分享地址",value:"" }
+            { view:"textarea",label:"备注:", name:"description",height:150,required:true,placeholder:"备注信息",value:"" }
         ]
     };
 
@@ -63,6 +64,8 @@ define(["views/modules/base"],function(base){
             {view:"button",label:"提交",width:80,click:function(){
                 if($$("work_order_form").validate()){
                     var formdata = $$("work_order_form").getValues();
+                    formdata.service_time = base.format_time(formdata.service_time);
+                    console.log(formdata);
                     base.postReq("workorder/add",formdata,function(data){
                         base.$msg.info("信息上传成功");
                         webix.$$("work_order_edit_win").close();

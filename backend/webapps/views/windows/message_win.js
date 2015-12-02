@@ -6,7 +6,7 @@ define(["views/modules/base"],function(base){
 			view:"form", 
 			id:"form_data",
 			elements:[
-					    {view:"text",type:"message",id:"message",name:"message",placeholder:"输入信息"},
+					    {view:"textarea",type:"message",id:"message",name:"message",placeholder:"输入信息"},
 						{
 							margin:10,
 							cols:[
@@ -57,6 +57,9 @@ define(["views/modules/base"],function(base){
 	
 	return {
 		$ui:layout,
-		$add_ok_callback:add_ok_callback
+		$add_ok_callback:add_ok_callback,
+		$init_data:function(msg){
+			$$("message").setValue(msg);
+		}
 	}
 });
