@@ -69,7 +69,7 @@ define(["views/modules/base"],function (base) {
                 var datas = $$("system_order_list").serialize();
                 var arr = [];
                 for(var a in datas){
-                    if(datas[a].workStatus===0 && datas[a].$check){
+                    if(datas[a].workStatus===1 && datas[a].$check){
                         arr.push(datas[a].id);
                     }
                 }
