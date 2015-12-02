@@ -27,12 +27,18 @@ define(["views/modules/base"],function (base) {
         {id:"boughtDate", header:"购车时间",width:150,format:base.$show_time,fillspace:false},
         {id:"serviceTime", header:"保养时间",width:150,format:base.$show_time,fillspace:false},
         {id:"work_status", header:"状态",template:function(obj,common){
-            if(obj.workStatus===0){
-                return "完成";
-            }else if(obj.workStatus==1){
-                return "处理中";
+            if(obj.procStatus===0){
+                return "未认领";
+            }else if(obj.procStatus==1){
+                return "已认领";
             }
-
+            else if(obj.procStatus==2){
+                return "处理中";
+            }else if(obj.procStatus==3){
+                return "已完成";
+            }else if(obj.procStatus==4){
+                return "已失效";
+            }
         },width:100,fillspace:false},
         {id:"$check", header:"确认",width:100,template:function(obj,common){
             if(obj.workStatus===1){
@@ -79,7 +85,7 @@ define(["views/modules/base"],function (base) {
                 }
                 base.postReq("workorder/updateId",arr,function(data){
                     base.$msg.info("录入成功");
-                    $$("system_work_order_win").close();
+                    init_data();
                 });
             }}
         ]
@@ -97,6 +103,7 @@ define(["views/modules/base"],function (base) {
         var user_car_id = base.get_url_param("id");
         if(user_car_id){
             base.getReq("workorder/getWorkOrderByCarUserId/"+user_car_id,function(orders){
+                $$("system_order_list").clearAll();
                 $$("system_order_list").parse(orders)
             });
         }
