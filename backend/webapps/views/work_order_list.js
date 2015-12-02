@@ -79,7 +79,7 @@ define(["views/modules/base",
         {id:"number", header:"车牌",template:function(obj){
             return obj.province+obj.number;
         }},
-        {id:"full", header:"车型号",fillspace:true},
+        {id:"full", header:"车型号",width:300},
         {id:"customerName", header:"用户名"},
         {id:"customerPhoneNumber",width:120, header:"手机号"},
         {id:"createTime", header:"创建时间",width:150,format:base.$show_time},
@@ -97,7 +97,7 @@ define(["views/modules/base",
                 return "失效";
             }
         }},
-        {id:"procScheme", header:"处理方案"},
+        {id:"procScheme", header:"处理方案",width:250},
         {id:"pick", header:"&nbsp;", width:65, template:function(obj){
             if(obj.procStatus===1){
                 return "<span class='trash webix_icon fa-user-md' title='认领工单'>认领</span>"
@@ -213,6 +213,7 @@ define(["views/modules/base",
         select:false,
         rowHeight:35,
         autoConfig:true,
+        rightSplit:5,
         hover:"myhover",
         onClick:on_event,
         columns:table_columns
