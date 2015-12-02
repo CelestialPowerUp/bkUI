@@ -68,6 +68,9 @@ define(["views/modules/base"],function(base){
                     console.log(formdata);
                     base.postReq("workorder/add",formdata,function(data){
                         base.$msg.info("信息上传成功");
+                        if(typeof __callBack === 'function'){
+                            __callBack(data);
+                        }
                         webix.$$("work_order_edit_win").close();
                     });
                 }
@@ -93,7 +96,14 @@ define(["views/modules/base"],function(base){
         }
     };
 
+    var __callBack = null;
+
     return {
-        $ui:win_ui
+        $ui:win_ui,
+        $addCallBack:function(fuc){
+            if(typeof fuc === 'function'){
+                __callBack = fuc;
+            }
+        }
     }
 });

@@ -69,6 +69,9 @@ define(["views/modules/base",
         { view: "button", type: "iconButton", icon: "plus", label: "新建工单", width: 135, click: function(){
             //todo
             webix.ui(work_order_edit.$ui).show();
+            work_order_edit.$addCallBack(function(data){
+                refresh_table();
+            });
         }}
     ]};
 

@@ -59,7 +59,7 @@ define(["views/modules/base",
     var onClick = {
         "fa-hand-o-right":function(e, id){
             var item = $$("table_list").getItem(id);
-            this.$scope.show("/system_work_order_details:id="+item.userId);
+            this.$scope.show("/system_work_order_details:id="+item.carId);
         }
     };
 
