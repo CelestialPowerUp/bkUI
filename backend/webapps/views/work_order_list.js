@@ -243,7 +243,7 @@ define(["views/modules/base",
         if(create_type && proc_status && cond){
             base.getReq("workorder/getWorkOrderPageListByType.json?type="+create_type+"&proc_status="+proc_status+"&cond="+cond+"&page=1"+"&page_size="+10,function(data){
                 $$("data_list").parse(data.items);
-                table_page.$update_page_items(data);
+                table_page.$update_page_items("data_page_list",data);
                 table_page.$add_page_callback(function(page){
                     __cur_page = page;
                     refresh_table();
