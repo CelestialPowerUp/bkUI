@@ -30,13 +30,13 @@ define(["views/modules/base"],function(base){
             { view:"text",id:"user_id",name:"user_id",hidden:true,required:true},
             {view: "text",keyPressTimeout:100,label:"手机号码", id: "user_phone_number", placeholder: "输入手机号获取用户信息",value:"",required:true,on:{
                 "onTimedKeyPress":function(){
-                    /*var list = $$("car_id").getPopup().getList();
-                    list.clearAll();*/
+                    var list = $$("car_id").getPopup().getList();
+                    list.clearAll();
                     if($$("user_phone_number").getValue().length==11){
                         base.getReq("meta_user/"+$$("user_phone_number").getValue(),function(data){
                             base.$msg.info("用户信息获取成功");
                             $$("user_id").setValue(data.user_id);
-                            //update_car_model_list(data.user_id);
+                            update_car_model_list(data.user_id);
                         },function(data){
                             if(data.code==="20004"){
                                 base.$msg.error("用户未注册，请到新建订单页面注册用户并添加车型");
@@ -46,7 +46,7 @@ define(["views/modules/base"],function(base){
                 }
             }},
             {view:"datepicker", timepicker:true, label:"服务时间：", name:"service_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s"},
-            //{ view: "richselect", id:"car_id", name:"car_id",options:[],label:"用户车辆:",required:true,placeholder:"请选择用户车辆",value:""},
+            { view: "richselect", id:"car_id", name:"car_id",options:[],label:"用户车辆:",required:true,placeholder:"请选择用户车辆",value:""},
             { view: "richselect", name:"service_type",options:[
                 {id:"1",value:"保养"},
                 {id:"2",value:"续保"},
