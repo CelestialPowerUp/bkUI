@@ -142,7 +142,7 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
-                        base.postReq("workorder/delete?workOrderId="+item.id,"",function(dat){
+                        base.postReq("workorder/delete?workOrderId="+item.wkid,"",function(dat){
                             base.$msg.info("资源删除成功");
                             $$("data_list").remove(id);
                         });
@@ -158,7 +158,7 @@ define(["views/modules/base",
                 message_win.$init_data(item.description);
             }
             message_win.$add_ok_callback(function(msg){
-                var param = {id:item.id,description:msg};
+                var param = {id:item.wkid,description:msg};
                 base.postReq("workorder/updateDesc",param,function(){
                     base.$msg.info("备注成功");
                     refresh_table();
@@ -180,7 +180,7 @@ define(["views/modules/base",
                 text:"认领该工单<br/> 确定?", ok:"是的", cancel:"取消",
                 callback:function(res){
                     if(res){
-                        var param = {id:item.id,proc_status:2};
+                        var param = {id:item.wkid,proc_status:2};
                         base.postReq("workorder/updateProcStatus",param,function(){
                             base.$msg.info("认领成功");
                             $$("data_list").remove(id);
@@ -196,7 +196,7 @@ define(["views/modules/base",
                 text:"订单已完成<br/> 确定?", ok:"是的", cancel:"取消",
                 callback:function(res){
                     if(res){
-                        var param = {id:item.id,proc_status:3};
+                        var param = {id:item.wkid,proc_status:3};
                         base.postReq("workorder/updateProcStatus",param,function(){
                             base.$msg.info("工单已完成");
                             $$("data_list").remove(id);
