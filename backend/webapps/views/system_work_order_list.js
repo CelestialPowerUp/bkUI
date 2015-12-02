@@ -106,13 +106,6 @@ define(["views/modules/base",
     };
 
     var init_data = function(){
-        console.log('""',""?true:false);
-        console.log(0,0?true:false);
-        console.log("null",null?true:false);
-        console.log("undefined",undefined?true:false);
-        console.log("{}",{}?true:false);
-        console.log("[]",[]?true:false);
-        console.log(1,1?true:false);
         $$("start_time").setValue(__start_time);
         $$("end_time").setValue(__end_time);
     };

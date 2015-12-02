@@ -142,8 +142,7 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
-                        base.postReq("workorder/delete?workOrderId="+item.id,function(dat){
-                            console.log(dat);
+                        base.postReq("workorder/delete?workOrderId="+item.id,"",function(dat){
                             base.$msg.info("资源删除成功");
                             $$("data_list").remove(id);
                         });
