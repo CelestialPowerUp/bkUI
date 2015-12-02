@@ -76,7 +76,7 @@ define(["views/modules/base"],function (base) {
                 var arr = [];
                 for(var a in datas){
                     if(datas[a].workStatus===1 && datas[a].$check){
-                        arr.push(datas[a].id);
+                        arr.push(datas[a].wkid);
                     }
                 }
                 if(arr.length<=0){
