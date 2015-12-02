@@ -97,7 +97,7 @@ define(["views/modules/base",
                 return "失效";
             }
         }},
-        {id:"procScheme", header:"处理方案",width:250},
+        {id:"description", header:"处理方案",width:250},
         {id:"pick", header:"&nbsp;", width:65, template:function(obj){
             if(obj.procStatus===1){
                 return "<span class='trash webix_icon fa-user-md' title='认领工单'>认领</span>"
