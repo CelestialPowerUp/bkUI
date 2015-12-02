@@ -98,13 +98,43 @@ define(["views/modules/base",
             }
         }},
         {id:"procScheme", header:"处理方案"},
-        {id:"edit", header:"&nbsp;", width:65, template:"<span class='trash webix_icon fa-pencil' title='工单备注'>备注</span>"},
-        {id:"pick", header:"&nbsp;", width:65, template:"<span class='trash webix_icon fa-user-md' title='认领工单'>认领</span>"},
-        {id:"call", header:"&nbsp;", width:65, template:"<span class='trash webix_icon fa-phone-square' title='呼叫用户'>呼叫</span>"},
-        {id:"delete", header:"&nbsp;", width:65, template:"<span class='trash webix_icon fa-trash-o' title='删除工单'>删除</span>"}
+        {id:"pick", header:"&nbsp;", width:65, template:function(obj){
+            if(obj.procStatus===1){
+                return "<span class='trash webix_icon fa-user-md' title='认领工单'>认领</span>"
+            }
+            return "";
+        }},
+        {id:"complete", header:"&nbsp;", width:65, template:function(obj){
+            if(obj.procStatus===2){
+                return "<span class='trash webix_icon fa-check-square' title='完成工单'>完成</span>";
+            }
+            return "";
+        }},
+        {id:"call", header:"&nbsp;", width:65, template:function(obj){
+            if(obj.procStatus===1){
+                return ""
+            }
+            return "<span class='trash webix_icon fa-phone-square' title='呼叫用户'>呼叫</span>";
+        }},
+        {id:"edit", header:"&nbsp;", width:65,
+            template:function(obj){
+                if(obj.procStatus===1){
+                    return "";
+                }
+                return "<span class='trash webix_icon fa-pencil' title='工单备注'>备注</span>";
+            }
+        },
+        {id:"delete", header:"&nbsp;", width:65, template:function(obj){
+            if(obj.procStatus===1){
+                return ""
+            }
+            return "<span class='trash webix_icon fa-trash-o' title='删除工单'>删除</span>";
+        }}
+
     ];
 
     var on_event = {
+        //删除
         "fa-trash-o":function(e, id, node){
             var item = $$("data_list").getItem(id);
             webix.confirm({
@@ -121,6 +151,7 @@ define(["views/modules/base",
                 }
             });
         },
+        //备注
         "fa-pencil":function(e, id, node){
             var item = $$("data_list").getItem(id);
             webix.ui(message_win.$ui).show();
@@ -136,6 +167,7 @@ define(["views/modules/base",
             });
             //this.$scope.show("/supplier_edit:id="+item.supplier_id);
         },
+        //打电话
         "fa-phone-square":function(e, id, node){
             var item = $$("data_list").getItem(id);
             $$("call_out_submenu").show($$("call_out").getNode());
@@ -145,10 +177,33 @@ define(["views/modules/base",
         //认领
         "fa-user-md":function(e, id, node){
             var item = $$("data_list").getItem(id);
-            var param = {id:item.id,proc_status:2};
-            base.postReq("workorder/updateProcStatus",param,function(){
-                base.$msg.info("认领成功");
-                $$("data_list").remove(id);
+            webix.confirm({
+                text:"认领该工单<br/> 确定?", ok:"是的", cancel:"取消",
+                callback:function(res){
+                    if(res){
+                        var param = {id:item.id,proc_status:2};
+                        base.postReq("workorder/updateProcStatus",param,function(){
+                            base.$msg.info("认领成功");
+                            $$("data_list").remove(id);
+                        });
+                    }
+                }
+            });
+        },
+        //完成
+        "fa-check-square":function(e, id, node){
+            var item = $$("data_list").getItem(id);
+            webix.confirm({
+                text:"订单已完成<br/> 确定?", ok:"是的", cancel:"取消",
+                callback:function(res){
+                    if(res){
+                        var param = {id:item.id,proc_status:3};
+                        base.postReq("workorder/updateProcStatus",param,function(){
+                            base.$msg.info("工单已完成");
+                            $$("data_list").remove(id);
+                        });
+                    }
+                }
             });
         }
     };
