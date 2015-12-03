@@ -1,7 +1,8 @@
 define(["views/modules/base",
         "views/forms/order_product",
         "views/modules/upload_img_win",
-        "views/forms/order_supplier"],function(base,order_product,upload_img_win,order_supplier){
+        "views/forms/order_supplier",
+		"views/windows/user_coupons_win"],function(base,order_product,upload_img_win,order_supplier,user_coupon){
 	
 	var uodate_car_keepers_data = function(current_keeper_id){
 		base.getReq("car_keepers.json",function(data){
@@ -113,7 +114,7 @@ define(["views/modules/base",
 						},
 						elements:[
 						    {view:"text",id:"order_id",name:"id",hidden:true},
-						    {view:"text",name:"user_id",hidden:true},
+						    {view:"text",name:"user_id",id:"user_id",hidden:true},
 							{view:"text",id:"supplier_id",name:"supplier_id",hidden:true},
 							{view:"text",id:"service_type",name:"service_type",hidden:true},
 				          	{view: "text", label:"手机号",name:"phone_number", placeholder: "输入手机号",width:350,value:""},
@@ -350,11 +351,7 @@ define(["views/modules/base",
 			type:"clean",
 			rows:[
 				{view:"toolbar",css: "highlighted_header header5",height:40, elements:[
-					{view:"label", align:"left",label:"商品信息",height:30},
-					{view:"label",id: "products_total_price", height:30,width:160},
-					{view:"label",id: "products_free_price", height:30,width:160},
-					{view:"label",id: "products_paid_price", height:30,width:160},
-					{view:"label",id: "products_need_price", height:30,width:160},
+					{view:"label",label:"商品信息"},
 					{view:"button",id:"add_product_button",label:"添加增项",width:105,click:function(){
 						var carModelId = getModelId();
 						if(carModelId != null){
@@ -396,7 +393,17 @@ define(["views/modules/base",
 									}
 								}
 							});
-						}}
+						}},
+					{view:"button", id:"change_coupon_button",algin:"right",label:"使用优惠券",width:105,click:function(){
+						webix.ui(user_coupon.$ui).show();
+						user_coupon.$init($$("user_id").getValue());
+						user_coupon.$addCallBack(function(coupon){
+							base.postReq("order_update_coupon.json",{order_id:$$("order_id").getValue(),coupon_id:coupon.id},function(order){
+								base.$msg.info("优惠券使用成功");
+								parse_products_data(order);
+							});
+						});
+					}}
 				]},
 				{
 					view:"datatable",
@@ -408,6 +415,20 @@ define(["views/modules/base",
 					data:[],
 					on:product_table_on_event,
 					onClick:product_onClick
+				},
+
+				{type:"space",paddingX:15,cols:[
+					{view:"label",id: "products_total_price", height:30,width:160},
+					{view:"label",id: "products_free_price", height:30,width:160},
+					{view:"label",id: "products_paid_price", height:30,width:160},
+					{view:"label",id: "products_need_price", height:30,width:160},
+					{view:"label",id: "order_coupon", height:30,width:160}
+				]},
+				{type:"space",
+					cols:[
+						{view: "icon", icon: "fa fa-exclamation-triangle"},
+						{view:"label", align:"left",css:"warning", label:"优惠券一旦使用过，暂不支持二次更改，请谨慎操作！！"}
+					]
 				}
 		      ]
 	};
@@ -670,8 +691,8 @@ define(["views/modules/base",
 		base.getReq("/v3/api/orders.json?user_type=operator&order_id="+order_id,function(order){
 			if(order!=null){
 				//初始化数据
-				$$("products_paid_price").setHTML("已支付￥"+order.paid_price);
-				$$("products_need_price").setHTML("未支付￥"+order.not_paid_price);
+				console.log(order);
+				$$("order_coupon").setHTML("优惠券：数据加载中");
 				config_ui_by_order(order);
 				
 				parse_tile(order);
@@ -789,6 +810,14 @@ define(["views/modules/base",
 			//products[i].product_info = products[i].product_categories.join('_')+'_'+products[i].product_name;
 			webix.$$("order_product_datas").add(products[i]);
 		}
+		if(order.coupon){
+			$$("change_coupon_button").disable();
+			$$("order_coupon").setHTML("优惠券："+order.coupon.name);
+		}else{
+			$$("order_coupon").setHTML("优惠券：未使用优惠券");
+		}
+		$$("products_paid_price").setHTML("已支付￥"+order.paid_price);
+		$$("products_need_price").setHTML("未支付￥"+order.not_paid_price);
 	};
 
 	var parse_first_check_data = function(check){
