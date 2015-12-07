@@ -1,5 +1,5 @@
 define(["views/modules/base","views/modules/table_page_m",
-	"views/forms/role_user","views/menus/call_out"], function(base,table_page,role_user,call_out){
+	"views/forms/role_user","views/menus/call_out","views/windows/order_base_info_excel_win"], function(base,table_page,role_user,call_out,excel_win){
 
 	var initData = function(){
 		search(cur_page);
@@ -403,6 +403,9 @@ define(["views/modules/base","views/modules/table_page_m",
 					});
 					console.log("提交的数据",param);
 				});
+			}},
+			{view:"button",type: "iconButton", icon: "file-excel-o",label:"Excel导出",width:120,click:function(){
+				webix.ui(excel_win.$ui).show();
 			}}
 		]
 	}
