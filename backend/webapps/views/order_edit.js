@@ -8,7 +8,7 @@ define(["views/modules/base",
 				var list = $$("current_keeper_id").getPopup().getList();
 				list.clearAll();
 				for(var i=0;i<data.length;i++){
-					if(data[i]['lay_off']){
+					if(data[i]['lay_off'] && "..." === data[i].phone_number){
 						continue;
 					}
 					list.add({id:data[i]['car_keeper_id'],value:data[i]['name']});
