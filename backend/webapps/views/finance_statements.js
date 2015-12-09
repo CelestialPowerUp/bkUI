@@ -64,7 +64,6 @@ define(["views/modules/base",
         }
         var param = {start:base.format_time(start),end:base.format_time(end)};
         base.postReq("finance_statements.json",param,function(data){
-            console.log(data);
             $$("table_list").clearAll();
             $$("table_list").parse(data);
         })
