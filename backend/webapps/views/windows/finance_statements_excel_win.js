@@ -8,8 +8,8 @@ define(["views/modules/base"],function(base){
         cols:[
             {},
             {view:"button",label:"导出",width:80,click:function(){
-                var start = base.format_time($$("start_time").getValue());
-                var end = base.format_time($$("end_time").getValue());
+                var start = base.format_time($$("start_time_export").getValue());
+                var end = base.format_time($$("end_time_export").getValue());
                 base.postReq("excel/finance_statements.json",{start:start,end:end},function(data){
                     window.open(data);
                     base.$msg.info("excel导出成功");
@@ -36,8 +36,8 @@ define(["views/modules/base"],function(base){
             paddingY:15,
             rows:[
                 {cols:[
-                    {view:"datepicker", timepicker:false, label:"导出周期", id:"start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250},
-                    {view:"datepicker", timepicker:false, label:"--", id:"end_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:200}
+                    {view:"datepicker", timepicker:false, label:"导出周期", id:"start_time_export", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250},
+                    {view:"datepicker", timepicker:false, label:"--", id:"end_time_export",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:200}
                 ]},
                 {},
                 button_ui
