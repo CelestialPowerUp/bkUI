@@ -4,7 +4,7 @@ define(["views/modules/base",
         "views/forms/order_supplier",
 		"views/windows/user_coupons_win"],function(base,order_product,upload_img_win,order_supplier,user_coupon){
 	
-	var uodate_car_keepers_data = function(current_keeper_id){
+	var update_car_keepers_data = function(current_keeper_id){
 		base.getReq("car_keepers.json",function(data){
 				var list = $$("current_keeper_id").getPopup().getList();
 				list.clearAll();
@@ -398,9 +398,23 @@ define(["views/modules/base",
 						webix.ui(user_coupon.$ui).show();
 						user_coupon.$init($$("user_id").getValue());
 						user_coupon.$addCallBack(function(coupon){
-							base.postReq("order_update_coupon.json",{order_id:$$("order_id").getValue(),coupon_id:coupon.id},function(order){
-								base.$msg.info("优惠券使用成功");
-								parse_products_data(order);
+							var postParam = {order_id:$$("order_id").getValue(),coupon_id:coupon.id};
+							base.postReq("order_update_coupon_preview.json",postParam,function(preview){
+								webix.confirm({
+									type:"confirm-warning",
+									ok:"确定",
+									cancel:"取消",
+									text:"优惠价格：￥"+preview.free_price+"<br/>优惠后价格：￥"+preview.total_price,
+									callback:function(ok){
+										if(ok){
+											base.postReq("order_update_coupon.json",postParam,function(order){
+												base.$msg.info("优惠券使用成功");
+												parse_products_data(order);
+											});
+											user_coupon.close();
+										}
+									}
+								});
 							});
 						});
 					}}
@@ -797,7 +811,7 @@ define(["views/modules/base",
 		$$("order_base_data").parse(data);
 		setTimeout(function(){coutPrice()}, 1000);
 		var car  = order.car;
-		uodate_car_keepers_data(order.current_keeper_id);
+		update_car_keepers_data(order.current_keeper_id);
 		update_sale_persion(order.sale_person_id);
 		webix.$$("car_model").parse({car_licence:car.licence.province+order.car.licence.number,model:car.model,brand:car.brand,category:car.category});
 	};

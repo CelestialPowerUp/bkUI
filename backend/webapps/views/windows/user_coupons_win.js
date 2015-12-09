@@ -16,7 +16,7 @@ define(["views/modules/base"],function(base){
                 if(typeof __callBack === 'function'){
                     __callBack(item);
                 }
-                webix.$$("work_order_edit_win").close();
+                //webix.$$("work_order_edit_win").close();
             }},
             {view:"button",label:"取消",width:80,click:function(){
                 webix.$$("work_order_edit_win").close();
@@ -82,6 +82,9 @@ define(["views/modules/base"],function(base){
             if(typeof fuc === 'function'){
                 __callBack = fuc;
             }
+        },
+        close:function(){
+            webix.$$("work_order_edit_win").close();
         }
     }
 });
