@@ -661,7 +661,13 @@ define(["../forms/login"],function(login){
 		var end_time = spilt_time(end);
 		return start_time[0]+" "+start_time[1]+"～"+end_time[1];
 	};
-
+	var getCurrentDate = function(){
+		var data = new Date();
+		var year = data.getFullYear();  //获取年
+		var month = data.getMonth() + 1;    //获取月
+		var day = data.getDate(); //获取日
+		return  year + "-" + month + "-" + day ;
+	};
 	return {
 		postReq:postReq,
 		getReq:getReq,
@@ -691,6 +697,7 @@ define(["../forms/login"],function(login){
 		getUserInfoByPhone:getUserInfoByPhone,
 		priceFormat:priceFormat,
 		format_date:format_date,
+		getCurrentDate:getCurrentDate,
 		time_period_format:time_period_format
 	};
 });

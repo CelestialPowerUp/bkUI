@@ -1,10 +1,15 @@
 /**
  * Created by Administrator on 2015/11/26.
  */
-define(["views/modules/base"],function (base) {
+define(["views/modules/base","views/windows/work_order_edit_win"],function (base,work_order_edit) {
 
     var elements = [
         {id:"p_number",header:"车牌",width:100,template:function(obj){
+            var current=base.getCurrentDate();
+            var sDate=base.format_date(obj.serviceTime);
+            if(current ==sDate){
+                obj.$css = "status3";
+            }
             return obj.province+obj.number;
         },fillspace:true},
         {id:"customer_phone_s", header:"用户",width:150,template:function(obj){
@@ -25,12 +30,16 @@ define(["views/modules/base"],function (base) {
             }
         },width:150,fillspace:false},
         {id:"boughtDate", header:"购车时间",width:150,format:base.$show_time,fillspace:false},
-        {id:"serviceTime", header:"保养时间",width:150,format:base.$show_time,fillspace:false},
+        {id:"completeTime", header:"服务时间",width:150,format:base.$show_time,fillspace:false},
+        {id:"serviceTime", header:"提醒日期",width:150,template:function(obj){
+            return base.format_date(obj.serviceTime);
+        },fillspace:false},
+        {id:"operatorName", header:"客服名称",width:150,fillspace:false},
         {id:"work_status", header:"状态",template:function(obj,common){
             if(obj.procStatus===0){
                 return "未认领";
             }else if(obj.procStatus==1){
-                return "已认领";
+                return "未认领";
             }
             else if(obj.procStatus==2){
                 return "处理中";
@@ -62,7 +71,7 @@ define(["views/modules/base"],function (base) {
     };
 
 
-  
+
     var button_ui = {
         cols:[
             {},
@@ -93,7 +102,14 @@ define(["views/modules/base"],function (base) {
     }
 
     var header  = {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
-        {view:"label",label:"工单筛选"}
+        {view:"label",label:"工单筛选"},
+        { view: "button", type: "iconButton", icon: "plus", label: "新建工单", width: 135, click: function(){
+            //todo
+            webix.ui(work_order_edit.$ui).show();
+            work_order_edit.$addCallBack(function(data){
+                init_data();
+            });
+        }}
     ]}
 
     var win_ui = {rows:[header,system_order_list_ui,button_ui]};

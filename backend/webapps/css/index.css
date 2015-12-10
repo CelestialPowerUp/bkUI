@@ -239,6 +239,10 @@
     padding-left: 5px;
     width: 150px;
 }
-
+.status3 {
+    background-color: red;
+    font-weight:bold;
+    color:white;
+}
 /**
 **/

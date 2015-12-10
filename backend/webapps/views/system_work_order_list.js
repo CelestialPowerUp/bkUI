@@ -14,6 +14,9 @@ define(["views/modules/base",
 
     var __end_time = "";
 
+    var __sstart_time = "";
+
+    var __send_time = "";
     var search_ui =
     {view:"toolbar",css: "highlighted_header header5",height:45,margin:15, cols:[
         {view: "richselect", id:"filter_search",label:"工单类型:",labelWidth:80,value:"0",width:180,options:[
@@ -29,7 +32,7 @@ define(["views/modules/base",
         {view:"datepicker", timepicker:false, label:"处理周期", id:"start_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
             on:{
                 "onChange":function(){
-                    refresh_table();
+                   // refresh_table();
                 }
             }
         },
@@ -40,16 +43,40 @@ define(["views/modules/base",
                 }
             }
         }
+        ,
+        {view:"datepicker", timepicker:false, label:"服务时间", id:"sstart_time", stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:250,
+            on:{
+                "onChange":function(){
+                   // refresh_table();
+                }
+            }
+        },
+        {view:"datepicker", timepicker:false, label:"--", id:"send_time",labelWidth:25, stringResult:true, format:"%Y-%m-%d %H:%i:%s" ,width:200,
+            on:{
+                "onChange":function(){
+                    refresh_table();
+                }
+            }
+        }
     ]};
 
     var table_columns = [
         {id:"number", header:"车牌",template:function(obj){
+            var current=base.getCurrentDate();
+            var sDate=base.format_date(obj.serviceTime);
+            if(current ==sDate){
+                obj.$css = "status3";
+            }
             return obj.province+obj.number;
         }},
         {id:"customerName", header:"客户名称",width:150},
         {id:"customerPhoneNumber", header:"客户手机号",width:200},
         {id:"full", header:"车型",width:200,fillspace:true},
-        {id:"serviceTime", header:"服务时间",width:180},
+        {id:"completeTime", header:"服务时间",width:180},
+        {id:"serviceTime", header:"日期提醒",template:function(obj){
+            return base.format_date(obj.serviceTime);
+
+        },width:180},
         {id:"9", header:"",template:function(obj){
             return "<span class='trash webix_icon fa-hand-o-right'>进入</a>";
         },width:80}
@@ -85,7 +112,6 @@ define(["views/modules/base",
     var refresh_table = function(){
 
         $$("table_list").clearAll();
-
         var type = $$("filter_search").getValue();
 
         if($$("start_time").getValue() && $$("end_time").getValue()){
@@ -93,7 +119,10 @@ define(["views/modules/base",
 
             __end_time = $$("end_time").getValue();
 
-            base.getReq("/v1/api/workorder/getWorkOrderPageList.json?page="+cur_page+"&type="+type+"&start_time="+base.format_time(__start_time)+"&end_time="+base.format_time(__end_time)+"&page=1&page_size=10",function(data){
+            __sstart_time = $$("sstart_time").getValue();
+            __send_time = $$("send_time").getValue();
+
+            base.getReq("/v1/api/workorder/getWorkOrderPageList.json?page="+cur_page+"&type="+type+"&start_time="+base.format_time(__start_time)+"&sstart_time="+base.format_time(__sstart_time)+"&send_time="+base.format_time(__send_time)+"&end_time="+base.format_time(__end_time)+"&page=1&page_size=10",function(data){
                 console.log(data.items);
                 $$("table_list").parse(data.items);
                 table_page.$update_page_items("table_page_list",data);
@@ -106,8 +135,12 @@ define(["views/modules/base",
     };
 
     var init_data = function(){
+        $$("sstart_time").setValue(__sstart_time);
+        $$("send_time").setValue(__send_time);
+        $$("table_list").clearAll();
         $$("start_time").setValue(__start_time);
         $$("end_time").setValue(__end_time);
+
     };
     return {
         $ui:layout,
