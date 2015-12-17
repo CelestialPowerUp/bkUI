@@ -7,7 +7,7 @@ define(["views/modules/base",
         "views/windows/generalize_edit_win"],function(base,menu,form){
 
     var img_fomat = function(obj){
-        var img = obj.bg_img_view;
+        var img = obj.title_img_view;
         return '<img src="'+img.thumbnail_url+'" class="content" ondragstart="return false"/>';
     };
 
@@ -55,7 +55,7 @@ define(["views/modules/base",
             }
             $$("img_view").add( {
                 "link_href": "#add",
-                "bg_img_view": {
+                "title_img_view": {
                     "thumbnail_url": "http://7xiqe8.com2.z0.glb.qiniucdn.com/QQ截图20151106142133.jpg"
                 }
             });
@@ -76,6 +76,9 @@ define(["views/modules/base",
             webix.$$("title").parse({title: "商城管理", details: "推广信息"});
             menu.$add_menus(menus);
             form.$addCallBack(function(){
+                refresh();
+            });
+            $$("generalize_code").attachEvent("onChange", function(newv, oldv){
                 refresh();
             });
             $$("status_type").attachEvent("onChange", function(newv, oldv){

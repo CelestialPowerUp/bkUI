@@ -2,6 +2,11 @@ define(["views/modules/base",
     "views/modules/upload",
     "views/windows/store_wares_win"],function(base,upload,store_wares_win){
 
+    store_wares_win.$add_callback(function(ware){
+        $$("link_text").setValue(ware.ware_name+"("+ware.product_name+")");
+        $$("link_id").setValue(ware.ware_id);
+    });
+
     var img_fomat = function(obj){
         if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
             return '<img src="http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF" class="content" ondragstart="return false"/>';
@@ -39,7 +44,8 @@ define(["views/modules/base",
             {id:"topic_list",value:"主题列表"},
             {id:"none",value:"不做任何处理"}
         ],placeholder:"推广类型"},
-        {view:"text",label:"关联项",placeholder: "单品/主题列表",name:"link_id",click:function(){
+        {view:"text",label:"关联项ID",id:"link_id",name:"link_id",hidden:true},
+        {view:"text",label:"关联项",placeholder: "单品/主题列表",id:"link_text",name:"link_text",click:function(){
             if($$("link_type").getValue()==='ware'){
                 //单品
                 webix.ui(store_wares_win.$ui).show();
@@ -73,24 +79,24 @@ define(["views/modules/base",
                 action = "generalize/create.json";
             }
             console.log(formdata);
-            /*base.postReq(action,formdata,function(data){
+            base.postReq(action,formdata,function(data){
                 base.$msg.info("数据提交成功");
                 if(typeof callBack === 'function'){
                     callBack(data);
                 }
                 webix.$$("pop_win").close();
-            });*/
+            });
         }},
         {view:"button",label:"取消",width:80,click:function(){
             webix.$$("pop_win").close();
         }}]
     };
 
-    var init_data = function(advertisement){
-        if(advertisement){
-            advertisement.enable = advertisement.enable.toString();
-            $$("form_view").parse(advertisement);
-            $$("cover_img").parse(advertisement.bg_img_view);
+    var init_data = function(obj){
+        if(obj){
+            //obj.enable = obj.enable.toString();
+            $$("form_view").parse(obj);
+            $$("cover_img").parse(obj.title_img_view);
         }
     };
 
