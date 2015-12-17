@@ -3,19 +3,50 @@ define(["views/modules/base",
     "views/modules/upload",
     "views/windows/topic_block_edit_win"],function(base,menu,upload,topic_block){
 
-    var item_fomat = function(obj){
-        return "<div class='overall'>" +
-            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+obj.expired_time+"天</span></div>"+
-            "<div class='items'><label>关联类型：</label><span>"+obj.link_type_text+"</span><label>关联项：</label><span>"+obj.link_info+"</span></div>"+
-            "<div class='items'><label>优惠类型：</label><span>"+obj.discount_type_text+"</span><label>优惠值：￥</label><span>"+obj.discount_value+"</span></div>"+
-            "</div>";
-    };
-
     var note_ui = {
         cols:[
-            { view: "icon", icon: "fa fa-exclamation-triangle"},
-            {view:"label", align:"left",css:"warning", label:"提交后的卡包项支持编辑但不支持删除，请确认后再提交数据！！！",height:30}
+            {view: "icon", icon: "fa fa-exclamation-triangle"},
+            {view:"label", align:"left",css:"warning", label:"拖动调整顺序！！！",height:30}
         ]
+    };
+
+    var elment = [
+        {id:"block_name", header:"主题块名称", width:250},
+        {id:"cover_img", header:"关联单品",template:function(obj){
+            var html = "";
+            var wares = obj.block_wares;
+            for(var a in wares){
+                html += "<img style='width:100px;height:100%;padding:0px 5px; display:block; float:left;' src='"+wares[a].cover_img.thumbnail_url+"'>";
+            }
+            return html;
+        },css:"noPadding",fillspace:true},
+        {id:"block_type", header:"展示形式",options:[{id:"one_block",value:"一栏"},{id:"two_block",value:"两栏"}], width:95},
+        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-pencil-square-o' title='编辑模块'>编辑</span>"},
+        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-trash' title='删除块'>删除</span>"},
+    ];
+
+    var table_event = {
+        //编辑
+        "fa-pencil-square-o":function(e, id){
+            var item = $$("block_list").getItem(id);
+            webix.ui(topic_block.$ui).show();
+            topic_block.$parse_data(item);
+        },
+        //删除
+        "fa-trash":function(e, id){
+            var item = $$("block_list").getItem(id);
+            webix.confirm({
+                text:"删除该主题块<br/> 确定?", ok:"是的", cancel:"取消",
+                callback:function(res){
+                    if(res){
+                        base.postReq("topic/block/delete.json?block_id="+item.block_id,"",function(){
+                            base.$msg.info("删除成功");
+                            $$("block_list").remove(id);
+                        });
+                    }
+                }
+            });
+        }
     };
 
     var topic_block_list_ui = {
@@ -23,24 +54,33 @@ define(["views/modules/base",
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"主题列表块",height:30},
                 note_ui,
-                { view: "button", type: "iconButton", icon: "plus", label: "新增列表块", width: 135, click: function(){
+                { view: "button", type: "iconButton", icon: "plus", label: "新增列表", width: 120, click: function(){
                     //todo
                     webix.ui(topic_block.$ui).show();
+                    topic_block.$init_data($$("topic_id").getValue());
+                    topic_block.$add_callBack(function(block){
+                        $$("block_list").add(block);
+                    });
+                }},
+                { view: "button", type: "iconButton", icon: "sort-alpha-asc", label: "排序提交", width: 120, click: function(){
+                    //todo
+                    var block_list = $$("block_list").serialize();
+                    base.postReq("topic/block/sort.json",block_list,function(){
+                        base.$msg.info("排序更新成功");
+                    });
 
                 }}
             ]},
             {
-                view: "dataview",
-                id: "topic_block_list",
-                css: "movies",
-                select: true,
-                scroll: true,
-                type: {width: 450, height: 120},
-                template: item_fomat,
-                on:{"onItemClick":function(id, e, node){
-                    var item = this.getItem(id);
-                    $$("pp_menu").show(e);
-                }},
+                id:"block_list",
+                view:"datatable",
+                headerRowHeight:35,
+                rowHeight:85,
+                hover:"myhover",
+                scrollY:true,
+                drag:true,
+                columns:elment,
+                onClick:table_event,
                 data:[]
             }
         ]
@@ -82,7 +122,7 @@ define(["views/modules/base",
                 {view:"label", align:"left",label:"主题基本信息",height:30}
             ]},
             {
-                id:"form_view",
+                id:"topic_form_view",
                 view:"form",
                 elementsConfig:{
                     labelWidth: 80,
@@ -95,12 +135,12 @@ define(["views/modules/base",
     }
 
     var submit_data = function(){
-        if (!$$("form_view").validate()){
+        if (!$$("topic_form_view").validate()){
             base.$msg.error("请输入正确的参数");
             return;
         }
         //基本数据
-        var formdata = $$("form_view").getValues();
+        var formdata = $$("topic_form_view").getValues();
         var action = "topic/update.json";
         if(formdata.topic_id.length===0){
             action = "topic/create.json";
@@ -158,10 +198,10 @@ define(["views/modules/base",
     ];
 
     var pars_data = function(data){
-        $$("form_view").parse(data);
+        $$("topic_form_view").parse(data);
         $$("header_img").parse(data.header_img);
-        /*$$("topic_block_list").clearAll();
-        $$("topic_block_list").parse(data.package_items);*/
+        $$("block_list").clearAll();
+        $$("block_list").parse(data.topic_blocks);
     }
 
     var init_data = function(){
@@ -169,7 +209,6 @@ define(["views/modules/base",
         id = 1;
         if(id){
             base.getReq("topic/"+id,function(data){
-                console.log(data);
                 pars_data(data);
             });
         }

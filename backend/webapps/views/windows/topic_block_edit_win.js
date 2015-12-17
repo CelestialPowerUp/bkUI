@@ -1,22 +1,20 @@
 define(["views/modules/base",
-    "views/modules/upload",
-    "views/windows/store_wares_win"],function(base,upload,store_wares_win){
+    "views/modules/upload_win",
+    "views/windows/store_wares_win"],function(base,upload_win,store_wares_win){
+
+    var __topic_id = null;
 
     store_wares_win.$add_callback(function(chose_data){
-        $$("block_list").add(chose_data);
-    });
-
-    var img_fomat = function(obj){
-        if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
-            return '<img src="http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF" class="content" ondragstart="return false"/>';
+        if(chose_data.cover_img){
+            chose_data.title_img_id = chose_data.cover_img.img_id;
         }
-        return '<img onclick="window.open(\''+obj.raw_url+'\')" src="'+obj.thumbnail_url+'" class="content" ondragstart="return false"/>';
-    };
+        $$("block_edit_list").add(chose_data);
+    });
 
     var elements = [
         {view:"text",id:"block_id",name:"block_id",hidden:true},
         {view:"text",label:"列表名称",placeholder: "数据主题列表名称",name:"block_name",required:true},
-        { view:"radio", name:"status", label:"列表分栏",value:"one_block", width:350,required:true,options:[
+        { view:"radio", name:"block_type", label:"列表分栏",value:"one_block", width:350,required:true,options:[
             { value:"一栏", id:'one_block'},
             { value:"两栏", id:'two_block'}
         ]}
@@ -28,7 +26,7 @@ define(["views/modules/base",
                 {view:"label", align:"left",label:"单品列表",height:30}
             ]},
             {
-                id:"form_view",
+                id:"block_form_view",
                 view:"form",
                 elementsConfig:{
                     labelWidth: 80,
@@ -43,16 +41,29 @@ define(["views/modules/base",
         {id:"ware_id",header:"单品ID",hidden:true,width:80},
         {id:"block_id",header:"列表块",hidden:true,width:80},
         {id:"title_img_id", header:"标题图片ID",hidden:true, width:95},
-        {id:"title_img", header:"标题图片",template:function(obj){
-            return "<img style='width:100%;height:100%;' src='http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF'>";
+        {id:"cover_img", header:"标题图片",template:function(obj){
+            return "<img style='width:100%;height:100%;' src='"+obj.cover_img.thumbnail_url+"'>";
         }, width:120,css:"noPadding"},
         {id:"ware_name", header:"单品标题", width:250},
         {id:"ware_mark_price", header:"商品售价", width:95},
         {id:"ware_full_price", header:"商品市场价", width:95},
-        {id:"index_no", header:"排列序号", width:95}
+        {id:"index_no", header:"排列序号", width:95},
+        {id:"edit", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-upload' title='上传图片'>上传</span>"}
     ]
 
-    var block_list_ui = {
+    var table_event = {
+        "fa-upload":function(e, id){
+            var item = $$("block_edit_list").getItem(id);
+            webix.ui(upload_win.$ui).show();
+            upload_win.$add_callback(function(upload_img){
+                item.cover_img = upload_img;
+                item.title_img_id = upload_img.img_id;
+                $$("block_edit_list").refresh(id);
+            });
+        }
+    };
+
+    var block_edit_list_ui = {
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"单品列表",height:30},
@@ -62,7 +73,7 @@ define(["views/modules/base",
                 }},
             ]},
             {
-                id:"block_list",
+                id:"block_edit_list",
                 view:"datatable",
                 headerRowHeight:35,
                 rowHeight:85,
@@ -73,42 +84,48 @@ define(["views/modules/base",
                 scrollY:true,
                 drag:true,
                 columns:elment,
-                on:{"onCheck":function(){
-                    countPrice();
-                }},
-                data:  []
+                onClick:table_event,
+                data:[]
             }
         ]
     };
 
     var button_ui = {margin:20,cols:[{},
         {view:"button",label:"确定",width:80,click:function(){
-            if (!$$("form_view").validate()){
+            if (!$$("block_form_view").validate()){
                 base.$msg.error("请输入正确的参数");
                 return;
             }
-            var formdata = $$("form_view").getValues();
-            var action = "generalize/update.json";
-            if(formdata.generalize_id.length===0){
-                action = "generalize/create.json";
+            var formdata = $$("block_form_view").getValues();
+            formdata.topic_id = __topic_id;
+            var action = "topic/block/update.json";
+            if(formdata.block_id.length===0){
+                action = "topic/block/create.json";
             }
+            var block_edit_list = $$("block_edit_list").serialize();
+            formdata.link_wares = block_edit_list;
             console.log(formdata);
-            /*base.postReq(action,formdata,function(data){
+            base.postReq(action,formdata,function(data){
                 base.$msg.info("数据提交成功");
                 if(typeof callBack === 'function'){
                     callBack(data);
                 }
                 webix.$$("pop_win").close();
-            });*/
+            });
         }},
         {view:"button",label:"取消",width:80,click:function(){
             webix.$$("pop_win").close();
         }}]
     };
 
-    var init_data = function(){
-
+    var init_data = function(topic_id){
+        __topic_id = topic_id;
     };
+
+    var parse_data = function(block){
+        $$("block_form_view").parse(block);
+        $$("block_edit_list").parse(block.block_wares);
+    }
 
     var win_ui = {
         view:"window",
@@ -118,7 +135,7 @@ define(["views/modules/base",
         head:"主题列表编辑",
         body: {
             type:"space",
-            rows:[from_ui,block_list_ui,button_ui]
+            rows:[from_ui,block_edit_list_ui,button_ui]
         }
     };
 
@@ -127,7 +144,8 @@ define(["views/modules/base",
     return {
         $ui:win_ui,
         $init_data:init_data,
-        $addCallBack:function(func){
+        $parse_data:parse_data,
+        $add_callBack:function(func){
             if(typeof func === 'function'){
                 callBack = func;
             }
