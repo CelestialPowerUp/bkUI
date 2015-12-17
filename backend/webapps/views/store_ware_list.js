@@ -29,7 +29,7 @@ define(["views/modules/base",
     };
 
     var elements = [
-        {id:"ware_id",width:50,hidden:true},
+        {id:"ware_id",header:"单品ID",width:80},
         {id:"ware_name", header:"单品名称",minWidth:250,fillspace:true},
         {id:"ware_type_name", header:"单品类别",minWidth:120,fillspace:true},
         {id:"product_name", header:"关联商品",minWidth:250,fillspace:true},
