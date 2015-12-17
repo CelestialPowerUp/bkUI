@@ -9,9 +9,7 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
-                        base.postReq("coupon_packages/delete.json?coupon_package_id="+item.coupon_package_id,"",function(){
-                            $$("table_list").remove(id);
-                        });
+
                     }
                 }
             });
@@ -19,23 +17,13 @@ define(["views/modules/base",
         "fa-pencil":function(e, id){
             var item = $$("table_list").getItem(id);
             //编辑优惠券卡包
-            this.$scope.show("/coupon_package_edit:id="+item.coupon_package_id);
+            this.$scope.show("/topic_edit:id="+item.topic_id);
         }
     };
 
     var elements = [
-        {id:"coupon_package_id",header:"ID",width:80},
-        {id:"coupon_package_name", header:"优惠券卡包名称",width:200,fillspace:false},
-        {id:"coupon_package_price", header:"售价",width:100,format:base.priceFormat,fillspace:false},
-        {id:"coupon_package_items", header:"优惠卡包项",minWidth:350,fillspace:true,template:function(obj){
-            var result = "";
-            var items = obj.coupon_package_items;
-            for(var a in items){
-                result += "<span class='status status1'>"+items[a].link_type_text+"："+items[a].link_info+" "+items[a].discount_type_text+" "+items[a].discount_value+"</span>&nbsp;";
-            }
-            return result;
-        }},
-        {id:"create_time", header:"创建时间",width:150,format:base.$show_time,fillspace:false},
+        {id:"topic_id",header:"ID",width:80},
+        {id:"topic_name", header:"主题名称",width:200,fillspace:true},
         {id:"edit", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-pencil' title='卡包编辑'>编辑</span>"},
         {id:"delete", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-times trash' title='删除卡包'>删除</span>"}
     ];
@@ -73,8 +61,7 @@ define(["views/modules/base",
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("coupon_packages.json",function(data){
-            console.log(data);
+        base.getReq("topics/enabled.json",function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
         })

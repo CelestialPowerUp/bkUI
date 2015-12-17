@@ -1,11 +1,22 @@
 define(["views/modules/base",
     "views/modules/upload",
-    "views/windows/store_wares_win"],function(base,upload,store_wares_win){
+    "views/windows/store_wares_win",
+    "views/windows/topic_list_win"],function(base,upload,store_wares_win,topic_list_win){
 
     store_wares_win.$add_callback(function(ware){
         $$("link_text").setValue(ware.ware_name+"("+ware.product_name+")");
         $$("link_id").setValue(ware.ware_id);
     });
+
+    topic_list_win.$add_callback(function(topic){
+        $$("link_text").setValue(topic.topic_name);
+        $$("link_id").setValue(topic.topic_id);
+    });
+
+    var clear_link_info = function(){
+        $$("link_text").setValue('');
+        $$("link_id").setValue('');
+    };
 
     var img_fomat = function(obj){
         if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
@@ -43,7 +54,11 @@ define(["views/modules/base",
             {id:"h5_page",value:"H5页面"},
             {id:"topic_list",value:"主题列表"},
             {id:"none",value:"不做任何处理"}
-        ],placeholder:"推广类型"},
+        ],on:{
+            "onChange":function(){
+                clear_link_info();
+            }
+        },placeholder:"推广类型"},
         {view:"text",label:"关联项ID",id:"link_id",name:"link_id",hidden:true},
         {view:"text",label:"关联项",placeholder: "单品/主题列表",id:"link_text",name:"link_text",click:function(){
             if($$("link_type").getValue()==='ware'){
@@ -51,6 +66,8 @@ define(["views/modules/base",
                 webix.ui(store_wares_win.$ui).show();
             }else if($$("link_type").getValue()==='topic_list'){
                 //主题列表
+                webix.ui(topic_list_win.$ui).show();
+                topic_list_win.$init_data();
 
             }
         },readonly:true},
@@ -104,7 +121,7 @@ define(["views/modules/base",
         modal:true,
         id:"pop_win",
         position:"center",
-        head:"广告弹窗信息编辑",
+        head:"推广列表编辑",
         body: {
             type:"space",
             rows:[from_ui,button_ui]

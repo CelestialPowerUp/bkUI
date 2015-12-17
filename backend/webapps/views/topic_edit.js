@@ -206,7 +206,6 @@ define(["views/modules/base",
 
     var init_data = function(){
         var id = base.get_url_param("id")
-        id = 1;
         if(id){
             base.getReq("topic/"+id,function(data){
                 pars_data(data);
