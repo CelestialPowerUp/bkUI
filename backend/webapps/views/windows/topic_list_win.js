@@ -25,7 +25,7 @@ define(["views/modules/base",
 					var item = this.getItem(id);
 					var datas = $$("topic_list_").serialize();
 					for(var i=0;i<datas.length;i++){
-						if(datas[i].ware_id === item.ware_id){
+						if(datas[i].topic_id === item.topic_id){
 							datas[i].$check = true;
 							continue;
 						}
