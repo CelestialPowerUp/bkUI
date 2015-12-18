@@ -1,14 +1,26 @@
 define(["views/modules/base",
     "views/modules/upload_win",
-    "views/windows/store_wares_win"],function(base,upload_win,store_wares_win){
+    "views/windows/store_wares_win",
+    "views/menus/popup_menu",],function(base,upload_win,store_wares_win,popup_menu){
 
     var __topic_id = null;
+
+    var block_item_format = function(obj){
+        return '<div class="list-content">'+
+            '<div class="left-img"><img src="'+obj.cover_img.thumbnail_url+'"/></div>'+
+            '<div class="right-text">'+
+            '<p><span>单品名称:￥</span><span>'+obj.ware_name+'</span></p>'+
+            '<p><span>单品售价:￥</span><span>'+obj.ware_mark_price+'</span></p>'+
+            '<p><span>单品市场价:￥</span><span>'+obj.ware_full_price+'</span></p>'+
+            '</div>'+
+            '</div>';
+    };
 
     store_wares_win.$add_callback(function(chose_data){
         if(chose_data.cover_img){
             chose_data.title_img_id = chose_data.cover_img.img_id;
         }
-        $$("block_edit_list").add(chose_data);
+        $$("block_ware_list").add(chose_data);
     });
 
     var elements = [
@@ -47,8 +59,7 @@ define(["views/modules/base",
         {id:"ware_name", header:"单品标题", width:250},
         {id:"ware_mark_price", header:"商品售价", width:95},
         {id:"ware_full_price", header:"商品市场价", width:95},
-        {id:"index_no", header:"排列序号", width:95},
-        {id:"edit", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-upload' title='上传图片'>上传</span>"}
+        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-upload' title='上传图片'>上传</span>"}
     ]
 
     var table_event = {
@@ -58,12 +69,14 @@ define(["views/modules/base",
             upload_win.$add_callback(function(upload_img){
                 item.cover_img = upload_img;
                 item.title_img_id = upload_img.img_id;
-                $$("block_edit_list").refresh(id);
+                $$("block_ware_list").refresh(id);
             });
         }
     };
 
     var block_edit_list_ui = {
+        width:890,
+        height:400,
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"单品列表",height:30},
@@ -73,18 +86,18 @@ define(["views/modules/base",
                 }},
             ]},
             {
-                id:"block_edit_list",
-                view:"datatable",
-                headerRowHeight:35,
-                rowHeight:85,
-                //autoConfig:true,
-                height:300,
-                autowidth:true,
-                hover:"myhover",
-                scrollY:true,
+                view: "dataview",
+                id: "block_ware_list",
+                css: "movies",
+                select: true,
+                scroll: true,
+                xCount:2,
                 drag:true,
-                columns:elment,
-                onClick:table_event,
+                type: {width:430,height: 150},
+                template: block_item_format,
+                on:{"onItemClick":function(id, e, node){
+                    $$("pp_menu").show(e);
+                }},
                 data:[]
             }
         ]
@@ -102,9 +115,9 @@ define(["views/modules/base",
             if(formdata.block_id.length===0){
                 action = "topic/block/create.json";
             }
-            var block_edit_list = $$("block_edit_list").serialize();
+            var block_edit_list = $$("block_ware_list").serialize();
             formdata.link_wares = block_edit_list;
-            console.log(formdata);
+            formdata.topic_id = __topic_id;
             base.postReq(action,formdata,function(data){
                 base.$msg.info("数据提交成功");
                 if(typeof callBack === 'function'){
@@ -118,13 +131,31 @@ define(["views/modules/base",
         }}]
     };
 
+    var menus = [
+        {value:"edit",label:"上传",click:function(){
+            var item = $$("block_ware_list").getSelectedItem();
+            webix.ui(upload_win.$ui).show();
+            upload_win.$add_callback(function(upload_img){
+                item.cover_img = upload_img;
+                item.title_img_id = upload_img.img_id;
+                $$("block_ware_list").refresh();
+            });
+        }},
+        {value:"edit",label:"删除",click:function(){
+            $$("block_ware_list").remove($$("block_ware_list").getSelectedId());
+        }}
+    ]
+
     var init_data = function(topic_id){
+        popup_menu.$add_menus(menus);
         __topic_id = topic_id;
     };
 
     var parse_data = function(block){
+        __topic_id = block.topic_id;
+        popup_menu.$add_menus(menus);
         $$("block_form_view").parse(block);
-        $$("block_edit_list").parse(block.block_wares);
+        $$("block_ware_list").parse(block.block_wares);
     }
 
     var win_ui = {

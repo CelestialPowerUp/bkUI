@@ -17,6 +17,7 @@ define(["views/modules/base",
         css: "nav_list",
         select: true,
         scroll: true,
+        drag:true,
         type: {width: 350, height: 260},
         template: img_fomat,
         on:{"onItemClick":function(id, e, node){
@@ -38,7 +39,21 @@ define(["views/modules/base",
         {view:"segmented",id:"status_type", multiview:true,width:150, value:"enabled", options:[
             { id:"enabled", value:"启用" }, // the initially selected segment
             { id:"disabled", value:"停用" }]
-        }
+        },
+        { view: "button", type: "iconButton", icon: "sort-alpha-asc", label: "排序提交", width: 120, click: function(){
+            //todo
+            var list = $$("img_view").serialize();
+            for(var a in list){
+                if(list[a].link_href === '#add'){
+                    list.splice(a,1);
+                    break;
+                }
+            }
+            base.postReq("generalize/sort.json",list,function(){
+                base.$msg.info("排序更新成功");
+            });
+
+        }}
     ]};
 
     var layout = {

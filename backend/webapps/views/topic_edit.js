@@ -3,6 +3,10 @@ define(["views/modules/base",
     "views/modules/upload",
     "views/windows/topic_block_edit_win"],function(base,menu,upload,topic_block){
 
+    topic_block.$add_callBack(function(block){
+        init_data();
+    });
+
     var note_ui = {
         cols:[
             {view: "icon", icon: "fa fa-exclamation-triangle"},
@@ -30,7 +34,7 @@ define(["views/modules/base",
         "fa-pencil-square-o":function(e, id){
             var item = $$("block_list").getItem(id);
             webix.ui(topic_block.$ui).show();
-            topic_block.$parse_data(item);
+            topic_block.$parse_data(webix.copy(item));
         },
         //删除
         "fa-trash":function(e, id){
@@ -58,9 +62,6 @@ define(["views/modules/base",
                     //todo
                     webix.ui(topic_block.$ui).show();
                     topic_block.$init_data($$("topic_id").getValue());
-                    topic_block.$add_callBack(function(block){
-                        $$("block_list").add(block);
-                    });
                 }},
                 { view: "button", type: "iconButton", icon: "sort-alpha-asc", label: "排序提交", width: 120, click: function(){
                     //todo
@@ -146,6 +147,7 @@ define(["views/modules/base",
             action = "topic/create.json";
         }
         base.postReq(action,formdata,function(backdata){
+            $$("main_body").$scope.show("/app/topic_edit:id="+backdata.topic_id);
             base.$msg.info("数据提交成功");
         });
     }
@@ -162,7 +164,11 @@ define(["views/modules/base",
                 }
             });
 
-        }}]
+        }},
+        {view:"button",label:"取消",width:120,click:function(){
+            $$("main_body").$scope.show("/app/topic_list");
+        }}
+    ]
     };
 
     var win_ui = {
@@ -216,7 +222,7 @@ define(["views/modules/base",
     return {
         $ui:win_ui,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "优惠券管理", details: "优惠券卡包编辑"});
+            webix.$$("title").parse({title: "商城管理", details: "主题列表编辑"});
             menu.$add_menus(menus);
             init_data();
         }
