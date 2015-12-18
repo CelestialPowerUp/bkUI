@@ -11,6 +11,7 @@
     <file url="file://$PROJECT_DIR$/webapps/views/forms/channel_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_form.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/forms/store_type_form.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/generalize_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/index.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/keeper_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/menus/open_sidebar.js" charset="UTF-8" />
@@ -21,6 +22,7 @@
     <file url="file://$PROJECT_DIR$/webapps/views/statistic_panel.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/store_ware_list.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/system_user_list.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/webapps/views/topic_edit.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/webapps/views/user_leave_list.js" charset="UTF-8" />
   </component>
 </project>
