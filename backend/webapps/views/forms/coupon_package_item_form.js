@@ -27,16 +27,18 @@ define(["views/modules/base",
 
     var form_elements = [
         {view:"text",name:"coupon_package_item_id",hidden:true},
-        {view:"text",id:"link_id",name:"link_id",hidden:true,required:true},
+        {view:"text",id:"link_id",name:"link_id",required:true,hidden:true},
         {view:"text",label:"优惠券名称",placeholder: "输入卡包项名称",name:"coupon_package_item_name",required:true},
-        {view: "richselect",label:"优惠券类型",placeholder:"选择优惠券类型",value:"product",options:[
+        {view: "richselect",label:"优惠券类型",placeholder:"选择优惠券类型",value:"",options:[
             {id:"normal",value:"通用券"},
             {id:"product",value:"特定商品券"},
             {id:"product_category",value:"商品分类券"}
         ],on:{
             onChange:function(newv, oldv){
-                $$("link_info").setValue("");
-                $$("link_id").setValue("");
+                if(oldv!==''){
+                    $$("link_info").setValue("");
+                    $$("link_id").setValue("");
+                }
                 if(newv==='normal'){
                     $$("link_info").disable();
                 }else{
@@ -56,8 +58,8 @@ define(["views/modules/base",
             }
         }},
         {view: "richselect",label:"优惠类型",placeholder:"选择优惠券类型",value:"reduce_price",options:[
-            {id:"fixed_price",value:"定额券"},
-            {id:"reduce_price",value:"金额抵扣券"}
+            {id:"fixed_price",value:"固定价格"},
+            {id:"reduce_price",value:"抵扣金额"}
         ],on:{
             onChange:function(newv, oldv){
                 if($$("link_type").getValue()!=='product'&&newv==='fixed_price'){

@@ -150,6 +150,7 @@ define(["views/modules/base",
     ];
 
     var pars_data = function(data){
+        menu.$add_menus(menus);
         $$("form_view").parse(data.coupon_package);
         $$("coupon_item_list").clearAll();
         $$("coupon_item_list").parse(data.package_items);
@@ -169,7 +170,6 @@ define(["views/modules/base",
         $oninit:function(app,config){
             webix.$$("title").parse({title: "优惠券管理", details: "优惠券卡包编辑"});
             init_data();
-            menu.$add_menus(menus);
         }
     };
 });
