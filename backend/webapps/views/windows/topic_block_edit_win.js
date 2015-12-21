@@ -20,6 +20,13 @@ define(["views/modules/base",
         if(chose_data.cover_img){
             chose_data.title_img_id = chose_data.cover_img.img_id;
         }
+        var block_edit_list = $$("block_ware_list").serialize();
+        for(var a in block_edit_list){
+            if(block_edit_list[a].ware_id === chose_data.ware_id){
+                base.$msg.error("该主题块中已包含该单品");
+                return;
+            }
+        }
         $$("block_ware_list").add(chose_data);
     });
 
@@ -49,33 +56,8 @@ define(["views/modules/base",
         ]
     };
 
-    var elment = [
-        {id:"ware_id",header:"单品ID",hidden:true,width:80},
-        {id:"block_id",header:"列表块",hidden:true,width:80},
-        {id:"title_img_id", header:"标题图片ID",hidden:true, width:95},
-        {id:"cover_img", header:"标题图片",template:function(obj){
-            return "<img style='width:100%;height:100%;' src='"+obj.cover_img.thumbnail_url+"'>";
-        }, width:120,css:"noPadding"},
-        {id:"ware_name", header:"单品标题", width:250},
-        {id:"ware_mark_price", header:"商品售价", width:95},
-        {id:"ware_full_price", header:"商品市场价", width:95},
-        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-upload' title='上传图片'>上传</span>"}
-    ]
-
-    var table_event = {
-        "fa-upload":function(e, id){
-            var item = $$("block_edit_list").getItem(id);
-            webix.ui(upload_win.$ui).show();
-            upload_win.$add_callback(function(upload_img){
-                item.cover_img = upload_img;
-                item.title_img_id = upload_img.img_id;
-                $$("block_ware_list").refresh(id);
-            });
-        }
-    };
-
     var block_edit_list_ui = {
-        width:890,
+        width:925,
         height:400,
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
@@ -93,7 +75,7 @@ define(["views/modules/base",
                 scroll: true,
                 xCount:2,
                 drag:true,
-                type: {width:430,height: 150},
+                type: {width:450,height: 150},
                 template: block_item_format,
                 on:{"onItemClick":function(id, e, node){
                     $$("pp_menu").show(e);

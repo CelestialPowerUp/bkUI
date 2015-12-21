@@ -102,7 +102,7 @@ define(["views/modules/base",
             { value:"停用", id:'disabled' }
         ]},
         {view:"text",id:"header_img_id",name:"header_img_id",hidden:true},
-        {height:150,width:400,id:"header_img",template:img_fomat},
+        {height:150,width:400,id:"header_img_view",template:img_fomat},
         {height:25,borderless:true,template:"<a id='cover_img_pickfiles' style='padding-left: 150px' href='javascript:;'>[上传头图]</a>",
             on:{"onAfterRender":function(){
                 upload.$bind_upload("cover_img_pickfiles",function(data){
@@ -204,8 +204,8 @@ define(["views/modules/base",
     ];
 
     var pars_data = function(data){
+        $$("header_img_view").parse(data.header_img);
         $$("topic_form_view").parse(data);
-        $$("header_img").parse(data.header_img);
         $$("block_list").clearAll();
         $$("block_list").parse(data.topic_blocks);
     }

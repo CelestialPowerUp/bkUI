@@ -250,7 +250,7 @@
     margin: 5px;
     float: left;
     height: 120px;
-    width: 430px;
+    width: 420px;
     background-color:#e1e4ea ;
     padding: 10px;
     border-radius: 5px;
@@ -285,6 +285,7 @@
 .right-text{
     float: left;
     width: 250px;
+    line-height: 18px;
     height: inherit;
     margin-left: 10px;
 }
