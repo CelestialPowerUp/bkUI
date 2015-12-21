@@ -24,8 +24,15 @@ define(["views/modules/base",
     var elements = [
         {id:"topic_id",header:"ID",width:80},
         {id:"topic_name", header:"主题名称",width:200,fillspace:true},
-        {id:"edit", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-pencil' title='卡包编辑'>编辑</span>"},
-        {id:"delete", header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-times trash' title='删除卡包'>删除</span>"}
+        {id:"status", header:"状态",width:80,fillspace:false,template:function(obj){
+            if(obj.status === 'enabled'){
+                return "<span class='status status1'>激活</span>";
+            }else{
+                return "<span class='status status0'>停用</span>";
+            }}
+        },
+        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-pencil' title='卡包编辑'>编辑</span>"},
+        {header:"&nbsp;", width:80, template:"<span class='trash webix_icon fa-times trash' title='删除卡包'>删除</span>"}
     ];
 
     var table_ui = {
@@ -41,27 +48,29 @@ define(["views/modules/base",
         onClick:on_event
     }
 
-    var filter_ui = {
-        margin:15,
-        cols:[
-            { view: "button", type: "iconButton", icon: "plus", label: "主题列表", width: 135, click: function(){
-                //todo
-                this.$scope.show("/topic_edit");
-            }},
-            {}
+    var layout = {
+        paddingX:15,
+        paddingY:15,
+        rows:[
+            {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
+                {view:"label", align:"left",label:"主题列表",height:30},
+                { view: "button", type: "iconButton", icon: "plus", label: "主题列表", width: 135, click: function(){
+                    //todo
+                    this.$scope.show("/topic_edit");
+                }},
+                {view:"segmented",id:"status_type", multiview:true,width:150, value:"enabled", options:[
+                    { id:"enabled", value:"启用" }, // the initially selected segment
+                    { id:"disabled", value:"停用" }]
+                }
+            ]},
+            {margin:15, type:"clean", rows:[table_ui]}
         ]
     };
 
-    var layout = {
-        paddingY:15,
-        paddingX:15,
-        cols:[
-            {margin:15, type:"clean", rows:[filter_ui,table_ui]}]
-    };
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("topics/enabled.json",function(data){
+        base.getReq("topics/"+$$("status_type").getValue()+".json",function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
         })
@@ -71,6 +80,9 @@ define(["views/modules/base",
         $ui:layout,
         $oninit:function(app,config){
             webix.$$("title").parse({title: "优惠券管理", details: "优惠券卡包摸版"});
+            $$("status_type").attachEvent("onChange", function(newv, oldv){
+                refresh_table();
+            });
             refresh_table();
         }
     }
