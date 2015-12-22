@@ -9,7 +9,10 @@ define(["views/modules/base",
                 callback:function(res){
                     if(res){
                         //删除资源
-
+                        base.postReq("topic/delete.json?topic_id="+item.topic_id,"",function(data){
+                            base.$msg.info("资源删除成功！");
+                            refresh_table();
+                        });
                     }
                 }
             });
