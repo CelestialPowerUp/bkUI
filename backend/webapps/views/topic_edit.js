@@ -109,7 +109,7 @@ define(["views/modules/base",
                     if(data.code==='00000'&&data.data!=null){
                         var item = data.data;
                         item.img_id = item.id;
-                        $$("header_img").parse(item);
+                        $$("header_img_view").parse(item);
                         $$("header_img_id").setValue(item.img_id);
                     }
                 });
