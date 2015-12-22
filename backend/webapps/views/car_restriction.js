@@ -148,13 +148,14 @@ define(["models/order",
 		var selectNos = $$("numbers").getSelectedItem();
 		var numbers = [];
 		if(selectNos){
-			for(var i=0;i<selectNos.length;i++){
-				numbers.push(selectNos[i].no_);
+			if(selectNos instanceof Array){
+				for(var i=0;i<selectNos.length;i++){
+					numbers.push(selectNos[i].no_);
+				}
+			}else{
+				numbers.push(selectNos.no_);
 			}
 		}
-
-		console.log(numbers);
-
 		formData.date = date;
 		formData.numbers = numbers;
 		formData.car_restriction_type = "custom";
@@ -185,7 +186,6 @@ define(["models/order",
 	};
 	/*获取第三方列表*/
 	var freshThirdList = function(){
-
 		var queryData = {"car_restriction_type":"third_api"};
 		base.postReq("/v1/api/car_restrictions.json",queryData,function(data){
 			$$("third_list").clearAll();
