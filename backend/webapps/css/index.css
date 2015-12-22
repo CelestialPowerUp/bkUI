@@ -289,5 +289,24 @@
     height: inherit;
     margin-left: 10px;
 }
+
+.title-content{
+    width: 250px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color:#d9ead3;
+    border-radius: 3px;
+    font-family: 'PT Sans',Tahoma;
+    text-shadow: 0 1px 0 #FFFFFF;
+    font-size: 15px;
+    cursor: pointer;
+    clear: left;
+}
+
+.title-content span{
+    margin-right: 5px;
+    font-size: 25px;
+}
 /**
 **/
