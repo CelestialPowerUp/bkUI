@@ -10,10 +10,10 @@ define(["views/modules/base"],function(base){
             {view:"button",label:"导出",width:80,click:function(){
                 var start = base.format_time($$("start_time_export").getValue());
                 var end = base.format_time($$("end_time_export").getValue());
-                base.postReq("excel/finance_statements.json",{start:start,end:end},function(data){
+                base.postReqTimeOut("excel/finance_statements.json",{start:start,end:end},function(data){
                     window.open(data);
                     base.$msg.info("excel导出成功");
-                });
+                },60*3);
             }},
             {view:"button",label:"取消",width:80,click:function(){
                 webix.$$("finance_statements_excel_win").close();

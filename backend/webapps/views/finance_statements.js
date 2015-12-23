@@ -62,10 +62,10 @@ define(["views/modules/base",
             return "";
         }
         var param = {start:base.format_time(start),end:base.format_time(end)};
-        base.postReq("finance_statements.json",param,function(data){
+        base.postReqTimeOut("finance_statements.json",param,function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
-        })
+        },60*3)
     };
 
     return {

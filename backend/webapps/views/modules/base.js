@@ -132,6 +132,46 @@ define(["../forms/login"],function(login){
 	};
 
 	/**
+	 * post请求
+	 * @param url
+	 * @param param
+	 * @param callBack
+	 * @param failureBack
+	 * @param notAsync
+	 */
+	var postReqTimeOut = function(url,param,callBack,failureBack,timeout_second,notAsync){
+		var async = true;
+		if(notAsync){
+			async = false;
+		}
+		$.ajax({
+			type:"POST",
+			dataType:"json",
+			contentType: "application/json",
+			timeout:timeout_second*1000,
+			url: filter_url(url),
+			async:async,
+			data:JSON.stringify(param),
+			beforeSend: beforeReq,
+			success: function(data) {
+				if(data&&data['code']=='00000'){
+					callBack(data['data']);
+				}else if(data&&data['code']=='20007'){
+					show_login_win();
+				}else{
+					webix.message({ type:"error",expire:5000,text:data['message']});
+					if(failureBack){
+						failureBack(data);
+					}
+				}
+			},
+			error:function(xhr,status,error){
+				webix.message({ type:"error",expire:5000,text:"服务器异常 status:"+status});
+			}
+		});
+	};
+
+	/**
 	 * get请求
 	 * @param url
 	 * @param callBack
@@ -691,6 +731,7 @@ define(["../forms/login"],function(login){
 	return {
 		postReq:postReq,
 		getReq:getReq,
+		postReqTimeOut:postReqTimeOut,
 		getLocation:getLocation,
 		parse_url_parmas:parse_url_parmas,
 		format_time:format_time,
@@ -720,5 +761,6 @@ define(["../forms/login"],function(login){
 		getCurrentDate:getCurrentDate,
 		time_period_format:time_period_format,
 		$show_day:show_day
+
 	};
 });
