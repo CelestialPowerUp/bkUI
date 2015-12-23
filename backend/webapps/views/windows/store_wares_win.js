@@ -44,7 +44,7 @@ define(["views/modules/base",
 					$$("store_ware_list").parse(data);
 				});
 			}
-		},options:base_data.ware_type_options,placeholder:"单品类型",width:250},
+		},options:base_data.ware_type_choose_options,placeholder:"单品类型",width:250},
 		{view:"text",placeholder:"请输入查找的内容:",css:"fltr",labelWidth:135,on:{
 			onTimedKeyPress:function(){
 				var value = this.getValue().toLowerCase();
