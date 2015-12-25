@@ -8,6 +8,7 @@ define(["views/modules/base",
 	map_win.$call_back(function(address){
 		address.order_id = $$("order_id").getValue();
 		base.postReq("order/take_address/update.json",address,function(data){
+			$$("order_take_address_info").parse(data);
 			base.$msg.info("地址修改成功");
 		});
 	});
@@ -146,8 +147,8 @@ define(["views/modules/base",
 			{id: "order_take_address_info",
 				height:60,
 				template:"<div>"+
-				"<div class='strong_text'>#take_address_name#</div>"+
-				"<div class='light_text'>#take_address_details#</div>"+
+				"<div class='strong_text'>#address_name#</div>"+
+				"<div class='light_text'>#address_detail#</div>"+
 				"</div>",
 				data:{take_address_name:"",take_address_details:""}
 			}
@@ -765,8 +766,8 @@ define(["views/modules/base",
 	 */
 	var parse_order_take_address = function(order){
 		var obj = {};
-		obj.take_address_name = order.client_basic.location.name;
-		obj.take_address_details = order.client_basic.location.address;
+		obj.address_name = order.client_basic.location.name;
+		obj.address_detail = order.client_basic.location.address;
 		$$("order_take_address_info").parse(obj);
 	};
 
