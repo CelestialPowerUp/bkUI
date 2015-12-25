@@ -495,7 +495,7 @@ define(["../forms/login"],function(login){
 	
 	var getUrlParams = function(){
 		return parse_url_parmas(window.location.href);
-	}
+	};
 	
 	var request_upload_token = function(){
 			getReq("media/uptoken.json",function(data){
