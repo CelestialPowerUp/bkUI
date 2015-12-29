@@ -2,6 +2,9 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
 
     /*voip初始化登录*/
     var ivrLogin = function(){
+        if(Cloopen===undefined || !Cloopen){
+            return ;
+        }
         var agentToken = base.getAgentToken();
         var ivrAppId = "aaf98f894ae167eb014ae748e7b404a3";
 
@@ -23,7 +26,7 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             ,appIdToken //应用appid与用户token可根据开发者业务自行获取
         );
     };
-    ivrLogin();
+  //  ivrLogin();
 
     /*定时更新座席状态*/
     function refreshAgentState(){
@@ -53,7 +56,7 @@ define(["views/modules/base","../views/menus/agent_menu","../views/menus/call_ou
             $$("agent_menu").refresh();
         }
     };
-    setInterval(refreshAgentState,1000*60*2);
+   // setInterval(refreshAgentState,1000*60*2);
 
     /*正在连接服务器中状态*/
     Cloopen.when_connecting(function(){

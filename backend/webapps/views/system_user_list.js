@@ -41,9 +41,9 @@ define(["views/modules/base",
         {id:"user_name", header:"姓名",fillspace:true},
         {id:"job_number", header:"员工编号",fillspace:true},
         {id:"sing_in_origin", header:"注册来源",fillspace:true},
-        {id:"trash", header:"", width:80, template:"<span class='webix_icon fa-user' style=' cursor:pointer;text-decoration: underline;' title='用户角色'>角色</span>"},
-        {id:"password", header:"&nbsp;", width:80, template:"<span class='webix_icon fa-keyboard-o' style=' cursor:pointer;text-decoration: underline;' title='更改密码'>密码</span>"},
-        {id:"job_num", header:"&nbsp;", width:100, template:"<span class='webix_icon fa-github' style=' cursor:pointer;text-decoration: underline;' title='员工工号'>员工编号</span>"},
+        {id:"trash", header:"", width:80, template:"<span class='webix_icon fa-user trash' title='用户角色'>角色</span>"},
+        {id:"password", header:"&nbsp;", width:80, template:"<span class='webix_icon trash fa-keyboard-o' title='更改密码'>密码</span>"},
+        {id:"job_num", header:"&nbsp;", width:100, template:"<span class='webix_icon trash fa-github' title='员工工号'>员工编号</span>"},
     ];
 
     var table_ui = {

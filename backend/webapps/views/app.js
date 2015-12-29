@@ -50,13 +50,13 @@ define([
 			{view: "icon", icon: "file-text-o", id:"order_message", value: 0,tooltip:"新订单", width: 45, popup: "messagePopup"},
 			{view: "icon", icon: "coffee", id:"activity_message",tooltip:"新活动单", value: 0, width: 45, popup: "activityMessagePopup"},
 
-			{view: "icon", icon: "phone", id:"call_out",tooltip:"外呼", value: 0, width: 45, popup: "call_out_submenu"},
+			{view: "icon", icon: "phone", id:"call_out",tooltip:"外呼", value: 0, hidden:true,width: 45, popup: "call_out_submenu"},
 
 			/*{view: "icon", icon: "headphones", id:"call_in",tooltip:"呼入", value: '', width: 45, popup: "call_in_submenu",click:function(){
 				this.data.value = 0;
 				this.refresh();
 			}},*/
-			{view: "icon", icon: "user", id:"agent_menu",tooltip:"座席状态",value:"非座席", width: 45,popup:"agent_submenu"}
+			{view: "icon", icon: "user", id:"agent_menu",tooltip:"座席状态",value:"非座席",hidden:true, width: 45,popup:"agent_submenu"}
 			/*,{view: "icon", icon: "user", id:"test1",tooltip:"座席状态", value: 0, width: 45,click:function(){
 				// this.$scope.ui(call_in_win.$ui).show();
 				showCallInWin();

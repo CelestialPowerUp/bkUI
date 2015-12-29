@@ -47,7 +47,6 @@ define(["views/modules/base"],function(base){
 
     var refresh_package_item = function(coupon_package_id){
         base.getReq("supplier/coupon_package.json?supplier_id="+__supplier_id+"&coupon_package_id="+coupon_package_id,function(data){
-            console.log(data);
             $$("item_list").clearAll();
             $$("item_list").parse(data['package_items']);
             if(data.supplier_product){

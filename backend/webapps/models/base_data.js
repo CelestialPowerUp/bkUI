@@ -101,10 +101,16 @@ define([],function(){
 		{id:"times_card",value:"次卡单品"},
 		{id:"le_jia_yuan",value:"乐家园"}
 	];
+
+	var ware_type_choose_options = [
+		{id:"store_home_ware",value:"商城单品"},
+		{id:"coupon_package",value:"优惠券卡包"},
+	];
 	
 	return {
 		citys:citys,
 		ware_type_options:ware_type_options,
+		ware_type_choose_options:ware_type_choose_options,
 		$car_part_type:car_part_type,
 		$car_part_type_for_model:car_part_type_for_model,
 		$audio_order:audio_order,

@@ -181,6 +181,12 @@
     text-decoration: line-through;
 }
 
+.trash{
+    cursor:pointer;
+    text-decoration: underline;
+    font-size: 12px;
+}
+
 /**
 
 **/
@@ -215,26 +221,92 @@
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0,#edeff4), color-stop(1, #e1e4ea));
     box-shadow: 0px 1px 1px #d4d7de;
 }
-.item_label{
-    font-size: 14px;
-    color:#df6910;
-    font-weight:bold;
-    float: left;
-    line-height:20px;
-    height:35px;
-}
-.item_value{
+
+.items{
     height:35px;
     line-height:20px;
     overflow:hidden;
     font-weight:bold;
-    float: left;
     padding-left: 5px;
-    width: 200px;
 }
-.year{
-    width: 210px;
-    text-align:right;
+
+.items label{
+    padding-left: 5px;
+    color:#df6910;
+}
+
+.items span{
+    padding-left: 5px;
+    width: 150px;
+}
+.status3 {
+    background-color: red;
+    font-weight:bold;
+    color:white;
+}
+
+
+.list-content{
+    margin: 5px;
+    float: left;
+    height: 120px;
+    width: 420px;
+    background-color:#e1e4ea ;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0px 1px 1px #d4d7de;
+    font-family: 'PT Sans',Tahoma;
+    font-size: 15px;
+    cursor: pointer;
+    text-shadow: 0 1px 0 #FFFFFF;
+    color: #303030;
+}
+
+.webix_selected.list-content{
+    background-color: #DBFFB0;
+    background: -moz-linear-gradient(top , #DBFFB0 0%, #D0F4A4 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0,#DBFFB0), color-stop(1, #D0F4A4));
+    background: -o-linear-gradient(top, #DBFFB0 0% , #D0F4A4 100%);
+    background: -ms-linear-gradient(top, #DBFFB0 0% , #D0F4A4 100%);
+    background: -moz-linear-gradient(top, #DBFFB0 0% , #D0F4A4 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0,#DBFFB0), color-stop(1, #D0F4A4));
+}
+
+.left-img{
+    float: left;
+    width: 150px;
+    height: inherit;
+}
+.left-img img{
+    width: inherit;
+    height: inherit;
+    border-radius: 5px;
+}
+.right-text{
+    float: left;
+    width: 250px;
+    line-height: 18px;
+    height: inherit;
+    margin-left: 10px;
+}
+
+.title-content{
+    width: 250px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-color:#d9ead3;
+    border-radius: 3px;
+    font-family: 'PT Sans',Tahoma;
+    text-shadow: 0 1px 0 #FFFFFF;
+    font-size: 15px;
+    cursor: pointer;
+    clear: left;
+}
+
+.title-content span{
+    margin-right: 5px;
+    font-size: 25px;
 }
 /**
 **/

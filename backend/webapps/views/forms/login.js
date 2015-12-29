@@ -11,7 +11,7 @@ define(['require'],function(require){
 				window.location.reload(true);
 
 				//座席登陆
-				base.agentLogin();
+				//base.agentLogin();
 			});
 		}
 		else
