@@ -24,6 +24,8 @@ define(["views/modules/base"],function(base){
         			$$("product_info").setValue(item['product_info']);
         			$$("product_type").setValue(item['product_type']);
         			$$("labour_price").setValue(item['labour_price']);
+					$$("supplier_cost").setValue(item['supplier_cost']);
+
         			$$("part_type").setValue(item['part_type']);
 					$$('unit_count').setValue(item['unit_count']===0?1:item['unit_count']);
 					$$("selection_mode").setValue(3);
@@ -45,6 +47,8 @@ define(["views/modules/base"],function(base){
 				$$("product_info").setValue(item['product_info']);
 				$$("product_type").setValue(item['product_id']);
 				$$("labour_price").setValue(item['labour_price']);
+				$$("supplier_cost").setValue(item['supplier_cost']);
+
 				$$("part_type").setValue(item['part_type']);
 				$$('unit_count').setValue(item['unit_count']===0?1:item['unit_count']);
 				$$("selection_mode").setValue(3);
@@ -54,6 +58,13 @@ define(["views/modules/base"],function(base){
 		};
 		
 		var count_total_price = function(){
+
+			try{
+				count_total_supplier_cost();
+			}catch(e){
+				console.log("计算总结算价失败>>"+e);
+			}
+
 			var count = base.toNum($$('unit_count').getValue());
 			var price = base.toNum($$('price').getValue());
 			var labour_price = base.toNum($$('labour_price').getValue());
@@ -62,6 +73,17 @@ define(["views/modules/base"],function(base){
 				totalprice = 0;
 			}
 			$$('total_price').setValue(totalprice+"");
+		};
+
+		var count_total_supplier_cost = function(){
+			var count = base.toNum($$('unit_count').getValue());
+			var supplierCost = base.toNum($$('supplier_cost').getValue());
+			var labour_price = base.toNum($$('labour_price').getValue());
+			var totalSupplierCost = (count*supplierCost)+(labour_price*1);
+			if(totalSupplierCost==""){
+				totalSupplierCost = 0;
+			}
+			$$('total_supplier_cost').setValue(totalSupplierCost+"");
 		};
 		
 		var submit_form_ui = {
@@ -96,7 +118,11 @@ define(["views/modules/base"],function(base){
 								{ view:"text", name:"labour_price",id:"labour_price", label:"工时费",disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
 									count_total_price();
 								}}},
+								{ view:"text", name:"supplier_cost",id:"supplier_cost", label:"结算价",disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
+									count_total_price();
+								}}},
 								{ view:"text",name:"total_price",id:"total_price",label:"总价",disabled:true},
+								{ view:"text",name:"total_supplier_cost",id:"total_supplier_cost",label:"总结算价",disabled:true},
 								{ view:"text",name:"user_defined",id:"user_defined",hidden:true},
 								{
 									margin:10,
@@ -141,7 +167,8 @@ define(["views/modules/base"],function(base){
 						"product_name":webix.rules.isNotEmpty,
 						"unit_count":webix.rules.isNumber,
 						"price":webix.rules.isNumber,
-						"labour_price":webix.rules.isNumber
+						"labour_price":webix.rules.isNumber,
+						// "supplier_cost":webix.rules.isNumber
 					}
 			};
 		
@@ -210,11 +237,13 @@ define(["views/modules/base"],function(base){
 		$$("unit_count").enable();
 		if(user_define ===true || user_define === "true"){
 			$$("product_name").enable();
+			$$("supplier_cost").enable();
+
 			init_no_type_products();
 		}else{
 			init_products();
 		}
-		if(bedit){
+		if(bedit){//是编辑页面
 			$$("labour_price").enable();
 			$$("price").enable();
 		}
