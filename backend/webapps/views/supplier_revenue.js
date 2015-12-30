@@ -69,19 +69,9 @@ define(["views/modules/base",
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"社区店流水奖励",height:30},
-                {view:"text",id:"key_text",placeholder:"输入关键字",keyPressTimeout:500,width:250,on:{
-                    "onTimedKeyPress":function(){
-                        $$("s_supplier").getPopup().show($$("key_text").getNode());
-                        init_data();
-                    },
-                    "onFocus":function(){
-                        $$("s_supplier").getPopup().show($$("key_text").getNode());
-                    },
-                    "onItemClick":function(){
-                        $$("s_supplier").getPopup().show($$("key_text").getNode());
-                    }
-                }},
-                {view: "richselect", id:"s_supplier",options:[],label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
+                {view: "combo", id:"s_supplier",keyPressTimeout:500,options:{id:"supplier_suggest",view:"suggest",filter:function(obj, value){
+                    return obj.value.indexOf(value)>=0; //no match
+                }, data:[]},label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
@@ -213,7 +203,7 @@ define(["views/modules/base",
 
     var init_data = function(){
         var list = $$("s_supplier").getPopup().getList();
-        base.getReq("communities.json?key="+$$("key_text").getValue(),function(communities){
+        base.getReq("communities.json",function(communities){
             list.clearAll();
             $$("s_supplier").setValue("");
             for(var i=0;i<communities.length;i++){
