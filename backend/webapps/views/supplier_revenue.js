@@ -76,6 +76,9 @@ define(["views/modules/base",
                     },
                     "onFocus":function(){
                         $$("s_supplier").getPopup().show($$("key_text").getNode());
+                    },
+                    "onItemClick":function(){
+                        $$("s_supplier").getPopup().show($$("key_text").getNode());
                     }
                 }},
                 {view: "richselect", id:"s_supplier",options:[],label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
@@ -209,8 +212,8 @@ define(["views/modules/base",
     };
 
     var init_data = function(){
+        var list = $$("s_supplier").getPopup().getList();
         base.getReq("communities.json?key="+$$("key_text").getValue(),function(communities){
-            var list = $$("s_supplier").getPopup().getList();
             list.clearAll();
             $$("s_supplier").setValue("");
             for(var i=0;i<communities.length;i++){

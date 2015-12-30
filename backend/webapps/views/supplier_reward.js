@@ -67,10 +67,16 @@ define(["views/modules/base"],function(base){
                 {view:"label", align:"left",label:"社区店奖励结算",height:30},
                 {view:"text",id:"key_text",placeholder:"输入关键字",keyPressTimeout:500,width:250,on:{
                     "onTimedKeyPress":function(){
+                        $$("s_supplier").callEvent("onItemClick","");
                         $$("s_supplier").getPopup().show($$("key_text").getNode());
-                        init_data();
+                        search_communities();
                     },
                     "onFocus":function(){
+                        $$("s_supplier").callEvent("onItemClick",[]);
+                        //$$("s_supplier").getPopup().show($$("key_text").getNode());
+                    },
+                    "onItemClick":function(){
+                        $$("s_supplier").getPopup().bind($$("s_supplier"));
                         $$("s_supplier").getPopup().show($$("key_text").getNode());
                     }
                 }},
@@ -194,17 +200,22 @@ define(["views/modules/base"],function(base){
         })
     };
 
-    var init_data = function(){
-        base.getReq("communities.json",function(communities){
+    var search_communities = function(){
+        base.getReq("communities.json?key="+$$("key_text").getValue(),function(communities){
             var list = $$("s_supplier").getPopup().getList();
             list.clearAll();
+            $$("s_supplier").setValue("");
+            $$("s_supplier").refresh();
             for(var i=0;i<communities.length;i++){
                 list.add({id:communities[i].supplier_id,value:communities[i].name});
             }
-            if(communities.length>0){
+            /*if(communities.length>0){
                 $$("s_supplier").setValue(communities[0].supplier_id);
-            }
+            }*/
         });
+    };
+
+    var get_weeks = function(){
         base.getReq("pub_data/weeks.json",function(weeks){
             var list = $$("s_week").getPopup().getList();
             list.clearAll();
@@ -215,6 +226,11 @@ define(["views/modules/base"],function(base){
                 $$("s_week").setValue(weeks[0]);
             }
         });
+    };
+
+    var init_data = function(){
+        search_communities();
+        get_weeks();
     };
 
     return {
