@@ -398,7 +398,7 @@ define(["views/modules/base",
 								order_product.$config_form_type(true,true);//是否是编辑项，是否是自定义商品
 								order_product.$addCallBack(function(data){
 									var order_id = $$("order_id").getValue();
-									base.postReq("/v1/api/order_product_addition/create.json?order_id="+order_id,[data],function(results){
+									base.postReq("/v1/api/order_product_addition/operator/create.json?order_id="+order_id,[data],function(results){
 										base.$msg.info(results);
 										$$("order_product_datas").add(data);
 									});
