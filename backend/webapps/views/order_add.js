@@ -66,13 +66,13 @@ define(["models/order",
 	var update_coupons_list = function(user_id){
 		base.getReq("coupons?user_id="+user_id,function(coupons){
 			$$("coupon_data_view").clearAll();
-			for(var i=0;i<coupons.length;){
+			/*for(var i=0;i<coupons.length;){
 				if(coupons[i].status === "未使用"){
 					i++;
 					continue;
 				}
 				coupons.splice(i,1);
-			}
+			}*/
 			$$("coupon_data_view").parse(coupons);
 		});
 	};

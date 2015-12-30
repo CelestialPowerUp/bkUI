@@ -67,13 +67,13 @@ define(["views/modules/base"],function(base){
         $ui:win_ui,
         $init:function(user_id){
             base.getReq("coupons?user_id="+user_id,function(coupons){
-                for(var i=0;i<coupons.length;){
+                /*for(var i=0;i<coupons.length;){
                     if(coupons[i].status === "未使用"){
                         i++;
                         continue;
                     }
                     coupons.splice(i,1);
-                }
+                }*/
                 $$("coupon_data_list").clearAll();
                 $$("coupon_data_list").parse(coupons);
             })
