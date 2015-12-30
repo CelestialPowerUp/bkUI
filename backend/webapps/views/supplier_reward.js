@@ -65,16 +65,9 @@ define(["views/modules/base"],function(base){
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"社区店奖励结算",height:30},
-                {view:"text",id:"key_text",placeholder:"输入关键字",keyPressTimeout:500,width:250,on:{
-                    "onTimedKeyPress":function(){
-                        $$("s_supplier").getPopup().show($$("key_text").getNode());
-                        init_data();
-                    },
-                    "onFocus":function(){
-                        $$("s_supplier").getPopup().show($$("key_text").getNode());
-                    }
-                }},
-                {view: "richselect", id:"s_supplier",options:[],label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
+                {view: "combo", id:"s_supplier",keyPressTimeout:500,options:{id:"supplier_suggest",view:"suggest",filter:function(obj, value){
+                    return obj.value.indexOf(value)>=0; //no match
+                }, data:[]},label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
@@ -194,10 +187,11 @@ define(["views/modules/base"],function(base){
         })
     };
 
-    var init_data = function(){
+    var search_communities = function(){
         base.getReq("communities.json",function(communities){
             var list = $$("s_supplier").getPopup().getList();
             list.clearAll();
+            $$("s_supplier").setValue("");
             for(var i=0;i<communities.length;i++){
                 list.add({id:communities[i].supplier_id,value:communities[i].name});
             }
@@ -205,6 +199,9 @@ define(["views/modules/base"],function(base){
                 $$("s_supplier").setValue(communities[0].supplier_id);
             }
         });
+    };
+
+    var get_weeks = function(){
         base.getReq("pub_data/weeks.json",function(weeks){
             var list = $$("s_week").getPopup().getList();
             list.clearAll();
@@ -215,6 +212,11 @@ define(["views/modules/base"],function(base){
                 $$("s_week").setValue(weeks[0]);
             }
         });
+    };
+
+    var init_data = function(){
+        search_communities();
+        get_weeks();
     };
 
     return {
