@@ -60,14 +60,15 @@ define(["views/modules/base"],function(base){
             countPrice();
         }}
     }
+    webix.ui({id:"supplier_suggest",view:"suggest",filter:function(obj, value){
+        return obj.value.indexOf(value)>=0; //no match
+    }});
 
     var filter_ui = {
         rows:[
             {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
                 {view:"label", align:"left",label:"社区店奖励结算",height:30},
-                {view: "combo", id:"s_supplier",keyPressTimeout:500,options:{id:"supplier_suggest",view:"suggest",filter:function(obj, value){
-                    return obj.value.indexOf(value)>=0; //no match
-                }, data:[]},label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
+                {view: "combo", id:"s_supplier",keyPressTimeout:500,options:"supplier_suggest",label:"社区店:",placeholder:"请选择社区店",labelWidth:65,value:"",width:350,
                     on:{
                         onChange:function(newv,oldv){
                             refresh_table();
