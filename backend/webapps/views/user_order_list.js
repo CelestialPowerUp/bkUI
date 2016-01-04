@@ -18,7 +18,7 @@ define(["models/order",
 					{view:"label", align:"left",label:"基本信息",height:30},
 					{view: "text",keyPressTimeout:100, id: "search_phone_number",value:"", placeholder: "输入手机号",width:150,on:{
 						"onTimedKeyPress":function(){
-							if($$("user_phone_number").getValue().length==11){
+							if($$("search_phone_number").getValue().length==11){
 								load_user_info();
 							}
 						}
@@ -77,6 +77,9 @@ define(["models/order",
 			//获取用户订单
 			search(1);
 		},function(data){
+			$$("user_info").clearAll();
+			$$("order_table").clearAll();
+			$$("order_page_list").clearAll();
 		});
 	};
 
