@@ -126,8 +126,8 @@ define(["views/modules/base",
         {view:"label", align:"left",label:"服务商列表",height:30},
         {view:"search",id:"search_keys",width:250,placeholder:"输入修理厂名称",keyPressTimeout:1000},
         {view:"segmented",id:"lay_off_type", multiview:true,width:150, options:[
-            { id:"true", value:"营业" }, // the initially selected segment
-            { id:"false", value:"停业" }]
+            { id:"false", value:"营业" }, // the initially selected segment
+            { id:"true", value:"停业" }]
         },
         { view: "button", type: "iconButton", icon: "plus", label: "新增服务商", width: 135, click: function(){
             //todo
