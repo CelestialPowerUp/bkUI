@@ -13,7 +13,7 @@ define(["views/modules/base"],function(base){
                 base.postReqTimeOut("excel/finance_statements.json",{start:start,end:end},function(data){
                     window.open(data);
                     base.$msg.info("excel导出成功");
-                },60*3);
+                },60*15);
             }},
             {view:"button",label:"取消",width:80,click:function(){
                 webix.$$("finance_statements_excel_win").close();
