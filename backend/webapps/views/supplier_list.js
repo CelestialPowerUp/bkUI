@@ -6,6 +6,10 @@ define(["views/modules/base",
 
     var cur_page = 1;
 
+    var layoff_type = "false";
+
+    var search_keys = "";
+
     var on_event = {
         "fa-trash-o":function(e, id, node){
             var item = $$("table_list").getItem(id);
@@ -118,16 +122,19 @@ define(["views/modules/base",
         onClick:on_event
     }
 
-    var filter_ui = {
-        margin:15,
-        cols:[
-            { view: "button", type: "iconButton", icon: "plus", label: "添加服务商", width: 135, click: function(){
-                //todo
-                this.$scope.show("/supplier_edit");
-            }},
-            {}
-        ]
-    };
+    var toolbar_ui = {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
+        {view:"label", align:"left",label:"服务商列表",height:30},
+        {view:"search",id:"search_keys",width:250,placeholder:"输入修理厂名称",keyPressTimeout:1000},
+        {view:"segmented",id:"lay_off_type", multiview:true,width:150, options:[
+            { id:"true", value:"营业" }, // the initially selected segment
+            { id:"false", value:"停业" }]
+        },
+        { view: "button", type: "iconButton", icon: "plus", label: "新增服务商", width: 135, click: function(){
+            //todo
+            this.$scope.show("/supplier_edit");
+        }}
+    ]};
+
 
     var table_page_ui = table_page.$create_page_table("table_page_list",table_ui);
 
@@ -135,12 +142,12 @@ define(["views/modules/base",
         paddingY:15,
         paddingX:15,
         cols:[
-            {margin:15, type:"clean", rows:[filter_ui,table_page_ui]}]
+            {type:"clean", rows:[toolbar_ui,table_page_ui]}]
     };
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("/v2/api/meta_supplier_list.json?page="+cur_page+"&size=15",function(data){
+        base.getReq("/v2/api/meta_supplier_list.json?keys="+search_keys+"&layoff="+layoff_type+"&page="+cur_page+"&size=15",function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data.items);
             table_page.$update_page_items("table_page_list",data);
@@ -155,6 +162,18 @@ define(["views/modules/base",
         $ui:layout,
         $oninit:function(app,config){
             webix.$$("title").parse({title: "服务商管理", details: "服务商管理人员"});
+            setTimeout(function(){
+                $$("lay_off_type").setValue(layoff_type);
+                $$("search_keys").setValue(search_keys);
+                $$("lay_off_type").attachEvent("onChange", function(newv, oldv){
+                    layoff_type = newv;
+                    refresh_table();
+                });
+                $$("search_keys").attachEvent("onTimedKeyPress",function(){
+                    search_keys = $$("search_keys").getValue();
+                    refresh_table();
+                });
+            },500);
             refresh_table();
         }
     }
