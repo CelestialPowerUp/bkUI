@@ -89,7 +89,9 @@ define(["views/modules/base",
         $ui:layout,
         $oninit:function(app,scope){
             webix.$$("title").parse({title: "商城管理", details: "推广信息"});
-            menu.$add_menus(menus);
+            setTimeout(function(){
+                menu.$add_menus(menus);
+            },500);
             form.$addCallBack(function(){
                 refresh();
             });

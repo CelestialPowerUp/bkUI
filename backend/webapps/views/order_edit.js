@@ -399,7 +399,7 @@ define(["views/modules/base",
 								order_product.$addCallBack(function(data){
 									var order_id = $$("order_id").getValue();
 									base.postReq("/v1/api/order_product_addition/operator/create.json?order_id="+order_id,[data],function(results){
-										base.$msg.info(results);
+										base.$msg.info("增项添加成功");
 										$$("order_product_datas").add(data);
 									});
 								});
