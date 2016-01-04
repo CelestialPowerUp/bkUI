@@ -65,7 +65,7 @@ define(["views/modules/base",
         base.postReqTimeOut("finance_statements.json",param,function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
-        },60*3)
+        },60*15)
     };
 
     return {

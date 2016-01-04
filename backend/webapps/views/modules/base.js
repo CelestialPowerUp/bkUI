@@ -454,6 +454,39 @@ define(["../forms/login"],function(login){
 		return time;
 	};
 
+	var show_time_sec_double = function(time){
+		if(check_empty(time)){
+			return "";
+		}
+		time = time.replace("T"," ");
+		var timeArr=time.split(" ");
+		var d=timeArr[0].split("-");
+		var t=timeArr[1].split(":");
+		var data = new Date(d[0],(d[1]-1),d[2],t[0],t[1],"");
+		var year = data.getFullYear();  //获取年
+		var month = data.getMonth() + 1;    //获取月
+		var day = data.getDate(); //获取日
+		var hours = data.getHours();
+		var minutes = data.getMinutes();
+		var seconds = data.getUTCSeconds();
+		time = numberAddDigit(year,2) + "-" + numberAddDigit(month,2) + "-" + numberAddDigit(day,2) +" "+ numberAddDigit(hours,2) + ":" + numberAddDigit(minutes,2)+":"+numberAddDigit(seconds,2);
+		return time;
+	};
+
+	var numberAddDigit = function(number,digit){
+		if(number===null || number===undefined){
+			return number;
+		}
+		if(!digit || digit<1){
+			return number;
+		}
+		var length = (number+"").length;
+		for(var i=0;i<(digit-length);i++){
+			number = "0"+number;
+		}
+		return number;
+	}
+
 	var toDay = function(time){
 		if(check_empty(time)){
 			return "";
@@ -760,7 +793,8 @@ define(["../forms/login"],function(login){
 		format_date:format_date,
 		getCurrentDate:getCurrentDate,
 		time_period_format:time_period_format,
-		$show_day:show_day
+		$show_day:show_day,
+		$show_time_sec_double:show_time_sec_double
 
 	};
 });
