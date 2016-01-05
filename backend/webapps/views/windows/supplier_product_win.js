@@ -102,7 +102,7 @@ define(["views/modules/base",
 					{type:"space",
 						cols:[
 							{view: "icon", icon: "fa fa-exclamation-triangle"},
-							{view:"label", align:"left",css:"warning", label:"优惠券一旦使用过，暂不支持二次更改，请谨慎操作！！"}
+							{view:"label", align:"left",css:"warning", label:"商品最终价格与结算价格，是加上工时费之后显示在客户端，还有结算给修理厂的，请注意！"}
 						]
 				}]
 			}
