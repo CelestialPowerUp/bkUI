@@ -5,6 +5,25 @@ define(["views/modules/base",
     };
 
     var elements = [
+        {id:"订单ID"},
+        {id:"下单时间"},
+        {id:"完成时间"},
+        {id:"客户名称"},
+        {id:"订单号"},
+        {id:"订单项金额"},
+        {id:"服务费"},
+        {id:"应收服务款"},
+        {id:"补贴客户"},
+        {id:"实际收款"},
+        {id:"支付宝手续"},
+        {id:"微信手续费"},
+        {id:"到账总额",css:"background_blue"},
+        {id:"税额",css:"background_red"},
+        {id:"服务商"},
+        {id:"产品成本"},
+        {id:"补贴服务商"},
+        {id:"实际支付成本",css:"background_red"},
+        {id:"支付渠道"}
     ];
 
     var table_ui = {
@@ -18,8 +37,7 @@ define(["views/modules/base",
         columns:elements,
         data:[],
         onClick:on_event,
-        on:{"onCheck":function(){
-        }}
+        tooltip:true
     }
 
     var filter_ui = {
