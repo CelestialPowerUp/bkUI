@@ -114,7 +114,7 @@ define(["views/modules/base",
         view:"datatable",
         select:false,
         rowHeight:35,
-        autoheight:true,
+        autoheight:false,
         hover:"myhover",
         rightSplit:5,
         columns:elements,
@@ -171,6 +171,7 @@ define(["views/modules/base",
                 });
                 $$("search_keys").attachEvent("onTimedKeyPress",function(){
                     search_keys = $$("search_keys").getValue();
+                    cur_page = 1;
                     refresh_table();
                 });
             },500);

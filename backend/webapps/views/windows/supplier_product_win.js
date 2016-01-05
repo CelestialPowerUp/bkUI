@@ -33,6 +33,9 @@ define(["views/modules/base",
 		{id:"supplier_product_name", header:["商品名称", {content:"textFilter"} ],width:200},
 		{id:"supplier_price", header:"商品价格",width:100,editor:"text",format:base.priceFormat},
 		{id:"supplier_cost", header:"结算价格",width:100,editor:"text",format:base.priceFormat},
+		{id:"labour_price", header:"服务的工时费",width:250,template:function(obj){
+			return obj.labour_prices.join(",");
+		}},
 		{id:"delete", header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='删除商品' class='webix_icon fa-times'></span>"}
 	];
 
@@ -95,7 +98,13 @@ define(["views/modules/base",
 					{ view:"button", label: 'X', width: 35, align: 'right', click:"$$('supplier_coupon_package_win').close();"}
 				]},
 			body:{
-				rows:[supplier_product_list_ui]
+				rows:[supplier_product_list_ui,
+					{type:"space",
+						cols:[
+							{view: "icon", icon: "fa fa-exclamation-triangle"},
+							{view:"label", align:"left",css:"warning", label:"优惠券一旦使用过，暂不支持二次更改，请谨慎操作！！"}
+						]
+				}]
 			}
 		};
 
