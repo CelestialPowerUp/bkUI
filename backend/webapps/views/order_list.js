@@ -115,22 +115,22 @@ define(["views/modules/base","views/modules/table_page_m",
 	
 	var unbelong_colums = webix.copy(columns);
 	
-	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
+	unbelong_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='pick row_button'> 认领</u><!--<u class='call row_button'> 呼叫 </u>--><u class='delete row_button'>删除</u></span>"});
 	
 	var unprocessed_colums = webix.copy(columns);
 
-	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:160,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
+	unprocessed_colums.splice(0,0,{id:"trash", header:"操作",width:160,template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><!--<u class='call row_button'> 呼叫 </u>--><u class='delete row_button'>删除</u></span>"});
 
 	unprocessed_colums.splice(1,0,{id:"assign",header:"分配",width:65,template:custom_checkbox});
 	
 	var complated_colums = webix.copy(columns);
-	complated_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
+	complated_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><!--<u class='call row_button'> 呼叫 </u>--><u class='delete row_button'>删除</u></span>"});
 
 	var refund_applying_colums = webix.copy(columns);
-	refund_applying_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u><u class='delete row_button'>删除</u></span>"});
+	refund_applying_colums.splice(0,0,{id:"trash", header:"操作",width:180, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><!--<u class='call row_button'> 呼叫 </u>--><u class='delete row_button'>删除</u></span>"});
 
 	var invalid_colums = webix.copy(columns);
-	invalid_colums.splice(0,0,{id:"trash", header:"操作",width:120, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><u class='call row_button'> 呼叫 </u></span>"});
+	invalid_colums.splice(0,0,{id:"trash", header:"操作",width:120, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><!--<u class='call row_button'> 呼叫 </u></span>-->"});
 
 	var onClick = {
 			"views":function(e,id,node){
@@ -194,9 +194,14 @@ define(["views/modules/base","views/modules/table_page_m",
 			},
 			"call":function(e,id,node){
 				var phoneNumber = this.getItem(id).customer_phone_number;
-				$$("call_out_submenu").show($$("call_out").getNode());
+				/*$$("call_out_submenu").show($$("call_out").getNode());
 				$$("phone_number").setValue(phoneNumber);
-				call_out.callOut();
+				call_out.callOut();*/
+
+				// alert(phoneNumber);
+				/*var outWin = window.top;
+				var input_callNumber = parent.document.getElementById("callNumber");
+				input_callNumber.value = phoneNumber;*/
 			}
 		};
 
@@ -424,6 +429,22 @@ define(["views/modules/base","views/modules/table_page_m",
 		$ui:layout,
 		$oninit:function(app,config){
 			webix.$$("title").parse({title: "订单列表", details: "订单列表"});
+
+			/*获取请求参数*/
+			var params = base.get_url_params();
+			var phone_number = params.phone_number;
+			if(phone_number){
+				phone_number = phone_number.replace("&","");
+				if(phone_number && phone_number.length==11){
+					//alert(11);
+					$$("show_content_type").setValue("all");
+					$$("search_text").setValue(phone_number);
+					$$("tabviewdata").setValue("unprocessed");
+					$$("filter_search").setValue("customer_phone_number");
+					search(1);
+				}
+			}
+
 			initData();
 		}
 	};
