@@ -13,7 +13,7 @@ define(["views/modules/base","views/menus/call_out"],function(base,call_out){
             return base.$show_time(obj.create_time);
         }},
         {id:"description", header:"意向备注",width:300},
-        {id:"operate", header:"操作", adjust:true,template:"<span class='call row_button'>呼叫</span><span class='edit row_button'>编辑</span><span class='add row_button'> 新建一单</span>"}
+        {id:"operate", header:"操作", adjust:true,template:"<!--<span class='call row_button'>呼叫</span>--> <span class='edit row_button'>编辑</span><span class='add row_button'> 新建一单</span>"}
     ];
 
     var onClick={
