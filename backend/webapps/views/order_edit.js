@@ -244,6 +244,8 @@ define(["views/modules/base",
 							{ id:"price",header:"单价",format:base.priceFormat,width:100},
 							{ id:"labour_price",header:"工时费",format:base.priceFormat,width:100},
 							{ id:"total_price",header:"小计",format:base.priceFormat,width:100},
+							{ id:"supplier_cost",header:"成本",format:base.priceFormat,width:100},
+							{ id:"total_supplier_cost",header:"成本小计",format:base.priceFormat,width:100},
 							{ id:"pics",header:"图片",hidden:true},
 							{ id:"user_defined",header:"自定义",template:function(obj){
 								if(obj.user_defined===true || obj.user_defined === 'true'){
@@ -461,6 +463,7 @@ define(["views/modules/base",
 					{view:"label",id: "products_free_price", height:30,width:160},
 					{view:"label",id: "products_paid_price", height:30,width:160},
 					{view:"label",id: "products_need_price", height:30,width:160},
+					{view:"label",id: "order_total_supplier_cost", height:30,width:160},
 					{view:"label",id: "order_coupon", height:30,width:160}
 				]},
 				{type:"space",
@@ -860,6 +863,8 @@ define(["views/modules/base",
 		}
 		$$("products_paid_price").setHTML("已支付￥"+order.paid_price);
 		$$("products_need_price").setHTML("未支付￥"+order.not_paid_price);
+		$$("order_total_supplier_cost").setHTML("成本总计￥"+order.order_total_supplier_cost);
+
 	};
 
 	var parse_first_check_data = function(check){
