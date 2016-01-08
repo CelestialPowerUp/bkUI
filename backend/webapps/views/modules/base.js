@@ -293,7 +293,7 @@ define(["../forms/login"],function(login){
             type:"GET",
             dataType:"json",
             timeout:15*1000,
-            url: filter_url("public/address.json?keyword="+name),
+            url: filter_url("public/address.json?keyword="+encodeURI(name)),
             beforeSend: beforeReq,
             success: function(data) {
             	callBack(data);
