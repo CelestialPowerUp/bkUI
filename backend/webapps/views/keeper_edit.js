@@ -136,7 +136,7 @@ define(["views/modules/base",
     var init_data = function(keeper_id){
         base.getReq("car_keeper/"+keeper_id,function(data){
             parse_form_data(data);
-            switch_table_list("unfinished",data.keeper_id);
+            switch_table_list("uncompleted",data.keeper_id);
         });
     };
 
@@ -158,13 +158,8 @@ define(["views/modules/base",
         if(typeof(formdata)!='undefined'){
             keeper_id = formdata.keeper_id;
         }
-        if(value === "finished"){
-            $$("switch_table").setValue(value);
-            update_table(3,keeper_id);
-        }else{
-            $$("switch_table").setValue(value);
-            update_table(2,keeper_id)
-        }
+        $$("switch_table").setValue(value);
+        update_table(value,keeper_id);
     };
 
     var address_callback = function(item){
@@ -180,11 +175,11 @@ define(["views/modules/base",
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "管家管理", details: "管家编辑"});
             var keeper_id = base.get_url_param("keeper_id");
             if(typeof(keeper_id)==='undefined') {
                 webix.$$("title").parse({title: "管家管理", details: "新增管家"});
             }else{
+                webix.$$("title").parse({title: "管家管理", details: "管家编辑"});
                 init_data(keeper_id);
             }
         }
