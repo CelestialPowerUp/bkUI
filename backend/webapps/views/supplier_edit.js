@@ -180,6 +180,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
         base.getReq("/v2/api/supplier.json/"+id,function(data){
             update_sale_persion(data['sale_id']);
             data.layoff = data.layoff.toString();
+            data.supplier_mold = (data.supplier_mold===null?'comprehensive':data.supplier_mold);
             $$("form_view").parse(data);
             var address = {};
             address.x = data.longitude;
