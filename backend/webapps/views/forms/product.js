@@ -7,7 +7,9 @@ define(["views/modules/base"],function(base){
 			var list = $$("product_category_type").getPopup().getList();
 			list.clearAll();
 			for(var i=0;i<data.length;i++){
-				list.add({id:data[i]['current_category_type'],value:data[i]['current_category_name']});
+				if(data[i]['category_code']==='normal'){
+					list.add({id:data[i]['current_category_type'],value:data[i]['current_category_name']});
+				}
 			}
 			if(typeof(selected)!='undefined'){
 				$$("product_category_type").setValue(selected);
