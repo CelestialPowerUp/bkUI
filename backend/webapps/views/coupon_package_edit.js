@@ -2,9 +2,13 @@ define(["views/modules/base",
     "views/menus/popup_menu",
     "views/forms/coupon_package_item_form"],function(base,menu,item_form){
 
+    var expire_time_show = function(obj){
+        return obj.expired_type === 'after_days' ?  (obj.expired_time+"天"):base.$utc_time_format(obj.dead_line);
+    };
+
     var item_fomat = function(obj){
         return "<div class='overall'>" +
-            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+obj.expired_time+"天</span></div>"+
+            "<div class='items'><label>卡包项名：</label><span>"+obj.coupon_package_item_name+"</span><label>过期时间：</label><span>"+expire_time_show(obj)+"</span></div>"+
             "<div class='items'><label>关联类型：</label><span>"+obj.link_type_text+"</span><label>关联项：</label><span>"+obj.link_info+"</span></div>"+
             "<div class='items'><label>优惠类型：</label><span>"+obj.discount_type_text+"</span><label>优惠值：￥</label><span>"+obj.discount_value+"</span></div>"+
             "</div>";
@@ -51,8 +55,22 @@ define(["views/modules/base",
         {view:"text",id:"id",name:"id",hidden:true},
         {view:"text",id:"product_category_type",name:"product_category_type",hidden:true},
         {view:"text",label:"卡包名称",placeholder: "输入卡包名称",name:"product_name",required:true},
-        {view:"text",label:"卡包售价",placeholder: "卡包售价",id:"price",name:"price",required:true},{}
+        {view:"text",label:"卡包售价",placeholder: "卡包售价",id:"price",name:"price",required:true}
     ]
+
+    var button_ui = {margin:20,type:"clean",paddingY:15,cols:[{},
+        {view:"button",label:"确定",width:80,click:function(){
+            webix.confirm({
+                text:"确定提交修改<br/> 确定?", ok:"是的", cancel:"取消",
+                callback:function(res){
+                    if(res){
+                        submit_data();
+                    }
+                }
+            });
+
+        }}]
+    };
 
     var form_ui = {
         rows:[
@@ -71,7 +89,8 @@ define(["views/modules/base",
                 rules:{
                     price:webix.rules.isNumber
                 }
-            }
+            },
+            button_ui
         ]
     }
 
@@ -101,27 +120,9 @@ define(["views/modules/base",
         });
     }
 
-
-    var button_ui = {margin:20,cols:[{},
-        {view:"button",label:"确定",width:80,click:function(){
-            webix.confirm({
-                text:"确定提交修改<br/> 确定?", ok:"是的", cancel:"取消",
-                callback:function(res){
-                    if(res){
-                        submit_data();
-                    }
-                }
-            });
-
-        }},
-        {view:"button",label:"取消",width:80,click:function(){
-            webix.$$("pop_win").close();
-        }}]
-    };
-
     var win_ui = {
             type:"space",
-            rows:[{margin:15,cols:[coupon_item_list_ui,form_ui]},button_ui]
+            rows:[{margin:15,cols:[coupon_item_list_ui,{rows:[form_ui,{}]}]}]
         };
 
     var menus = [
