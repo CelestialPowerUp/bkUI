@@ -71,7 +71,26 @@ define(["views/modules/base",
             }
         },name:"discount_type",id:"discount_type",required:true},
         {view:"text",label:"优惠价格",placeholder: "请输入优惠价格",name:"discount_value",required:true},
-        {view:"text",label:"过期时间",placeholder: "输入优惠券过期时间（天）",name:"expired_time",required:true}
+        {view: "richselect",label:"时间类型",placeholder:"选择过期时间类型",value:"after_days",options:[
+            {id:"fixed_date",value:"固定时间"},
+            {id:"after_days",value:"固定天数"}
+        ],on:{
+            onChange:function(newv, oldv){
+                if(newv === 'fixed_date'){
+                    $$("expired_time").setValue("");
+                    $$("dead_line").setValue("");
+                    $$("dead_line").show();
+                    $$("expired_time").hide();
+                }else{
+                    $$("expired_time").show();
+                    $$("dead_line").hide();
+                    $$("expired_time").setValue("");
+                    $$("dead_line").setValue("");
+                }
+            }
+        },name:"expired_type",id:"expired_type",required:true},
+        {view:"text",label:"过期天数",placeholder: "输入优惠券过期天数",name:"expired_time",id:"expired_time",required:true},
+        {view:"datepicker",label:"过期时间",timepicker:true,placeholder: "输入优惠券过期时间",name:"dead_line",id:"dead_line", format:"%Y-%m-%d %H:%i:%s",required:true,hidden:true}
     ]
 
     var form_ui = {
@@ -140,6 +159,9 @@ define(["views/modules/base",
             }
         },
         $init_data:function(data){
+            if(typeof data.dead_line === 'string'){
+                data.dead_line = base.$utc_time_date(data.dead_line);
+            }
             $$("form_item_view").parse(data);
         }
     };
