@@ -308,5 +308,21 @@
     margin-right: 5px;
     font-size: 25px;
 }
+
+.a-link{
+    font-size: 16px;
+    color:#ffffff;
+    text-decoration: none;
+    text-align: center;
+    cursor:pointer;
+}
+
+.view_list_item{
+    border-right-width: thin;
+    margin-right: 30px;
+    text-align: center;
+    padding: 2px 5px;
+    width:100px;
+}
 /**
 **/

@@ -31,24 +31,13 @@ define(["views/modules/base",
 
     var elements = [
         {id:"id",header:"ID",width:50},
-        {id:"app_name",header:"包名",width:240},
-        {id:"app_version", header:"版本",width:70},
-        {id:"os_type", header:"操作系统",width:90},
-        {id:"create_time", header:"创建时间",width:140,format:base.$show_time},
-        {id:"enable", header:"是否有效",width:90,template:function(obj){
-            if(obj.enable === false){
-                return "<span class='status status0'>未启用</span>"
-            }
-            return "<span class='status status1'>已启用</span>";
-        }},
-        {id:"description", header:"说明",width:350,fillspace:true},
-        {id:"download", header:"下载", width:60, template:function(obj){
-            if(obj.attachment_id && obj.attachment_view && obj.attachment_view.raw_url){
-                return "<a class='status status2 webix_icon fa-download a-link' href='"+obj.attachment_view.raw_url+"' target='_blank'></a>"
-            }
-            return "";
-        }},
-        {id:"edit", header:"编辑", width:60, template:"<span class='status status2 webix_icon fa-pencil a-link ' title='编辑'></span>"}
+        {id:"plan_push_time", header:"推送时间",width:140,format:base.$show_time},
+        {id:"push_content",header:"推送内容",width:350,fillspace:true},
+        {id:"push_open_target_description", header:"划开指向",width:200},
+        {id:"push_version", header:"发送版本",width:260},
+        {id:"push_status_value", header:"状态",width:90},
+        {id:"view_users", header:"用户", width:60, template:"<span class='status status2 webix_icon fa-user a-link' title='查看用户信息'></span>"},
+        {id:"edit", header:"编辑", width:60, template:"<span class='status status0 webix_icon fa-pencil a-link' title='编辑'></span>"}
     ];
 
     var table_ui = {
@@ -68,10 +57,8 @@ define(["views/modules/base",
     var filter_ui = {
         margin:15,
         cols:[
-            { view: "button", type: "iconButton", icon: "plus", label: "新建应用包", width: 135, click: function(){
-                //todo
-                this.$scope.ui(app_win.$ui).show();
-                app_win.$init_data();
+            { view: "button", type: "iconButton", icon: "plus", label: "新建推送信息", width: 135, click: function(){
+                this.$scope.show("/push_info");
             }},
             {}
         ]
@@ -86,7 +73,7 @@ define(["views/modules/base",
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("/v1/api/app_packages.json",function(data){
+        base.getReq("/v1/api/push_infos.json",function(data){
             console.log(data);
             $$("table_list").clearAll();
             $$("table_list").parse(data);
@@ -96,7 +83,7 @@ define(["views/modules/base",
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "应用管理", details: "应用列表"});
+            webix.$$("title").parse({title: "推送管理", details: "推送列表"});
             refresh_table();
         }
     }
