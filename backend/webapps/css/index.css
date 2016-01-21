@@ -320,9 +320,10 @@
 .view_list_item{
     border-right-width: thin;
     margin-right: 30px;
-    text-align: center;
+    text-align: left;
     padding: 2px 5px;
-    width:100px;
+    display: inline-block;
+    min-width:80px;
 }
 /**
 **/
