@@ -97,11 +97,10 @@ define([
 
 	/*搜索用户*/
 	var search_user_button_ui = {cols:[
-		{},{},{},
+	//	{},{},{},
 		{view:"button",label:"根据所选品牌筛选用户",click:function(){
 			$$("user_list").clearAll();
 			var selectedCarBrandIds = $$("car_brands").getSelectedId();
-			console.log(selectedCarBrandIds==='');
 			if(!selectedCarBrandIds){
 				webix.message({ type:"error",expire:5000,text:"想选用户？好歹选点车吧。" });
 				return;
@@ -119,9 +118,10 @@ define([
 			//获取符合条件用户信息
 			var url_get_users = "/v1/api/push_to_be_chosen_users.json";
 			var param = carBrandIds;
-			base.postReq("/v1/api/push_to_be_chosen_users.json",param,function(data){
+			base.postReq(url_get_users,param,function(data){
 				var chosen_users = [];
 				if(data && data instanceof Array){
+					console.log(data);
 
 					/*获取已选择版本*/
 					var selectedAppVersions = [];
@@ -138,6 +138,7 @@ define([
 					}
 					if(selectedAppVersions.length<1){
 						webix.message({type:"error",expire:5000,text:"亲，建议您先至少选一个版本，否则推给谁？"});
+						return;
 					}
 
 					for(var i=0;i<data.length;i++){
@@ -147,6 +148,9 @@ define([
 							chosen_users.push(data[i]);
 						}
 					}
+				}
+				if(chosen_users.length<1){
+					webix.message({type:"info",expire:5000,text:"没有符合条件的用户X﹏X 换换品牌和推送版本试试"});
 				}
 				$$("user_list").parse(chosen_users);
 			},function(data){
@@ -198,8 +202,8 @@ define([
 
 			{ view:"text", id:"id", name:"id",hidden:true },
 
-			{ view:"datepicker", timepicker:true, label:"推送时间：", name:"plan_push_time", stringResult:true, format:"%Y-%m-%d %H:%i" ,width:350 },
-			{ view:"textarea",label:"推送内容:", name:"push_content",id:"push_content",height:150,required:true,placeholder:"推送内容",value:"" },
+			{ view:"datepicker", timepicker:true, label:"推送时间:",id:"plan_push_time", name:"plan_push_time", stringResult:true,required:true, format:"%Y-%m-%d %H:%i" ,width:350 },
+			{ view:"textarea",label:"推送内容:", name:"push_content",id:"push_content",height:100,required:true,placeholder:"推送内容",value:"" },
 			{ view:"text", id:"push_open_target_description",name:"push_open_target_description",label:"划开描述:",required:true,placeholder:"划开内容简介",value:""},
 			{ view:"text", id:"push_open_target_params",name:"push_open_target_params",label:"划开参数:",required:true,placeholder:"",readonly:true,disabled:true,value:"",hidden:false},
 			{ view:"richselect", id:"push_open_target_type",name:"push_open_target_type",
@@ -250,7 +254,7 @@ define([
 				view: "list",
 				css: "tasks_list",
 				id:"app_list",
-				height:300,
+				height:200,
 				width:650,
 				type: {
 					height: 35,
@@ -259,7 +263,8 @@ define([
 					},
 					check:  webix.template('<span class="webix_icon_btn fa-{obj.$check?check-:}square-o list_icon" style="max-width:32px;"></span>'),
 					template: function(obj,type){
-						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text'>"+obj.os_type+"  "+obj.app_version+" ( "+obj.app_name+" ) </span>";
+						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text'>"+obj.os_type+"  "+obj.app_version+" ( "+obj.app_name+" ) </span>"
+								+"<span class='hidden'>"+obj.id+"</span>";
 					}
 				},
 				data: [],
@@ -277,6 +282,8 @@ define([
 				view:"toolbar",css: "highlighted_header header5",height:40,width:820,
 				elements:[
 					{view:"label", align:"left",label:"车辆品牌",height:30},
+					//筛选用户
+					search_user_button_ui,
 					car_brand_check_button_ui
 				],hidden:false},
 			{
@@ -298,9 +305,6 @@ define([
 				}
 			},
 
-			//筛选用户
-			search_user_button_ui,
-
 			//用户列表
 			{
 				view:"toolbar",css: "highlighted_header header5",height:40,width:820,
@@ -312,7 +316,7 @@ define([
 				view: "list",
 				css: "tasks_list",
 				id:"user_list",
-				height:300,
+				height:200,
 				width:650,
 				type: {
 					height: 35,
@@ -321,9 +325,10 @@ define([
 					},
 					check:  webix.template('<span class="webix_icon_btn fa-{obj.$check?check-:}square-o list_icon" style="max-width:32px;"></span>'),
 					template: function(obj,type){
-						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='list_text view_list_item'>"+obj.user_name+"</span>"
+						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='view_list_item'>"+obj.user_name+"</span>"
 								+"<span class='view_list_item'>"+obj.phone_number+"</span>"
-								+"<span class='view_list_item'>"+obj.app_versions+"</span>";
+								+"<span class='view_list_item'>"+obj.app_versions+"</span>"
+								+"<span class='view_list_item hidden'>"+obj.user_id+"</span>";
 					}
 				},
 				data: [],
@@ -338,7 +343,7 @@ define([
 
 			//提交
 			{cols:[{},{ view: "button",width:80,height:50,type: "iconButton", id:"commit_btn", icon: "plus", label: "提交",click:function(){
-				submit();
+				submit(this);
 			}}]},
 		]
 	};
@@ -377,31 +382,68 @@ define([
 		]
 	};
 
-	/*保存限行数据*/
-	var submit = function(){
-		//基本信息
-		var formData = {};
-		var date = base.format_time($$("date").getValue());
-		var selectNos = $$("numbers").getSelectedItem();
-		var numbers = [];
-		if(selectNos){
-			if(selectNos instanceof Array){
-				for(var i=0;i<selectNos.length;i++){
-					numbers.push(selectNos[i].no_);
-				}
-			}else{
-				numbers.push(selectNos.no_);
+	/*保存数据*/
+	var submit = function(view){
+		//基本信息 TODO
+		var formData = $$("form").getValues();
+		/*推送时间*/
+		if(formData.plan_push_time==''){
+			webix.message({type:"error",expire:5000,text:"请选择推送时间"});
+			return;
+		}
+		var plan_push_time = base.format_time($$("plan_push_time").getValue());
+		formData.plan_push_time = plan_push_time;
+
+		/*所选版本*/
+		var appIds = [];
+		var appVersions = [];
+		var datas = $$("app_list").serialize();
+		for(var i=0;i<datas.length;i++){
+			if(datas[i].$check){
+				appIds.push(datas[i].id);
+				appVersions.push(datas[i].os_type+" "+datas[i].app_version);
 			}
 		}
-		formData.date = date;
-		formData.numbers = numbers;
-		formData.car_restriction_type = "custom";
+		if(appIds.length<1){
+			webix.message({type:"error",expire:5000,text:"请至少选一个版本"});
+			return;
+		}
+		formData.push_version = appVersions.join(",");
+		formData.app_ids = appIds;
 
-		 base.postReq("/v1/api/car_restriction/create.json",formData,function(data){
-			webix.message("限行信息保存成功");
-			 freshCustomList();
-			 restForm();
+		/*推送参数*/
+		if(formData.push_open_target_params==''){
+			webix.message({type:"error",expire:5000,text:"请填写划开内容信息"});
+			return;
+		}
+
+		/*推送内容*/
+		if(formData.push_content==''){
+			webix.message({type:"error",expire:5000,text:"请填写推送内容"});
+			return;
+		}
+
+		/*所选用户*/
+		var userDatas = $$("user_list").serialize();
+		var users = [];
+		for(var i=0;i<userDatas.length;i++){
+			if(userDatas[i].$check){
+				var user = {};
+				user.user_name = userDatas[i].user_name;
+				user.phone_number = userDatas[i].phone_number;
+				user.user_id = userDatas[i].user_id;
+				user.app_versions = userDatas[i].app_versions;
+				users.push(user);
+			}
+		}
+		formData.users = users;
+
+		$$("commit_btn").disable();
+		 base.postReq("/v1/api/push_info/create.json",formData,function(data){
+			 webix.message({type:"info",expire:5000,text:"保存成功!由于用户数较多，保存需要较长时间，请稍后查看。"});
+			 view.$scope.show("/push_info_list");
 	     },function(data){
+			 $$("commit_btn").enable();
 		 });
 	};
 
@@ -412,28 +454,8 @@ define([
 		$$("numbers").select($$("numbers").getSelectedId(),false,true);
 	};
 
-	/*获取自定义列表信息*/
-	var freshCustomList = function(){
-		var queryData = {"car_restriction_type":"custom"};
-		base.postReq("/v1/api/car_restrictions.json",queryData,function(data){
-			$$("custom_list").clearAll();
-			$$("custom_list").parse(data);
-		},function(data){
-		});
-	};
-	/*获取第三方列表*/
-	var freshThirdList = function(){
-		var queryData = {"car_restriction_type":"third_api"};
-		base.postReq("/v1/api/car_restrictions.json",queryData,function(data){
-			$$("third_list").clearAll();
-			$$("third_list").parse(data);
-		},function(data){
-		});
-	};
-
 	/*初始化数据*/
 	var init_data = function(){
-
 		/*版本*/
 		base.getReq("/v1/api/app_packages/enable_client.json",function(checked){
 			base.getReq("/v1/api/app_packages/enable_client.json",function(all){
@@ -448,7 +470,6 @@ define([
 		/*车品牌*/
 		var url_car_brands = "/v1/api/meta_brands.json"
 		base.getReq(url_car_brands,function(data){
-			console.log(data);
 			$$("car_brands").clearAll();
 
 			var arrays = [];
@@ -458,8 +479,6 @@ define([
 				}
 			}
 			$$("car_brands").parse(arrays);
-		//	var datas = $$("car_brands").getData();
-
 		});
 
 		base.getReq("/v1/api/app_packages/enable_client.json",function(data){
@@ -482,7 +501,7 @@ define([
 		$ui:layout,
 		$oninit:function(app,config){
 			webix.$$("title").hide();
-			webix.$$("title").parse({title: "车辆限行管理", details: "限行管理"});
+			webix.$$("title").parse({title: "", details: ""});
 			init_data();
 		}
 	};

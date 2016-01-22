@@ -325,5 +325,8 @@
     display: inline-block;
     min-width:80px;
 }
+.hidden{
+    display: none;
+}
 /**
 **/
