@@ -1,5 +1,5 @@
 define(["views/modules/base",
-    "views/windows/app_win"],function(base,app_win){
+    "views/windows/app_win","views/windows/push_user_list_win"],function(base,app_win,push_user_list_win){
 
     app_win.$add_call_back(function(){
         refresh_table();
@@ -7,37 +7,41 @@ define(["views/modules/base",
 
     var on_event = {
         "fa-pencil":function(e, id){
-            var item = $$("table_list").getItem(id);
-            this.$scope.ui(app_win.$ui).show();
-            app_win.$init_data(item.id);
+            var item = this.getItem(id);
+            this.$scope.show("/push_info:id="+item.id);
         },
-        "fa-arrow-circle-up":function(e, id){
+        "fa-trash-o":function(e, id){
             webix.confirm({
-                text:"上线该文案<br/> 确定?", ok:"是的", cancel:"取消",
+                text:"永久删除记录，删除后无法恢复<br/> 确定?", ok:"是的", cancel:"取消",
                 callback:function(res){
                     if(res){
                         //删除资源
                         var item = $$("table_list").getItem(id);
-                        base.postReq("coupon_share/"+item.coupon_share_id+"/online.json","",function(){
-                            base.$msg.info("修改成功");
+                        base.postReq("/v1/api/push_info/"+item.id+"/delete.json","",function(){
+                            base.$msg.info("删除成功");
                             refresh_table();
                         });
                     }
                 }
             });
         },
-        "download":function(){}
+        "fa-user":function(e,id,node){
+            var item = $$("table_list").getItem(id);
+            this.$scope.ui(push_user_list_win).show();
+            push_user_list_win.$init_data(item.id);
+        }
     };
 
     var elements = [
         {id:"id",header:"ID",width:50},
-        {id:"plan_push_time", header:"推送时间",width:140,format:base.$show_time},
+        {id:"plan_push_time", header:"推送时间",width:125,format:base.$show_time},
         {id:"push_content",header:"推送内容",width:350,fillspace:true},
         {id:"push_open_target_description", header:"划开指向",width:200},
         {id:"push_version", header:"发送版本",width:260},
         {id:"push_status_value", header:"状态",width:90},
         {id:"view_users", header:"用户", width:60, template:"<span class='status status2 webix_icon fa-user a-link' title='查看用户信息'></span>"},
-        {id:"edit", header:"编辑", width:60, template:"<span class='status status0 webix_icon fa-pencil a-link' title='编辑'></span>"}
+        {id:"edit", header:"编辑", width:60, template:"<span class='status status1 webix_icon fa-pencil a-link' title='编辑'></span>"},
+        {id:"delete", header:"删除", width:60, template:"<span class='status status0 webix_icon fa-trash-o a-link' title='删除'></span>"}
     ];
 
     var table_ui = {
@@ -46,9 +50,7 @@ define(["views/modules/base",
         select:false,
         rowHeight:35,
         autoheight:false,
-      //  autoConfig:true,
         hover:"myhover",
-      //  rightSplit:1,
         columns:elements,
         data:[],
         onClick:on_event

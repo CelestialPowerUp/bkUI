@@ -234,7 +234,6 @@ define([
 			},
 			{ view:"text", id:"h5_url",name:"h5_url",label:"H5地址:",required:true,placeholder:"H5地址",value:"",keyPressTimeout:100,on:{
 				"onTimedKeyPress":function(obj){
-					console.log(obj);
 					$$("push_open_target_params").setValue($$("h5_url").getValue());
 
 				}
@@ -384,7 +383,7 @@ define([
 
 	/*保存数据*/
 	var submit = function(view){
-		//基本信息 TODO
+		//基本信息
 		var formData = $$("form").getValues();
 		/*推送时间*/
 		if(formData.plan_push_time==''){
@@ -456,15 +455,51 @@ define([
 
 	/*初始化数据*/
 	var init_data = function(){
+		//TODO
+		var id = base.get_url_param("id");
+		var appIds = [];
+		if(id){
+			base.getReq("/v1/api/push_info/"+id+".json",function(data){
+				console.log(data);
+
+				data.plan_push_time = base.$show_time_sec(data.plan_push_time);
+
+				if(data.push_open_target_type == 'h5'){
+					data.h5_url = data.push_open_target_params;
+					$$("h5_url").show();
+				}
+				if(data.push_open_target_type == 'store_product'){
+					data.store_product = data.push_open_target_description;
+					$$("store_product").show();
+				}
+				$$("form").parse(data);
+				$$("push_open_target_params").setValue(data.push_open_target_params);
+
+				var splitAppIds = data.push_app_ids.split(",");
+				for(var i=0;i<splitAppIds.length;i++){
+					appIds.push({id:splitAppIds[i]});
+				}
+			});
+		}
+
 		/*版本*/
-		base.getReq("/v1/api/app_packages/enable_client.json",function(checked){
-			base.getReq("/v1/api/app_packages/enable_client.json",function(all){
+		base.getReq("/v1/api/app_packages/enable_client.json",function(all){
+			if(appIds.length>0){
 				var data = [];
 				for(var i=0;i<all.length;i++){
-					data.push(parse_check_data(all[i],checked));
+					data.push(parse_check_data(all[i],appIds));
 				}
 				$$("app_list").parse(data);
-			});
+			}else{
+				base.getReq("/v1/api/app_packages/enable_client.json",function(checked){
+					var data = [];
+					for(var i=0;i<all.length;i++){
+						data.push(parse_check_data(all[i],checked));
+					}
+					$$("app_list").parse(data);
+				});
+			}
+
 		});
 
 		/*车品牌*/
@@ -487,9 +522,10 @@ define([
 	};
 
 	var parse_check_data = function(obj,arrs){
+		console.log(arrs);
 		obj.$check = false;
 		for(var i=0;i<arrs.length;i++){
-			if(arrs[i]['id']===obj['id']){
+			if(arrs[i]['id']==obj['id']){
 				obj.$check=true;
 				break;
 			}
