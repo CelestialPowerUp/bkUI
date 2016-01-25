@@ -97,7 +97,6 @@ define([
 
 	/*搜索用户*/
 	var search_user_button_ui = {cols:[
-	//	{},{},{},
 		{view:"button",label:"根据所选品牌筛选用户",click:function(){
 			$$("user_list").clearAll();
 			var selectedCarBrandIds = $$("car_brands").getSelectedId();
@@ -120,9 +119,8 @@ define([
 			var param = carBrandIds;
 			base.postReq(url_get_users,param,function(data){
 				var chosen_users = [];
+				var final_chosen_users = [];
 				if(data && data instanceof Array){
-					console.log(data);
-
 					/*获取已选择版本*/
 					var selectedAppVersions = [];
 					var datas = $$("app_list").serialize();
@@ -141,18 +139,34 @@ define([
 						return;
 					}
 
+
+					if(edit_push_info_users.length>0){//编辑页面
+						chosen_users = edit_push_info_users;
+					}
 					for(var i=0;i<data.length;i++){
-						var app_version_array = data[i].app_versions.split(",");
-						if(  array_has_intersection(selectedAppVersions,app_version_array)){
-							data[i].$check=true;
-							chosen_users.push(data[i]);
+						if(edit_push_info_user_ids.length>0){//编辑页面
+							if(base.$array_contains(edit_push_info_user_ids,data[i].user_id)){//如果已经存在于编辑之前的用户列表中，则跳过该条用户信息
+								continue;
+							}
+							data[i].user_type = "new";
+							chosen_users.unshift(data[i]);
+						}
+						data[i].$check=true;
+						chosen_users.push(data[i]);
+					}
+					/*过滤掉版本不匹配*/
+					for(var i=0;i<chosen_users.length;i++){
+						var app_version_array = chosen_users[i].app_versions.split(",");
+						if( array_has_intersection(selectedAppVersions,app_version_array)){
+							final_chosen_users.push(chosen_users[i]);
 						}
 					}
 				}
-				if(chosen_users.length<1){
-					webix.message({type:"info",expire:5000,text:"没有符合条件的用户X﹏X 换换品牌和推送版本试试"});
+				if(final_chosen_users.length<1 ){
+					webix.message({type:"info",expire:5000,text:"没有符合条件的用户。 换换品牌和推送版本试试"});
+					return ;
 				}
-				$$("user_list").parse(chosen_users);
+				$$("user_list").parse(final_chosen_users);
 			},function(data){
 			});
 		}}
@@ -214,8 +228,6 @@ define([
 				label:"划开目标:",required:true,placeholder:"划开目标",value:"h5",
 				on:{
 					onChange:function(newv, oldv){
-						console.log(newv,oldv);
-
 						$$("push_open_target_params").setValue('');
 						if(newv=='store_product'){
 							$$("h5_url").setValue('');
@@ -324,9 +336,11 @@ define([
 					},
 					check:  webix.template('<span class="webix_icon_btn fa-{obj.$check?check-:}square-o list_icon" style="max-width:32px;"></span>'),
 					template: function(obj,type){
-						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)+"<span class='view_list_item'>"+obj.user_name+"</span>"
+						return "<span class='"+(obj.$check?"":"")+"'>"+type.check(obj)
+								+"<span class='view_list_item'>"+obj.user_name+"</span>"
 								+"<span class='view_list_item'>"+obj.phone_number+"</span>"
 								+"<span class='view_list_item'>"+obj.app_versions+"</span>"
+								+"<span class='view_list_item color_red'>"+ (obj.user_type ? obj.user_type :"") +"</span>" //是新搜索出来的，还是已经在库中的
 								+"<span class='view_list_item hidden'>"+obj.user_id+"</span>";
 					}
 				},
@@ -438,8 +452,14 @@ define([
 		formData.users = users;
 
 		$$("commit_btn").disable();
-		 base.postReq("/v1/api/push_info/create.json",formData,function(data){
-			 webix.message({type:"info",expire:5000,text:"保存成功!由于用户数较多，保存需要较长时间，请稍后查看。"});
+
+		var url = "/v1/api/push_info/create.json";
+		if(edit_push_info_id){
+			url = "/v1/api/push_info/update.json"
+			formData.id = edit_push_info_id;
+		}
+		 base.postReq(url,formData,function(data){
+			 webix.message({type:"info",expire:8000,text:"保存成功!由于用户数较多，保存需要较长时间，请稍后查看。"});
 			 view.$scope.show("/push_info_list");
 	     },function(data){
 			 $$("commit_btn").enable();
@@ -453,15 +473,23 @@ define([
 		$$("numbers").select($$("numbers").getSelectedId(),false,true);
 	};
 
+
+	var edit_push_info_id = null;//编辑页面时。推送信息ID
+	var edit_push_info_users = [];//编辑页面时，推送用户列表
+	var edit_push_info_user_ids = [];//编辑页面时，推送用户ID数组
+
 	/*初始化数据*/
 	var init_data = function(){
 		//TODO
 		var id = base.get_url_param("id");
 		var appIds = [];
-		if(id){
-			base.getReq("/v1/api/push_info/"+id+".json",function(data){
-				console.log(data);
+		var appVersions = [];
 
+
+		/*编辑状态*/
+		if(id){
+			edit_push_info_id = id;
+			base.getReq("/v1/api/push_info/"+id+".json",function(data){
 				data.plan_push_time = base.$show_time_sec(data.plan_push_time);
 
 				if(data.push_open_target_type == 'h5'){
@@ -479,28 +507,55 @@ define([
 				for(var i=0;i<splitAppIds.length;i++){
 					appIds.push({id:splitAppIds[i]});
 				}
-			});
-		}
 
-		/*版本*/
-		base.getReq("/v1/api/app_packages/enable_client.json",function(all){
-			if(appIds.length>0){
+				var splitAppVersions = data.push_version.split(",");
+				for(var i=0;i<splitAppVersions.length;i++){
+					appVersions.push(splitAppVersions[i]);
+				}
+
+				/*APP版本*/
+				base.getReq("/v1/api/app_packages/enable_client.json",function(all){
+					if(appIds.length>0){
+						var data = [];
+						for(var i=0;i<all.length;i++){
+							data.push(parse_check_data(all[i],appIds));
+						}
+						$$("app_list").parse(data);
+					}
+
+					/*用户列表*/
+					base.getReq("/v1/api/push_info/"+id+"/user_list.json",function(data){
+						if(data && data instanceof Array){
+							var push_info_users = [];
+							for(var i=0;i<data.length;i++){
+								data[i].$check=true;
+								/*过滤掉版本不匹配*/
+								var app_version_array = data[i].app_versions.split(",");
+								if( array_has_intersection(appVersions,app_version_array)) {
+									push_info_users.push(data[i]);
+								}
+								edit_push_info_user_ids.push(data[i].user_id);
+								edit_push_info_users.push(data[i]);
+							}
+							$$("user_list").parse(push_info_users);
+						}
+					});
+				});
+
+
+
+			});
+		}else{//添加状态
+
+			/*APP版本*/
+			base.getReq("/v1/api/app_packages/enable_client.json",function(all){
 				var data = [];
 				for(var i=0;i<all.length;i++){
-					data.push(parse_check_data(all[i],appIds));
+					data.push(parse_check_data(all[i],all));
 				}
 				$$("app_list").parse(data);
-			}else{
-				base.getReq("/v1/api/app_packages/enable_client.json",function(checked){
-					var data = [];
-					for(var i=0;i<all.length;i++){
-						data.push(parse_check_data(all[i],checked));
-					}
-					$$("app_list").parse(data);
-				});
-			}
-
-		});
+			});
+		}
 
 		/*车品牌*/
 		var url_car_brands = "/v1/api/meta_brands.json"
@@ -515,14 +570,9 @@ define([
 			}
 			$$("car_brands").parse(arrays);
 		});
-
-		base.getReq("/v1/api/app_packages/enable_client.json",function(data){
-		},function(data){
-		});
 	};
 
 	var parse_check_data = function(obj,arrs){
-		console.log(arrs);
 		obj.$check = false;
 		for(var i=0;i<arrs.length;i++){
 			if(arrs[i]['id']==obj['id']){

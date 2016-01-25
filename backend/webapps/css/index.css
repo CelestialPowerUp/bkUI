@@ -325,6 +325,9 @@
     display: inline-block;
     min-width:80px;
 }
+.color_red{
+    color:#ff0000;
+}
 .hidden{
     display: none;
 }

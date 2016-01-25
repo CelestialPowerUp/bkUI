@@ -76,7 +76,6 @@ define(["views/modules/base",
     var refresh_table = function(){
         $$("table_list").clearAll();
         base.getReq("/v1/api/push_infos.json",function(data){
-            console.log(data);
             $$("table_list").clearAll();
             $$("table_list").parse(data);
         });
