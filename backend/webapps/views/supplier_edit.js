@@ -94,6 +94,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
             }}
         },
         {view: "text", label:"首单奖励",name:"first_order_reward",placeholder: "首单奖励金额",width:350,required:true},
+        {view: "text", label:"匹配距离（米）",name:"adaption_distance",placeholder: "社区店最大匹配距离",width:350,required:false},
         {view: "text", label:"银行卡号",id:"bank_card",name:"bank_card",placeholder:"这里面填写银行卡号", width:350},
 
         {
@@ -179,6 +180,7 @@ define(["views/modules/base","views/webix/baidumap"],function(base){
         base.getReq("/v2/api/supplier.json/"+id,function(data){
             update_sale_persion(data['sale_id']);
             data.layoff = data.layoff.toString();
+            data.supplier_mold = (data.supplier_mold===null?'comprehensive':data.supplier_mold);
             $$("form_view").parse(data);
             var address = {};
             address.x = data.longitude;

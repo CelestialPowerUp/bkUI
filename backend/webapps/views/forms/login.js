@@ -38,14 +38,14 @@ define(['require'],function(require){
 				id:"login_form",
 		        position:"center",
 				elements: [
-					{ view:"text", label:'账号', name:"phone_number",placeholder: "手机号",value:"",on:onEvent},
+					{ view:"text", label:'账号', name:"user_account",placeholder: "手机号",value:"",on:onEvent},
 					{ view:"text",type:"password", label:'密码', name:"password", placeholder: "输入密码",value : "",on:onEvent},
 					{ view:"button", value: "登陆", click:function(){
 						sumbit();
 					}}
 				],
 				rules:{
-					"phone_number":webix.rules.isNotEmpty,
+					"user_account":webix.rules.isNotEmpty,
 					"password":webix.rules.isNotEmpty
 				},
 				elementsConfig:{

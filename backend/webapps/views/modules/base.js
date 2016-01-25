@@ -293,7 +293,7 @@ define(["../forms/login"],function(login){
             type:"GET",
             dataType:"json",
             timeout:15*1000,
-            url: filter_url("public/address.json?keyword="+name),
+            url: filter_url("public/address.json?keyword="+encodeURI(name)),
             beforeSend: beforeReq,
             success: function(data) {
             	callBack(data);
@@ -380,6 +380,21 @@ define(["../forms/login"],function(login){
         return time;
 	};
 
+	var utc_time_format = function(date){
+		if(typeof date === 'string' || date === null){
+			return date;
+		}
+		var year = date.getFullYear();  //获取年
+		var month = date.getMonth() + 1;    //获取月
+		var day = date.getDate(); //获取日
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var seconds = date.getUTCSeconds();
+		var milliseconds = date.getUTCMilliseconds();
+		time = year + "-" + month + "-" + day + "T" + hours + ":" + minutes+":"+seconds+"."+milliseconds+"Z";
+		return time;
+	}
+
 	var format_date = function(time){
 		if(check_empty(time)){
 			return "";
@@ -434,6 +449,17 @@ define(["../forms/login"],function(login){
 		time = year + "-" + month + "-" + day ;
 		return time;
 	};
+
+	var utc_time_date = function(time){
+		if(check_empty(time)){
+			return "";
+		}
+		time = time.replace("T"," ");
+		var timeArr=time.split(" ");
+		var d=timeArr[0].split("-");
+		var t=timeArr[1].split(":");
+		return new Date(d[0],(d[1]-1),d[2],t[0],t[1],"");
+	}
 
 	var show_time_sec = function(time){
 		if(check_empty(time)){
@@ -794,7 +820,8 @@ define(["../forms/login"],function(login){
 		getCurrentDate:getCurrentDate,
 		time_period_format:time_period_format,
 		$show_day:show_day,
-		$show_time_sec_double:show_time_sec_double
-
+		$show_time_sec_double:show_time_sec_double,
+		$utc_time_format:utc_time_format,
+		$utc_time_date:utc_time_date
 	};
 });
