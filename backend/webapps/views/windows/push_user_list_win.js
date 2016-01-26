@@ -87,7 +87,7 @@ define(["views/modules/base",
 	]};
 
 	var button_ui = {cols:[{},
-	                       {view:"button",label:"取消",width:80,click:function(){
+	                       {view:"button",label:"关闭",width:80,click:function(){
 	                    	    webix.$$("model_win").close();
 	                       }}]};
 	

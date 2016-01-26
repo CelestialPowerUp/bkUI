@@ -141,18 +141,20 @@ define([
 
 
 					if(edit_push_info_users.length>0){//编辑页面
-						chosen_users = edit_push_info_users;
+						chosen_users = chosen_users.concat(edit_push_info_users);
 					}
 					for(var i=0;i<data.length;i++){
-						if(edit_push_info_user_ids.length>0){//编辑页面
+						if(edit_push_info_users.length>0){//编辑页面
 							if(base.$array_contains(edit_push_info_user_ids,data[i].user_id)){//如果已经存在于编辑之前的用户列表中，则跳过该条用户信息
 								continue;
 							}
+							data[i].$check=true;
 							data[i].user_type = "new";
 							chosen_users.unshift(data[i]);
+						}else{
+							data[i].$check=true;
+							chosen_users.push(data[i]);
 						}
-						data[i].$check=true;
-						chosen_users.push(data[i]);
 					}
 					/*过滤掉版本不匹配*/
 					for(var i=0;i<chosen_users.length;i++){
