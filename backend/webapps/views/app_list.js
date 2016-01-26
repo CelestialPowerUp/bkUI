@@ -48,7 +48,7 @@ define(["views/modules/base",
             }
             return "";
         }},
-        {id:"edit", header:"编辑", width:60, template:"<span class='status status2 webix_icon fa-pencil a-link ' title='编辑'></span>"}
+        {id:"edit", header:"编辑", width:60, template:"<span class='status status1 webix_icon fa-pencil a-link ' title='编辑'></span>"}
     ];
 
     var table_ui = {
