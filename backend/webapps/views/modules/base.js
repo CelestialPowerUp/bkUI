@@ -787,6 +787,18 @@ define(["../forms/login"],function(login){
 		var day = data.getDate(); //获取日
 		return  year + "-" + month + "-" + day ;
 	};
+
+	/*数组contains方法*/
+	var array_contains = function contains(arr, obj) {
+		var i = arr.length;
+		while (i--) {
+			if (arr[i] === obj) {
+				return true;
+			}
+		}
+		return false;
+	};
+
 	return {
 		postReq:postReq,
 		getReq:getReq,
@@ -822,6 +834,7 @@ define(["../forms/login"],function(login){
 		$show_day:show_day,
 		$show_time_sec_double:show_time_sec_double,
 		$utc_time_format:utc_time_format,
-		$utc_time_date:utc_time_date
+		$utc_time_date:utc_time_date,
+		$array_contains:array_contains
 	};
 });
