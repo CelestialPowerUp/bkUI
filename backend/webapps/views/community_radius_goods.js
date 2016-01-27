@@ -23,7 +23,8 @@ define(["views/modules/base",
 				text:"删除该记录<br/> 确定?", ok:"是的", cancel:"取消",
 				callback:function(res){
 					if(res){
-						//删除资源
+						
+//删除资源
 					}
 				}
 			});
