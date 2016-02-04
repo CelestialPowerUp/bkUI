@@ -31,6 +31,7 @@ define(["views/modules/base"],function(base){
 					$$("selection_mode").setValue(3);
 					$$("pay_status").setValue(0);
         			count_total_price();
+					$$("price").enable();
         		}}
     		};
 
@@ -54,6 +55,7 @@ define(["views/modules/base"],function(base){
 				$$("selection_mode").setValue(3);
 				$$("pay_status").setValue(0);
 				count_total_price();
+				$$("price").enable();
 			}}
 		};
 		
@@ -106,15 +108,18 @@ define(["views/modules/base"],function(base){
 								{ view:"text", name:"unit_count",id:"unit_count", label:"数量",keyPressTimeout:100, on:{"onTimedKeyPress":function(){
 									count_total_price();
 								}}},
-								{ view:"text", name:"price",id:"price", label:"单价" ,disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
-									if($$("product_name").getValue().indexOf("补差价")>=0){
-										base.$msg.error("补差价的商品不支持改价格，请调整数量核对价格");
-										$$("price").setValue(1);
-										$$("price").refresh();
-										return;
+								{ view:"text", name:"price",id:"price", label:"单价" ,disabled:true,keyPressTimeout:100,on:{
+									"onTimedKeyPress":function(){
+											count_total_price();
+										},
+									"onFocus":function(){
+										var product_name = $$("product_name").getValue();
+										if(product_name.indexOf("补差价")>=0 || product_name==="服务增项" || product_name === "汽车轮胎"){
+											$$("price").disable();
+											base.$msg.error("该商品不支持价格调整，请调整数量核对价格");
+										}
 									}
-									count_total_price();
-								}}},
+								}},
 								{ view:"text", name:"labour_price",id:"labour_price", label:"工时费",disabled:true,keyPressTimeout:100,on:{"onTimedKeyPress":function(){
 									count_total_price();
 								}}},
