@@ -46,6 +46,13 @@ define(["views/modules/base","views/modules/table_page_m",
 		if(tabCheckId==='invalid'){
 			action +="&tab=invalid";
 		}
+		if(tabCheckId==='coupon_order'){
+			var url = "/v1/api/coupon_package_order_list.json?page_size=13"+get_page_url();
+			base.getReq(url, function (data) {
+				parse_table_data_coupon_order(data);
+			});
+			return;
+		}
 		base.getReq(action,function(data){
 			parse_table_data(data);
 		});
@@ -61,6 +68,16 @@ define(["views/modules/base","views/modules/table_page_m",
 			$$(tabCheckId+"_order_table").add(items[i]);
 		}
 		table_page.$update_page_items(tabCheckId+"_page_list",pages);
+		table_page.$add_page_callback(page_call_back);
+	};
+
+	var parse_table_data_coupon_order = function(pages){
+		var items = pages.items;
+		$$("coupon_order_table").clearAll();
+		for(var i=0;i<items.length;i++){
+			$$("coupon_order_table").add(items[i]);
+		}
+		table_page.$update_page_items("coupon_order_page_list",pages);
 		table_page.$add_page_callback(page_call_back);
 	};
 
@@ -106,6 +123,27 @@ define(["views/modules/base","views/modules/table_page_m",
 					},width:210}
 				];
 
+	var coupon_order_base_columns = [
+		{id:"coupon_package_order_number",header:["订单号", {content:"textFilter"} ], width:230,hidden:true},
+		{id:"create_time", header:"购买时间",sort:"string",template:function(obj){
+			return base.$show_time_sec_double(obj.create_time);
+		},width:180},
+		{id:"user_name",header:"客户姓名",sort:"string",width:180},
+		{id:"phone_number",header:"联系电话",sort:"string",width:180},
+		{id:"coupon_package_name",header:"卡包名称",sort:"string",width:240},
+		{id:"price",header:"金额",sort:"string",width:100},
+		{id:"pay_status",header:"支付状态",sort:"string",template:function(obj){
+			if(obj.pay_status=='已支付'){
+				return "<span class='status status1'>已支付</span>";
+			}
+			if(obj.pay_status=='未支付'){
+				return "<span class='status status0'>未支付</span>";
+			}
+			return "未知";
+		}},
+		{id:"supplier_info",header:"类型",sort:"string",minWidth:400,fillspace:true}
+	];
+
 	var custom_checkbox = function(obj, common, value){
 		if (value)
 			return "<div class='webix_table_checkbox'><span class='status status0'>选择√</span></div>"
@@ -131,6 +169,8 @@ define(["views/modules/base","views/modules/table_page_m",
 
 	var invalid_colums = webix.copy(columns);
 	invalid_colums.splice(0,0,{id:"trash", header:"操作",width:120, template:"<span><u class='views row_button'>查看</u><u class='edit row_button'> 编辑</u><!--<u class='call row_button'> 呼叫 </u></span>-->"});
+
+	var coupon_order_colums = webix.copy(coupon_order_base_columns);
 
 	var onClick = {
 			"views":function(e,id,node){
@@ -272,6 +312,19 @@ define(["views/modules/base","views/modules/table_page_m",
 		onClick:onClick
 	};
 
+	var coupon_order_table = {
+		id:"coupon_order_table",
+		view:"datatable",
+		autoConfig:true,
+		scrollX:true,
+		select:false,
+		//leftSplit:1,
+		autoheight:true,
+		hover:"myhover",
+		columns:coupon_order_colums,
+		onClick:onClick
+	};
+
 	var unbelong_page_table = table_page.$create_page_table("unbelong_page_list",unbelong_table);
 
 	var unprocessed_page_table = table_page.$create_page_table("unprocessed_page_list",unprocessed_table);
@@ -281,6 +334,8 @@ define(["views/modules/base","views/modules/table_page_m",
 	var refund_page_table = table_page.$create_page_table("refund_page_list",refund_table);
 
 	var invalid_page_table = table_page.$create_page_table("invalid_page_list",invalid_table);
+
+	var coupon_order_page_table = table_page.$create_page_table("coupon_order_page_list",coupon_order_table);
 
 	var tabview = {
 			id:"tabviewdata",
@@ -335,6 +390,15 @@ define(["views/modules/base","views/modules/table_page_m",
 						id:"invalid",
 						rows:[
 							invalid_page_table
+						]
+					}
+				},
+				{
+					header:"卡券订单",
+					body:{
+						id:"coupon_order",
+						rows:[
+							coupon_order_page_table
 						]
 					}
 				}
