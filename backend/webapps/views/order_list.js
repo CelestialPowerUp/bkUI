@@ -66,7 +66,7 @@ define(["views/modules/base","views/modules/table_page_m",
 
 	var columns = [
 					{id:"number",header:["订单号", {content:"textFilter"} ], width:180},
-					{id:"customer_name", header:["姓名1", {content:"textFilter"} ], sort:"string",
+					{id:"customer_name", header:["姓名", {content:"textFilter"} ], sort:"string",
 						template:function(obj){
 								return "<span class='user_order_list link_cursor'>"+obj.customer_name+"</span>";
 						}
