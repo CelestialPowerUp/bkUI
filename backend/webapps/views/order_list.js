@@ -81,11 +81,18 @@ define(["views/modules/base","views/modules/table_page_m",
 		table_page.$add_page_callback(page_call_back);
 	};
 
-
 	var columns = [
 					{id:"number",header:["订单号", {content:"textFilter"} ], width:180},
-					{id:"customer_name", header:["姓名", {content:"textFilter"} ], sort:"string"},
-					{id:"customer_phone_number",header:["电话号码", {content:"textFilter"} ],width:120, sort:"string"},
+					{id:"customer_name", header:["姓名", {content:"textFilter"} ], sort:"string",
+						template:function(obj){
+								return "<span class='user_order_list link_cursor'>"+obj.customer_name+"</span>";
+						}
+					},
+					{id:"customer_phone_number",header:["电话号码", {content:"textFilter"} ],width:120, sort:"string",
+						template:function(obj){
+							return "<span class='user_order_list link_cursor'>"+obj.customer_phone_number+"</span>";
+						}
+					},
 					{id:"car_number", header:["车牌号", {content:"textFilter"} ], sort:"string"},
 					{id:"service_Type",header:"服务类型",sort:"string",template:function(obj){
 						if(obj.service_Type=="self"){
@@ -233,15 +240,16 @@ define(["views/modules/base","views/modules/table_page_m",
 				});
 			},
 			"call":function(e,id,node){
-				var phoneNumber = this.getItem(id).customer_phone_number;
-				/*$$("call_out_submenu").show($$("call_out").getNode());
-				$$("phone_number").setValue(phoneNumber);
-				call_out.callOut();*/
+			},
+			"user_order_list":function(e,id,node){
+				var item = this.getItem(id);
 
-				// alert(phoneNumber);
-				/*var outWin = window.top;
-				var input_callNumber = parent.document.getElementById("callNumber");
-				input_callNumber.value = phoneNumber;*/
+				var url = window.location.href;
+				url = url.substr(0,url.lastIndexOf("/"+this.$scope.name));
+				url = url+"/user_order_list:phone_number="+item.customer_phone_number;
+				window.open(url,"_blank");
+
+			//	this.$scope.show("/user_order_list:phone_number="+item.customer_phone_number);
 			}
 		};
 

@@ -32,13 +32,29 @@ define(["views/modules/base",
                     findUser();
                 });
             });
+        },
+        "user_order_list":function(e,id,node){
+            var item = this.getItem(id);
+
+            var url = window.location.href;
+            url = url.substr(0,url.lastIndexOf("/"+this.$scope.name));
+            url = url+"/user_order_list:phone_number="+item.phone_number;
+            window.open(url,"_blank");
         }
     };
 
     var elements = [
         {id:"id",width:50,hidden:true},
-        {id:"phone_number",header:"电话号码",fillspace:true},
-        {id:"user_name", header:"姓名",fillspace:true},
+        {id:"phone_number",header:"电话号码",fillspace:true,
+            template:function(obj){
+                return "<span class='user_order_list link_cursor'>"+obj.phone_number+"</span>";
+            }
+        },
+        {id:"user_name", header:"姓名",fillspace:true,
+            template:function(obj){
+                return "<span class='user_order_list link_cursor'>"+obj.user_name+"</span>";
+            }
+        },
         {id:"job_number", header:"员工编号",fillspace:true},
         {id:"sing_in_origin", header:"注册来源",fillspace:true},
         {id:"trash", header:"", width:80, template:"<span class='webix_icon fa-user trash' title='用户角色'>角色</span>"},
