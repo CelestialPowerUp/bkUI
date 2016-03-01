@@ -28,7 +28,7 @@ define(["views/modules/base",
     var elements = [
         {view:"text",id:"article_id",name:"article_id",hidden:true},
         {view:"text",name:"index_no",hidden:true},
-        {view:"text",id:"article_pic_id",name:"article_pic_id",hidden:true},
+        {view:"text",id:"article_pic_id",name:"article_pic_id",value:"1000",hidden:true},
         {view:"text",label:"标题",id:"article_title",name:"article_title",required:true},
         {height:150,width:400,id:"cover_img",template:img_fomat},
         {height:25,template:"<a id='cover_img_pickfiles' style='padding-left: 150px' href='javascript:;'>[上传图片]</a>",
@@ -63,15 +63,18 @@ define(["views/modules/base",
 
     var button_ui = {margin:20,cols:[{},
         {view:"button",label:"确定",width:80,click:function(){
+
             if (!$$("form_view").validate()){
                 base.$msg.error("请输入正确的参数");
                 return;
             }
+
             var formdata = $$("form_view").getValues();
-            var action = "generalize/update.json";
-            if(formdata.generalize_id.length===0){
-                action = "generalize/create.json";
+            var action = "article/update.json";
+            if(formdata.article_id.length===0){
+                action = "article/create.json";
             }
+
             console.log(formdata);
             base.postReq(action,formdata,function(data){
                 base.$msg.info("数据提交成功");
@@ -80,6 +83,7 @@ define(["views/modules/base",
                 }
                 webix.$$("pop_win").close();
             });
+
         }},
         {view:"button",label:"取消",width:80,click:function(){
             webix.$$("pop_win").close();
