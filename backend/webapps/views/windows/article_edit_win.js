@@ -75,7 +75,6 @@ define(["views/modules/base",
                 action = "article/create.json";
             }
 
-            console.log(formdata);
             base.postReq(action,formdata,function(data){
                 base.$msg.info("数据提交成功");
                 if(typeof callBack === 'function'){

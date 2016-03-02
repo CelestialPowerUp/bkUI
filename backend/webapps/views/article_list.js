@@ -7,8 +7,15 @@ define(["views/modules/base",
         "views/windows/article_edit_win"],function(base,menu,form){
 
     var img_fomat = function(obj){
-        var img = obj.title_img_view;
-        return '<img src="'+img.thumbnail_url+'" class="content" ondragstart="return false"/>';
+        var img = obj.article_img;
+
+        if(obj.article_href === "#add"){
+            return '<img src="'+img.thumbnail_url+'" class="content" ondragstart="return false"/>';
+        }
+
+        var html = "<div class='article-item'>"+"<img src='http://7xiqd8.com2.z0.glb.qiniucdn.com/FkMLHphH21gAY7hAvNj2r9LV5nGG/s1024.jpg'/>"
+            +"<div class='article-bottom-content'><p><span>"+obj.article_title+"</span></p></div></div>";
+        return html;
     };
 
     var img_list_ui = {
@@ -22,7 +29,7 @@ define(["views/modules/base",
         template: img_fomat,
         on:{"onItemClick":function(id, e, node){
             var item = this.getItem(id);
-            if(item.link_href==='#add'){
+            if(item.article_href==='#add'){
                 webix.ui(form.$ui).show();
             }else{
                 $$("pp_menu").show(e);
@@ -31,14 +38,13 @@ define(["views/modules/base",
     }
 
     var toolbar_ui = {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
-        {view:"label", align:"left",label:"推广列表",height:30},
-        {view: "richselect",id:"generalize_code",label:"类型:",labelWidth:60,value:"banners",options:[
-            {id:"banners",value:"头部"},
-            {id:"good_suggest",value:"精品推荐"}
-        ],placeholder:"推广类型",width:250},
+        {view:"label", align:"left",label:"文章列表",height:30},
+
         {view:"segmented",id:"status_type", multiview:true,width:150, value:"enabled", options:[
-            { id:"enabled", value:"启用" }, // the initially selected segment
-            { id:"disabled", value:"停用" }]
+            { value:"启用", id:'enabled' },
+            { value:"停用", id:'disabled' },
+            { value:"发布", id:'published' },
+            { value:"隐藏", id:'unpublished' }]
         },
         { view: "button", type: "iconButton", icon: "sort-alpha-asc", label: "排序提交", width: 120, click: function(){
             //todo
@@ -63,14 +69,14 @@ define(["views/modules/base",
     };
 
     var refresh = function(){
-        base.getReq("/v2/api/home/"+$$("generalize_code").getValue()+"/"+$$("status_type").getValue(),function(data){
+        base.getReq("articles/"+$$("status_type").getValue()+".json",function(data){
             $$("img_view").clearAll();
             for(var a in data){
                 $$("img_view").add(data[a]);
             }
             $$("img_view").add( {
-                "link_href": "#add",
-                "title_img_view": {
+                "article_href": "#add",
+                "article_img": {
                     "thumbnail_url": "http://7xiqe8.com2.z0.glb.qiniucdn.com/QQ截图20151106142133.jpg"
                 }
             });
@@ -78,10 +84,13 @@ define(["views/modules/base",
     };
 
     var menus = [
-        {value:"edit",label:"编辑",click:function(){
+        {value:"edit",label:"基本信息",click:function(){
             webix.ui(form.$ui).show();
             var item = $$("img_view").getSelectedItem();
             form.$init_data(item);
+        }},
+        {value:"link_car_brand",label:"车 品 牌",click:function(){
+
         }}
     ];
 
@@ -93,9 +102,6 @@ define(["views/modules/base",
                 menu.$add_menus(menus);
             },500);
             form.$addCallBack(function(){
-                refresh();
-            });
-            $$("generalize_code").attachEvent("onChange", function(newv, oldv){
                 refresh();
             });
             $$("status_type").attachEvent("onChange", function(newv, oldv){
