@@ -92,7 +92,7 @@ define(["views/modules/base",
     var init_data = function(obj){
         if(obj){
             $$("form_view").parse(obj);
-            $$("cover_img").parse(obj.title_img_view);
+            $$("cover_img").parse(obj.article_img);
         }
     };
 

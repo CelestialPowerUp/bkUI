@@ -13,7 +13,7 @@ define(["views/modules/base",
             return '<img src="'+img.thumbnail_url+'" class="content" ondragstart="return false"/>';
         }
 
-        var html = "<div class='article-item'>"+"<img src='http://7xiqd8.com2.z0.glb.qiniucdn.com/FkMLHphH21gAY7hAvNj2r9LV5nGG/s1024.jpg'/>"
+        var html = "<div class='article-item'>"+"<img src='"+img.thumbnail_url+"'/>"
             +"<div class='article-bottom-content'><p><span>"+obj.article_title+"</span></p></div></div>";
         return html;
     };
@@ -55,7 +55,7 @@ define(["views/modules/base",
                     break;
                 }
             }
-            base.postReq("generalize/sort.json",list,function(){
+            base.postReq("article/sort.json",list,function(){
                 base.$msg.info("排序更新成功");
             });
 
