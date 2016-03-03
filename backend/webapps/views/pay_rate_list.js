@@ -1,54 +1,49 @@
 define(["views/modules/base",
-    "views/windows/app_win"],function(base,app_win){
+    "views/windows/pay_rate_win"],function(base,pay_rate_win){
 
-    app_win.$add_call_back(function(){
+    pay_rate_win.$add_call_back(function(){
         refresh_table();
     });
 
     var on_event = {
         "fa-pencil":function(e, id){
             var item = $$("table_list").getItem(id);
-            this.$scope.ui(app_win.$ui).show();
-            app_win.$init_data(item.id);
+            this.$scope.ui(pay_rate_win.$ui).show();
+            pay_rate_win.$init_data(item.id);
         },
-        "fa-arrow-circle-up":function(e, id){
+        "fa-trash-o":function(e, id){
             webix.confirm({
-                text:"上线该文案<br/> 确定?", ok:"是的", cancel:"取消",
+                text:"删除该记录<br/> 确定?", ok:"是的", cancel:"取消",
                 callback:function(res){
                     if(res){
                         //删除资源
                         var item = $$("table_list").getItem(id);
-                        base.postReq("coupon_share/"+item.coupon_share_id+"/online.json","",function(){
-                            base.$msg.info("修改成功");
+                        base.postReq("pay_rate/"+item.id+"/delete.json","",function(){
+                            base.$msg.info("删除成功");
                             refresh_table();
                         });
                     }
                 }
             });
-        },
-        "download":function(){}
+        }
     };
 
     var elements = [
         {id:"id",header:"ID",width:50},
-        {id:"app_name",header:"包名",width:240},
-        {id:"app_version", header:"版本",width:70},
-        {id:"os_type", header:"操作系统",width:90},
-        {id:"create_time", header:"创建时间",width:140,format:base.$show_time},
-        {id:"enable", header:"是否有效",width:90,template:function(obj){
-            if(obj.enable === false){
-                return "<span class='status status0'>未启用</span>"
+        {id:"create_time", header:"创建时间",width:200,format:base.$show_time_sec_double},
+        {id:"pay_channel_value",header:"费种",width:240},
+        {id:"rate", header:"费率",width:70},
+        {id:"start_time", header:"起始时间",width:200,format:base.$show_time_sec_double},
+        {id:"end_time", header:"截止时间",width:200,template:function(obj){
+            var value = obj.end_time;
+            if(value){
+                return base.$show_time_sec_double(value);
+            }else{
+                return "至今";
             }
-            return "<span class='status status1'>已启用</span>";
         }},
-        {id:"description", header:"说明",width:350,fillspace:true},
-        {id:"download", header:"下载", width:60, template:function(obj){
-            if(obj.attachment_id && obj.attachment_view && obj.attachment_view.raw_url){
-                return "<a class='status status2 webix_icon fa-download a-link' href='"+obj.attachment_view.raw_url+"' target='_blank'></a>"
-            }
-            return "";
-        }},
-        {id:"edit", header:"编辑", width:60, template:"<span class='status status1 webix_icon fa-pencil a-link ' title='编辑'></span>"}
+        {id:"edit", header:"编辑", width:60, template:"<span class='status status1 webix_icon fa-pencil a-link ' title='编辑'></span>"},
+        {id:"delete", header:"删除", width:60,fillspace:true, template:"<span class='status status3 webix_icon fa-trash-o a-link ' title='删除'></span>"}
     ];
 
     var table_ui = {
@@ -68,10 +63,9 @@ define(["views/modules/base",
     var filter_ui = {
         margin:15,
         cols:[
-            { view: "button", type: "iconButton", icon: "plus", label: "新建应用包", width: 135, click: function(){
-                //todo
-                this.$scope.ui(app_win.$ui).show();
-                app_win.$init_data();
+            { view: "button", type: "iconButton", icon: "plus", label: "新增配置", width: 135, click: function(){
+                this.$scope.ui(pay_rate_win.$ui).show();
+                pay_rate_win.$init_data();
             }},
             {}
         ]
@@ -86,8 +80,7 @@ define(["views/modules/base",
 
     var refresh_table = function(){
         $$("table_list").clearAll();
-        base.getReq("/v1/api/app_packages.json",function(data){
-            console.log(data);
+        base.getReq("/v1/api/pay_rate_list.json",function(data){
             $$("table_list").clearAll();
             $$("table_list").parse(data);
         });
@@ -96,7 +89,7 @@ define(["views/modules/base",
     return {
         $ui:layout,
         $oninit:function(app,config){
-            webix.$$("title").parse({title: "应用管理", details: "应用列表"});
+            webix.$$("title").parse({title: "财务配置", details: "费率管理"});
             refresh_table();
         }
     }
