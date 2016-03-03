@@ -13,8 +13,8 @@ define(["views/modules/base"],function(base){
 			{ view:"text",id:"id",name:"id",hidden:true,required:true},
 			{ view:"richselect", id:"pay_channel",name:"pay_channel",options:[{"id":"alipay",value:"支付宝费率"},{"id":"wx",value:"微信费率"}],label:"费种:",required:true,placeholder:"",value:"alipay"},
 			{ view:"text", label:'费率:', name:"rate",placeholder: "费率",value:"",required:true},
-			{ view:"datepicker", timepicker:true, label:"开始时间:",id:"start_time", name:"start_time", stringResult:true,required:true, format:"%Y-%m-%d %H:%i"  },
-			{ view:"datepicker", timepicker:true, label:"结束时间:",id:"end_time", name:"end_time", stringResult:true, format:"%Y-%m-%d %H:%i" },
+			{ view:"datepicker", timepicker:false,editable:true, label:"开始时间:",id:"start_time", name:"start_time", stringResult:true,required:true, format:"%Y-%m-%d"  },
+			{ view:"datepicker", timepicker:false,editable:true, label:"结束时间:",id:"end_time", name:"end_time", stringResult:true, format:"%Y-%m-%d" },
 		]
 	};
 
@@ -22,9 +22,6 @@ define(["views/modules/base"],function(base){
 		margin:15,
 		cols:[
 			{},
-			{view:"button",label:"取消",width:80,click:function(){
-				webix.$$("pay_rate_win").close();
-			}},
 			{view:"button",label:"提交",width:80,click:function(){
 				if($$("form").validate()){
 					var formdata = $$("form").getValues();
@@ -32,6 +29,7 @@ define(["views/modules/base"],function(base){
 						webix.message({type:"error",expire:5000,text:"请选择开始时间"});
 						return;
 					}
+					console.log($$("start_time").getValue());
 					var start_time = base.format_time($$("start_time").getValue());
 					formdata.start_time = start_time;
 					if(formdata.end_time){
