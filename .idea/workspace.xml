@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0eab7656-6120-45e1-8a2d-e5990bed999e" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/webapps/css/index.css" afterPath="$PROJECT_DIR$/backend/webapps/css/index.css" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/webapps/views/article_list.js" afterPath="$PROJECT_DIR$/backend/webapps/views/article_list.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/webapps/views/windows/article_edit_win.js" afterPath="$PROJECT_DIR$/backend/webapps/views/windows/article_edit_win.js" />
     </list>
     <ignored path="bkui.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -36,6 +36,21 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="order_edit.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/webapps/views/order_edit.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.881356">
+              <caret line="468" column="16" selection-start-line="468" selection-start-column="16" selection-end-line="473" selection-end-column="17" />
+              <folding>
+                <marker date="1453966879992" expanded="true" signature="10040:10070" placeholder="..." />
+                <marker date="1453966879992" expanded="true" signature="10171:10201" placeholder="..." />
+                <marker date="1453966879992" expanded="true" signature="18474:18504" placeholder="..." />
+                <marker date="1453966879992" expanded="true" signature="19180:19210" placeholder="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="test2.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/webapps/test2.html">
           <provider selected="true" editor-type-id="text-editor">
@@ -46,31 +61,43 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="article_list.js" pinned="false" current-in-tab="true">
+      <file leaf-file-name="article_list.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/backend/webapps/views/article_list.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.70579493">
-              <caret line="57" column="61" selection-start-line="57" selection-start-column="61" selection-end-line="57" selection-end-column="61" />
+            <state vertical-scroll-proportion="-4.881356">
+              <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
               <folding>
-                <marker date="1456915668373" expanded="true" signature="445:483" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:509" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:533" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:534" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:535" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:543" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:581" placeholder="..." />
-                <marker date="1456915668373" expanded="true" signature="445:587" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:532" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:558" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:582" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:583" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:584" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:592" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:630" placeholder="..." />
+                <marker date="1456992958449" expanded="true" signature="494:636" placeholder="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="index.css" pinned="false" current-in-tab="false">
+      <file leaf-file-name="index.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/backend/webapps/css/index.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-23.444445">
-              <caret line="361" column="22" selection-start-line="361" selection-start-column="22" selection-end-line="361" selection-end-column="22" />
+            <state vertical-scroll-proportion="0.79574466">
+              <caret line="364" column="1" selection-start-line="364" selection-start-column="1" selection-end-line="364" selection-end-column="1" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="car_brand_win.js" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/backend/webapps/views/windows/car_brand_win.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="54" column="16" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
+              <folding>
+                <marker date="1457000219425" expanded="true" signature="129:262" placeholder="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -103,9 +130,10 @@
         <option value="$PROJECT_DIR$/backend/webapps/views/supplier_edit.js" />
         <option value="$PROJECT_DIR$/backend/webapps/views/forms/order_product.js" />
         <option value="$PROJECT_DIR$/backend/webapps/test2.html" />
-        <option value="$PROJECT_DIR$/backend/webapps/css/index.css" />
         <option value="$PROJECT_DIR$/backend/webapps/views/windows/article_edit_win.js" />
         <option value="$PROJECT_DIR$/backend/webapps/views/article_list.js" />
+        <option value="$PROJECT_DIR$/backend/webapps/views/windows/car_brand_win.js" />
+        <option value="$PROJECT_DIR$/backend/webapps/css/index.css" />
       </list>
     </option>
   </component>
@@ -251,7 +279,11 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="css" />
+              <option name="myItemId" value="views" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="windows" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -271,6 +303,7 @@
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/backend/webapps/views/windows" />
       <recent name="$PROJECT_DIR$/backend/webapps" />
     </key>
   </component>
@@ -395,13 +428,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/backend/webapps/views/statistic_panel.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="135" column="9" selection-start-line="135" selection-start-column="9" selection-end-line="135" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/webapps/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -630,6 +656,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="7" column="23" selection-start-line="7" selection-start-column="23" selection-end-line="7" selection-end-column="23" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -637,6 +664,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="22" column="0" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -705,19 +733,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/webapps/views/order_edit.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="1" column="34" selection-start-line="1" selection-start-column="21" selection-end-line="1" selection-end-column="34" />
-          <folding>
-            <marker date="1453966879992" expanded="true" signature="10040:10070" placeholder="..." />
-            <marker date="1453966879992" expanded="true" signature="10171:10201" placeholder="..." />
-            <marker date="1453966879992" expanded="true" signature="18474:18504" placeholder="..." />
-            <marker date="1453966879992" expanded="true" signature="19180:19210" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/webapps/views/forms/order_product.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -742,14 +757,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/backend/webapps/css/index.css">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-23.444445">
-          <caret line="361" column="22" selection-start-line="361" selection-start-column="22" selection-end-line="361" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/backend/webapps/views/windows/article_edit_win.js">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -760,20 +767,51 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/backend/webapps/views/order_edit.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-2.881356">
+          <caret line="468" column="16" selection-start-line="468" selection-start-column="16" selection-end-line="473" selection-end-column="17" />
+          <folding>
+            <marker date="1453966879992" expanded="true" signature="10040:10070" placeholder="..." />
+            <marker date="1453966879992" expanded="true" signature="10171:10201" placeholder="..." />
+            <marker date="1453966879992" expanded="true" signature="18474:18504" placeholder="..." />
+            <marker date="1453966879992" expanded="true" signature="19180:19210" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/backend/webapps/views/article_list.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.70579493">
-          <caret line="57" column="61" selection-start-line="57" selection-start-column="61" selection-end-line="57" selection-end-column="61" />
+        <state vertical-scroll-proportion="-4.881356">
+          <caret line="25" column="21" selection-start-line="25" selection-start-column="21" selection-end-line="25" selection-end-column="21" />
           <folding>
-            <marker date="1456915668373" expanded="true" signature="445:483" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:509" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:533" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:534" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:535" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:543" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:581" placeholder="..." />
-            <marker date="1456915668373" expanded="true" signature="445:587" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:532" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:558" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:582" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:583" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:584" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:592" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:630" placeholder="..." />
+            <marker date="1456992958449" expanded="true" signature="494:636" placeholder="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/webapps/views/windows/car_brand_win.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="54" column="16" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
+          <folding>
+            <marker date="1457000219425" expanded="true" signature="129:262" placeholder="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/backend/webapps/css/index.css">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.79574466">
+          <caret line="364" column="1" selection-start-line="364" selection-start-column="1" selection-end-line="364" selection-end-column="1" />
+          <folding />
         </state>
       </provider>
     </entry>

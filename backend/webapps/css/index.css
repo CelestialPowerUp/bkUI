@@ -335,9 +335,9 @@
 
 .article-item{
     float: left;
-    width: 325px;
-    height: 255px;
-    background-color:#e1e4ea ;
+    width:100%;
+    height: inherit;
+    background-color:#CAE8D7;
     border-radius: 5px;
     box-shadow: 0px 1px 1px #d4d7de;
     font-family: 'PT Sans',Tahoma;
@@ -354,14 +354,14 @@
 }
 
 .article-bottom-content{
+    display: block;
     bottom: 0px;
     width: inherit;
     border-radius: 5px;
     background-color: #2E2E2E;
-    opacity: 0.5;
+    opacity: 0.6;
     text-align: center;
     position: absolute;
 }
-
 /**
 **/

@@ -4,7 +4,8 @@
 
 define(["views/modules/base",
         "views/menus/popup_menu",
-        "views/windows/article_edit_win"],function(base,menu,form){
+        "views/windows/article_edit_win",
+        "views/windows/car_brand_win"],function(base,menu,form,car_brand){
 
     var img_fomat = function(obj){
         var img = obj.article_img;
@@ -90,7 +91,8 @@ define(["views/modules/base",
             form.$init_data(item);
         }},
         {value:"link_car_brand",label:"车 品 牌",click:function(){
-
+            webix.ui(car_brand.$ui).show();
+            car_brand.$init_data();
         }}
     ];
 
