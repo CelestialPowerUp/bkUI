@@ -1,5 +1,5 @@
 define(["views/modules/base",
-    "views/windows/pay_rate_win"],function(base,pay_rate_win){
+    "views/windows/pay_rate_win","views/windows/pay_rate_interrupt_win"],function(base,pay_rate_win,pay_rate_interrupt_win){
 
     pay_rate_win.$add_call_back(function(){
         refresh_table();
@@ -67,6 +67,10 @@ define(["views/modules/base",
                 this.$scope.ui(pay_rate_win.$ui).show();
                 pay_rate_win.$init_data();
             }},
+            { id:"search_interrupt", view: "button", type: "iconButton", icon: "search", label: "获取空档期", width: 135, click: function(){
+                this.$scope.ui(pay_rate_interrupt_win.$ui).show();
+                pay_rate_interrupt_win.$init_data();
+            }},
             {}
         ]
     };
@@ -91,6 +95,9 @@ define(["views/modules/base",
         $oninit:function(app,config){
             webix.$$("title").parse({title: "财务配置", details: "费率管理"});
             refresh_table();
+
+            app.$scope.ui(pay_rate_interrupt_win.$ui).show();
+            pay_rate_interrupt_win.$init_data();
         }
     }
 });
