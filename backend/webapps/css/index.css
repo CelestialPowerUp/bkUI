@@ -338,6 +338,7 @@
     width:100%;
     height: inherit;
     background-color:#CAE8D7;
+    opacity:0.9;
     border-radius: 5px;
     box-shadow: 0px 1px 1px #d4d7de;
     font-family: 'PT Sans',Tahoma;

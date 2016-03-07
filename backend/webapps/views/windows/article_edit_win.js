@@ -1,22 +1,8 @@
 define(["views/modules/base",
     "views/modules/upload",
     "views/windows/store_wares_win",
-    "views/windows/topic_list_win"],function(base,upload,store_wares_win,topic_list_win){
+    "views/windows/topic_list_win"],function(base,upload){
 
-    store_wares_win.$add_callback(function(ware){
-        $$("link_text").setValue(ware.ware_name+"("+ware.product_name+")");
-        $$("link_id").setValue(ware.ware_id);
-    });
-
-    topic_list_win.$add_callback(function(topic){
-        $$("link_text").setValue(topic.topic_name);
-        $$("link_id").setValue(topic.topic_id);
-    });
-
-    var clear_link_info = function(){
-        $$("link_text").setValue('');
-        $$("link_id").setValue('');
-    };
 
     var img_fomat = function(obj){
         if(typeof obj.thumbnail_url === 'undefined' || obj.thumbnail_url === ""){
@@ -43,10 +29,8 @@ define(["views/modules/base",
                 });
             }}},
         { view:"radio", name:"status", label:"状态",value:"disabled", width:350,required:true,options:[
-            { value:"启用", id:'enabled' },
-            { value:"停用", id:'disabled' },
             { value:"发布", id:'published' },
-            { value:"隐藏", id:'unpublished' }
+            { value:"停用", id:'unpublished' }
         ]},
         {view:"text",label:"链接",name:"article_href",placeholder: "http://",required:true}
     ];

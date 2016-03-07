@@ -30,6 +30,17 @@ define(["views/modules/base"],function(base){
             }
         }},
         {view:"button",label:"确定",width:80,click:function(){
+            var ui = $$("car_brand_list_view");
+            var items = ui.serialize();
+            var selects = [];
+            for(var i in items){
+                if(ui.isSelected(items[i].id)){
+                    selects.push(items[i]);
+                }
+            }
+            if(typeof callBack === 'function'){
+                callBack(selects);
+            }
             webix.$$("pop_win").close();
         }},
         {view:"button",label:"取消",width:80,click:function(){
@@ -37,10 +48,18 @@ define(["views/modules/base"],function(base){
         }}]
     };
 
-    var init_data = function(obj){
+    var init_data = function(selects){
         base.getReq("meta_brands.json",function(datas){
-            console.log(datas);
+
+            for(var i in datas){
+                datas[i].id = datas[i].brand_type;
+            }
+
             $$("car_brand_list_view").parse(datas);
+
+            if(typeof selects === 'object' && selects instanceof Array){
+                $$("car_brand_list_view").select(selects);
+            }
         });
     };
 

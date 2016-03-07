@@ -7,6 +7,17 @@ define(["views/modules/base",
         "views/windows/article_edit_win",
         "views/windows/car_brand_win"],function(base,menu,form,car_brand){
 
+    car_brand.$addCallBack(function(car_brands){
+        var item = $$("img_view").getSelectedItem();
+        var car_brand_ids = [];
+        for(var i in car_brands){
+            car_brand_ids.push(car_brands[i].brand_type);
+        }
+        base.postReq("article/car_brand/"+item.article_id+"/update.json",car_brand_ids,function(data){
+            base.$msg.info(data);
+        });
+    });
+
     var img_fomat = function(obj){
         var img = obj.article_img;
 
@@ -15,7 +26,7 @@ define(["views/modules/base",
         }
 
         var html = "<div class='article-item'>"+"<img src='"+img.thumbnail_url+"'/>"
-            +"<div class='article-bottom-content'><p><span>"+obj.article_title+"</span></p></div></div>";
+            +"<div class='article-bottom-content'><p><span>"+obj.article_title+"作者：试试"+"</span></p></div></div>";
         return html;
     };
 
@@ -41,11 +52,9 @@ define(["views/modules/base",
     var toolbar_ui = {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
         {view:"label", align:"left",label:"文章列表",height:30},
 
-        {view:"segmented",id:"status_type", multiview:true,width:150, value:"enabled", options:[
-            { value:"启用", id:'enabled' },
-            { value:"停用", id:'disabled' },
-            { value:"发布", id:'published' },
-            { value:"隐藏", id:'unpublished' }]
+        {view:"segmented",id:"status_type", multiview:true,width:450, value:"published", options:[
+            { value:"已发布", id:'published' },
+            { value:"已停用", id:'unpublished' }]
         },
         { view: "button", type: "iconButton", icon: "sort-alpha-asc", label: "排序提交", width: 120, click: function(){
             //todo
@@ -92,7 +101,10 @@ define(["views/modules/base",
         }},
         {value:"link_car_brand",label:"车 品 牌",click:function(){
             webix.ui(car_brand.$ui).show();
-            car_brand.$init_data();
+            var item = $$("img_view").getSelectedItem();
+            base.getReq("article/"+item.article_id+"/car_brands.json",function(selects){
+                car_brand.$init_data(selects);
+            });
         }}
     ];
 
