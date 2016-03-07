@@ -26,7 +26,7 @@ define(["views/modules/base",
         }
 
         var html = "<div class='article-item'>"+"<img src='"+img.thumbnail_url+"'/>"
-            +"<div class='article-bottom-content'><p><span>"+obj.article_title+"作者：试试"+"</span></p></div></div>";
+            +"<div class='article-bottom-content'><p><span>"+obj.article_title+"(作者："+obj.author_name+")</span></p></div></div>";
         return html;
     };
 

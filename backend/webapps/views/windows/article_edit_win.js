@@ -14,8 +14,9 @@ define(["views/modules/base",
     var elements = [
         {view:"text",id:"article_id",name:"article_id",hidden:true},
         {view:"text",name:"index_no",hidden:true},
-        {view:"text",id:"article_pic_id",name:"article_pic_id",value:"1000",hidden:true},
+        {view:"text",id:"article_pic_id",name:"article_pic_id",hidden:true},
         {view:"text",label:"标题",id:"article_title",name:"article_title",required:true},
+        {view:"text",label:"作者",name:"author_name",disabled:true},
         {height:150,width:400,id:"cover_img",template:img_fomat},
         {height:25,template:"<a id='cover_img_pickfiles' style='padding-left: 150px' href='javascript:;'>[上传图片]</a>",
             on:{"onAfterRender":function(){
