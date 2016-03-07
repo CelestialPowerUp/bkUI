@@ -5,6 +5,7 @@ define(["views/modules/base",
     };
 
     var elements = [
+        {id:"订单类型",header:["订单类型",{content:"selectFilter"}]},
         {id:"订单ID"},
         {id:"下单时间"},
         {id:"完成时间"},
