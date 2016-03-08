@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0eab7656-6120-45e1-8a2d-e5990bed999e" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/backend/webapps/views/article_list.js" afterPath="$PROJECT_DIR$/backend/webapps/views/article_list.js" />
-    </list>
+    <list default="true" id="0eab7656-6120-45e1-8a2d-e5990bed999e" name="Default" comment="" />
     <ignored path="bkui.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
