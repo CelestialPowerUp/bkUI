@@ -57,7 +57,7 @@ define(["models/order",
 		var phone_number = params.phone_number;
 		if(phone_number){
 			phone_number = phone_number.replace("&","");
-			if(phone_number && phone_number.length==11){
+			if(phone_number){
 				$$("search_phone_number").setValue(phone_number);
 
 				load_user_info();

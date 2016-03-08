@@ -488,13 +488,13 @@ define(["../forms/login"],function(login){
 		var timeArr=time.split(" ");
 		var d=timeArr[0].split("-");
 		var t=timeArr[1].split(":");
-		var data = new Date(d[0],(d[1]-1),d[2],t[0],t[1],"");
+		var data = new Date(d[0],(d[1]-1),d[2],t[0],t[1],t[2]);
 		var year = data.getFullYear();  //获取年
 		var month = data.getMonth() + 1;    //获取月
 		var day = data.getDate(); //获取日
 		var hours = data.getHours();
 		var minutes = data.getMinutes();
-		var seconds = data.getUTCSeconds();
+		var seconds = data.getSeconds();
 		time = numberAddDigit(year,2) + "-" + numberAddDigit(month,2) + "-" + numberAddDigit(day,2) +" "+ numberAddDigit(hours,2) + ":" + numberAddDigit(minutes,2)+":"+numberAddDigit(seconds,2);
 		return time;
 	};

@@ -45,6 +45,9 @@
     font-size:15px;
     color:blue;
 }
+.link_cursor{
+    cursor:pointer;
+}
 .views{
     cursor:pointer;
     color:blue;
