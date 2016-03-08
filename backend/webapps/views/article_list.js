@@ -94,12 +94,12 @@ define(["views/modules/base",
     };
 
     var menus = [
-        {value:"edit",label:"基本信息",click:function(){
+        {value:"edit",label:"编辑",click:function(){
             webix.ui(form.$ui).show();
             var item = $$("img_view").getSelectedItem();
             form.$init_data(item);
         }},
-        {value:"link_car_brand",label:"车 品 牌",click:function(){
+        {value:"link_car_brand",label:"车品牌",click:function(){
             webix.ui(car_brand.$ui).show();
             var item = $$("img_view").getSelectedItem();
             base.getReq("article/"+item.article_id+"/car_brands.json",function(selects){
