@@ -334,5 +334,19 @@
 .hidden{
     display: none;
 }
-/**
-**/
+
+.animation {
+    -moz-transition: transform 1s;
+    -ms-transition: transform 1s;
+    -o-transition: transform 1s;
+    -webkit-transition: transform 1s;
+    transition: transform 1s;
+}
+
+.hell {
+    -moz-transform: translateY(2000px);
+    -ms-transform: translateY(2000px);
+    -o-transform: translateY(2000px);
+    -webkit-transform: translateY(2000px);
+    transform: translateY(2000px);
+}
