@@ -75,7 +75,7 @@ define(["views/modules/base",
 
     var elements = [
         {id:"supplier_id",header:"ID",width:80},
-        {id:"name", header:"名称",minWidth:350,fillspace:true},
+        {id:"name", header:"名称",minWidth:300,fillspace:true},
         {id:"supplier_mold", header:"服务类型",width:80,fillspace:false,template:function(obj){
             if(obj.supplier_mold === 'community'){
                 return "<span class='status status1'>社区店</span>";
@@ -83,7 +83,7 @@ define(["views/modules/base",
                 return "<span class='status status0'>综合店</span>";
             }}
         },
-        {id:"address", header:"地址",minWidth:350,fillspace:true},
+        {id:"address", header:"地址",minWidth:300,fillspace:true},
         {id:"phone", header:"电话",width:185,fillspace:false,template:function(obj){
             var result = "";
             if(obj.mobile_number!==null&&obj.mobile_number!==''){
@@ -101,6 +101,7 @@ define(["views/modules/base",
                 return "<span class='status status0'>停业中</span>";
             }}
         },
+        {header: "图片", width: 100, template: "<img src='#attachments_id[0].thumbnail_url#' width='80px' height='48px' style='margin-top: 10px;'>"},
         {header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商编辑' class='webix_icon fa-pencil'></span>"},
         {header:"&nbsp;", width:35, template:"<span  style=' cursor:pointer;' title='服务商类别' class='webix_icon fa-check-circle'></span>"},
         {header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='商品管理' class='webix_icon fa-list-ul'></span>"},
@@ -113,14 +114,14 @@ define(["views/modules/base",
         id:"table_list",
         view:"datatable",
         select:false,
-        rowHeight:35,
+        rowHeight:68,
         autoheight:false,
         hover:"myhover",
         rightSplit:5,
         columns:elements,
         data:[],
         onClick:on_event
-    }
+    };
 
     var toolbar_ui = {view:"toolbar",css: "highlighted_header header5",height:45, elements:[
         {view:"label", align:"left",label:"服务商列表",height:30},
@@ -149,6 +150,18 @@ define(["views/modules/base",
         $$("table_list").clearAll();
         base.getReq("/v2/api/meta_supplier_list.json?keys="+search_keys+"&layoff="+layoff_type+"&page="+cur_page+"&size=15",function(data){
             $$("table_list").clearAll();
+
+            for (var i = 0; i < data.items.length; i++) {
+                var item = data.items[i];
+                item.attachments_id = item.attachments_id.length ? item.attachments_id : [
+                    {
+                        "thumbnail_url": "http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF",
+                        "original_url": "http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF",
+                        "raw_url": "http://7xiqd8.com2.z0.glb.qiniucdn.com/Fg_yYLTcb6lsCJaKI9DMIBeD53VF"
+                    }
+                ];
+            }
+
             $$("table_list").parse(data.items);
             table_page.$update_page_items("table_page_list",data);
             table_page.$add_page_callback(function(page){
