@@ -1,7 +1,6 @@
-define(["views/modules/base",
-    "views/modules/load_richselect",
+define(["views/modules/load_richselect",
     "views/modules/load_datatable",
-    "views/forms/work_station_edit"], function (base, loadRichSelect, loadDataTable, wsEdit) {
+    "views/forms/work_station_edit"], function (loadRichSelect, loadDataTable, wsEdit) {
 
     return {
         $ui: {
@@ -156,7 +155,7 @@ define(["views/modules/base",
                                                     click: function () {
                                                         $("[view_id='workStationOrders']").addClass("hell");
                                                         setTimeout(function () {
-                                                            workStationOrders.hide();
+                                                            workStationOrders.close();
                                                         }, 1000);
                                                     }
                                                 },
@@ -168,7 +167,7 @@ define(["views/modules/base",
                                                     click: function () {
                                                         $("[view_id='workStationOrders']").addClass("hell");
                                                         setTimeout(function () {
-                                                            workStationOrders.hide();
+                                                            workStationOrders.close();
                                                         }, 1000);
                                                     }
                                                 }
@@ -201,7 +200,7 @@ define(["views/modules/base",
                                     onHide: function () {
                                         $("[view_id='workStationEdit']").addClass("hell");
                                         setTimeout(function () {
-                                            workStationEdit.hide();
+                                            workStationEdit.close();
                                         }, 1000);
                                     }
                                 })

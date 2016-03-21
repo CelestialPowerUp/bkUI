@@ -1,15 +1,8 @@
-define(["views/modules/base"], function (base) {
+define(["views/modules/load_datatable"], function (loadDataTable) {
 
-    var workStationTypeEdit = webix.ui({
+    var workStationTypeEditLayout = {
         view: "window",
         id: "workStationTypeEdit",
-        head: {
-            id: "workStationTypeEditHead",
-            view:"label",
-            label: "",
-            inputWidth:400,
-            align:"center"
-        },
         width: 400,
         height: 200,
         position: "center",
@@ -52,7 +45,7 @@ define(["views/modules/base"], function (base) {
                             click: function () {
                                 $("[view_id='workStationTypeEdit']").addClass("hell");
                                 setTimeout(function () {
-                                    workStationTypeEdit.hide();
+                                    webix.$$("workStationTypeEdit").close();
                                 }, 1000);
                             }
                         },
@@ -64,7 +57,7 @@ define(["views/modules/base"], function (base) {
                             click: function () {
                                 $("[view_id='workStationTypeEdit']").addClass("hell");
                                 setTimeout(function () {
-                                    workStationTypeEdit.hide();
+                                    webix.$$("workStationTypeEdit").close();
                                 }, 1000);
                             }
                         }
@@ -72,23 +65,26 @@ define(["views/modules/base"], function (base) {
                 }
             ]
         }
-    });
-
-    workStationTypeEdit.attachEvent("onShow", function () {
-        setTimeout(function () {
-            $("[view_id='workStationTypeEdit']").removeClass("hell");
-        }, 0);
-    });
+    };
 
     function showWorkStationTypeEdit(title) {
-        webix.$$("workStationTypeEditHead").setValue(title);
+        workStationTypeEditLayout.head = title;
+
+        var workStationTypeEdit = webix.ui(workStationTypeEditLayout);
+
+        workStationTypeEdit.attachEvent("onShow", function () {
+            setTimeout(function () {
+                $("[view_id='workStationTypeEdit']").removeClass("hell");
+            }, 0);
+        });
+
         workStationTypeEdit.show();
-        console.log(workStationTypeEdit);
     }
 
     return {
         $ui: {
             view: "datatable",
+            id: "wsTypeList",
             paddingX: 20,
             paddingY: 20,
             width: 800,
@@ -133,6 +129,7 @@ define(["views/modules/base"], function (base) {
         },
         $oninit: function () {
             webix.$$("title").parse({title: "工位管理", details: "工位类型列表"});
+            loadDataTable.$load("/v1/api/position_type", "wsTypeList");
         }
     }
 });
