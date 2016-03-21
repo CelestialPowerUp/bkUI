@@ -1,30 +1,7 @@
-define(["views/modules/base", "views/modules/table_page_m"], function (base, tablePager) {
-
-    var richselectData = {
-        "工位类型": "/fake/api/wstype.json",
-        "工位状态": "/fake/api/wsstatus.json"
-    };
-
-    var loadRichselect = function (url, richselectId) {
-        base.getReq(url, function (data) {
-            if (!data.length) {
-                return;
-            }
-
-            //console.log(data);
-
-            var $$richselect = webix.$$(richselectId);
-            var list = $$richselect.getPopup().getList();
-            list.clearAll();
-            for (var i = 0; i < data.length; i++) {
-                var obj = data[i];
-                obj.value = obj.name;
-                list.add(obj);
-            }
-            $$richselect.define("value", list.getIdByIndex(0));
-            $$richselect.refresh();
-        });
-    };
+define(["views/modules/base",
+    "views/modules/table_page_m",
+    "views/modules/load_richselect",
+    "views/forms/work_station_edit"], function (base, tablePager, loadRichSelect, wsEdit) {
 
     return {
         $ui: {
@@ -53,18 +30,11 @@ define(["views/modules/base", "views/modules/table_page_m"], function (base, tab
                                     id: "richselectType",
                                     options: ["工位类型", "工位状态"],
                                     value: "工位类型",
-                                    autowidth: true,
-                                    on: {
-                                        onChange: function (newValueId) {
-                                            var richselectTypeList = this.getPopup().getList();
-                                            var url = richselectData[richselectTypeList.getItem(newValueId).value];
-                                            loadRichselect(url, "richselectTypeValue");
-                                        }
-                                    }
+                                    autowidth: true
                                 },
                                 {
                                     view: "richselect",
-                                    id: "richselectTypeValue",
+                                    id: "richselectTypeValues",
                                     options: [],
                                     autowidth: true
                                 }
@@ -145,7 +115,7 @@ define(["views/modules/base", "views/modules/table_page_m"], function (base, tab
                                                         click: function () {
                                                             $("[view_id='workStationOrders']").addClass("hell");
                                                             setTimeout(function () {
-                                                                webix.$$("workStationOrders").hide();
+                                                                workStationOrders.hide();
                                                             }, 1000);
                                                         }
                                                     },
@@ -157,7 +127,7 @@ define(["views/modules/base", "views/modules/table_page_m"], function (base, tab
                                                         click: function () {
                                                             $("[view_id='workStationOrders']").addClass("hell");
                                                             setTimeout(function () {
-                                                                webix.$$("workStationOrders").hide();
+                                                                workStationOrders.hide();
                                                             }, 1000);
                                                         }
                                                     }
@@ -177,7 +147,31 @@ define(["views/modules/base", "views/modules/table_page_m"], function (base, tab
                                 var item = this.getItem(data.row);
                                 console.log(item);
 
-
+                                var workStationEdit = webix.ui({
+                                    view: "window",
+                                    id: "workStationEdit",
+                                    head: "编辑工位",
+                                    width: 800,
+                                    height: 600,
+                                    position: "center",
+                                    modal: true,
+                                    css: "hell animation",
+                                    body: wsEdit.$getUI({
+                                        onHide: function () {
+                                            $("[view_id='workStationEdit']").addClass("hell");
+                                            setTimeout(function () {
+                                                workStationEdit.hide();
+                                            }, 1000);
+                                        }
+                                    })
+                                });
+                                workStationEdit.attachEvent("onShow", function(){
+                                    wsEdit.$oninit();
+                                    setTimeout(function () {
+                                        $("[view_id='workStationEdit']").removeClass("hell");
+                                    }, 0);
+                                });
+                                workStationEdit.show();
                             },
                             deleteWorkStation: function (e, data) {
                                 var item = this.getItem(data.row);
@@ -203,8 +197,7 @@ define(["views/modules/base", "views/modules/table_page_m"], function (base, tab
         },
         $oninit: function (app, scope) {
             webix.$$("title").parse({title: "工位管理", details: "工位列表"});
-            loadRichselect("/v2/api/meta_supplier_list.json?layoff=false", "richselectSuppliers");
-            loadRichselect(richselectData[webix.$$("richselectType").getText()], "richselectTypeValue");
+            loadRichSelect.$load4WorkStation();
         }
     };
 });

@@ -336,11 +336,11 @@
 }
 
 .animation {
-    -moz-transition: transform 1s;
-    -ms-transition: transform 1s;
-    -o-transition: transform 1s;
-    -webkit-transition: transform 1s;
-    transition: transform 1s;
+    -moz-transition: transform 0.8s;
+    -ms-transition: transform 0.8s;
+    -o-transition: transform 0.8s;
+    -webkit-transition: transform 0.8s;
+    transition: transform 0.8s;
 }
 
 .hell {
