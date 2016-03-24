@@ -44,6 +44,7 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                     },
                     {
                         view: "form",
+                        id: "wsEditForm",
                         width: 800,
                         elements: elements
                     },
@@ -62,7 +63,11 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                                 value: "确定",
                                 width: 100,
                                 click: function () {
-                                    configs.onHide();
+                                    if (!configs.okCallback) {
+                                        configs.onHide();
+                                    } else {
+                                        configs.okCallback();
+                                    }
                                 }
                             },
                             {

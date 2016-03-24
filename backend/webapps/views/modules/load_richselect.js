@@ -1,7 +1,7 @@
 define(["views/modules/base", "views/modules/ui_utils"], function (base, uiUtils) {
 
     var richselectData = {
-        "工位类型": "/fake/api/wstype.json",
+        "工位类型": "/v1/api/position_types?scope=all",
         "工位状态": "/fake/api/wsstatus.json"
     };
 
@@ -9,18 +9,20 @@ define(["views/modules/base", "views/modules/ui_utils"], function (base, uiUtils
         $load: function (url, richselectId) {
             uiUtils.$getByIds(richselectId, function ($$richselect) {
                 base.getReq(url, function (data) {
-                    if (!data.length) {
-                        return;
-                    }
-
                     var list = $$richselect.getPopup().getList();
                     list.clearAll();
-                    for (var i = 0; i < data.length; i++) {
-                        var obj = data[i];
-                        obj.value = obj.name;
-                        list.add(obj);
+
+                    if (data.length) {
+                        for (var i = 0; i < data.length; i++) {
+                            var obj = data[i];
+                            obj.value = obj.name || obj.position_type;
+                            list.add(obj);
+                        }
+                        $$richselect.define("value", list.getIdByIndex(0));
+                    } else {
+                        webix.message({type: "error", expire: 5000, text: "没有找到数据!"});
                     }
-                    $$richselect.define("value", list.getIdByIndex(0));
+
                     $$richselect.refresh();
                 });
             });

@@ -1,6 +1,30 @@
-define(["views/modules/load_richselect",
+define(["views/modules/base",
+    "views/modules/load_richselect",
     "views/modules/load_datatable",
-    "views/forms/work_station_edit"], function (loadRichSelect, loadDataTable, wsEdit) {
+    "views/forms/work_station_edit"], function (base, loadRichSelect, loadDataTable, wsEdit) {
+
+    var searchData = {
+        "工位类型": "?filter=all&positionTypeId=",
+        "工位状态": "?filter=all&freeOrWork="
+    };
+
+    var search = function () {
+        var $$suppliers = $$("richselectSuppliers");
+        var supplierList = $$suppliers.getPopup().getList();
+        var supplier = supplierList.getItem($$suppliers.getValue());
+
+        var end = "&supplierId=" + supplier.supplier_id;
+
+        var searchType = $$("richselectType").getValue();
+
+        var $$typeValues = $$("richselectTypeValues");
+        var typeValueList = $$typeValues.getPopup().getList();
+        var typeValue = typeValueList.getItem($$typeValues.getValue());
+
+        var url = "/v1/api/positions" + searchData[searchType] + typeValue.id + end;
+
+        loadDataTable.$load(url, "workStationList");
+    };
 
     return {
         $ui: {
@@ -43,7 +67,8 @@ define(["views/modules/load_richselect",
                             view: "button",
                             id: "searchButton",
                             value: "查询",
-                            width: 100
+                            width: 100,
+                            click: search
                         }
                     ]
                 },
@@ -52,9 +77,9 @@ define(["views/modules/load_richselect",
                     id: "workStationList",
                     resizeColumn: true,
                     columns: [
-                        {id: "rank", header: "ID", width: 100},
-                        {id: "name", header: "工位标识", fillspace: true},
-                        {id: "type", header: "工位类型", width: 300},
+                        {id: "id", header: "ID", width: 100},
+                        {id: "position_lable", header: "工位标识", fillspace: true},
+                        {id: "position_type_name", header: "工位类型", width: 300},
                         {id: "status", header: "工位状态", width: 300},
                         {
                             id: "orders",
@@ -70,50 +95,6 @@ define(["views/modules/load_richselect",
                             "<span style='color: white; background-color: deepskyblue; border-radius: 2px; cursor: pointer; padding: 5px; margin-left: 10px;' class='deleteWorkStation'>删除</span>"
                         }
                     ],
-                    data: [
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "ABC", type: "洗车", status: "预约中", rank: 1},
-                        {name: "AC", type: "修车", status: "预约中", rank: 2}
-                    ],
                     onClick: {
                         showOrders: function (e, data) {
                             var item = this.getItem(data.row);
@@ -123,7 +104,7 @@ define(["views/modules/load_richselect",
                                 view: "window",
                                 id: "workStationOrders",
                                 head: "订单详情",
-                                width: 800,
+                                width: 1000,
                                 height: 600,
                                 position: "center",
                                 modal: true,
@@ -133,10 +114,11 @@ define(["views/modules/load_richselect",
                                         {
                                             view: "datatable",
                                             columns: [
-                                                {id: "rank", header: "ID", width: 100},
+                                                {id: "id", header: "ID", width: 100},
                                                 {id: "orderId", header: "订单号", fillspace: true},
                                                 {id: "startTime", header: "开始时间", width: 200},
-                                                {id: "endTime", header: "结束时间", width: 200}
+                                                {id: "endTime", header: "结束时间", width: 200},
+                                                {id: "video", header: "视频", width: 200}
                                             ]
                                         },
                                         {
@@ -187,6 +169,11 @@ define(["views/modules/load_richselect",
                             var item = this.getItem(data.row);
                             console.log(item);
 
+                            var editData = {
+                                wsName: item.position_lable,
+                                wsType: item.position_type_id
+                            };
+
                             var workStationEdit = webix.ui({
                                 view: "window",
                                 id: "workStationEdit",
@@ -202,11 +189,30 @@ define(["views/modules/load_richselect",
                                         setTimeout(function () {
                                             workStationEdit.close();
                                         }, 1000);
+                                    },
+                                    okCallback: function () {
+                                        var values = $$("wsEditForm").getValues();
+                                        values.wsName = values.wsName.replace(/^\s*|\s*$/g, '');
+
+                                        if (!values.wsName) {
+                                            webix.message({type: "error", expire: 5000, text: "请输入工位名称!"});
+                                            return;
+                                        }
+
+                                        base.postReq("/v1/api/position/update.json", {
+                                            "id": item.id,
+                                            "supplier_id": item.supplier_id,
+                                            "position_type_id": values.wsType,
+                                            "position_lable": values.wsName
+                                        }, function () {
+                                            webix.message({type: "info", expire: 5000, text: "修改成功!"});
+                                        });
                                     }
                                 })
                             });
                             workStationEdit.attachEvent("onShow", function () {
                                 wsEdit.$oninit();
+                                $$("wsEditForm").parse(editData);
                                 setTimeout(function () {
                                     $("[view_id='workStationEdit']").removeClass("hell");
                                 }, 0);
@@ -225,7 +231,10 @@ define(["views/modules/load_richselect",
                                 text: "确定要删除这个工位么?",
                                 callback: function (result) {
                                     if (result) {
-                                        webix.alert({text: "删删删"});
+                                        base.postReq("/v1/api/position/delete.json?id=" + item.id, {}, function () {
+                                            webix.message({type: "info", expire: 5000, text: "删除成功!"});
+                                            search();
+                                        });
                                     }
                                 }
                             });
@@ -235,12 +244,8 @@ define(["views/modules/load_richselect",
             ]
         },
         $oninit: function (app, scope) {
-            webix.$$("title").parse({title: "工位管理", details: "工位列表"});
+            $$("title").parse({title: "工位管理", details: "工位列表"});
             loadRichSelect.$load4WorkStation();
-
-            setTimeout(function () {
-                loadDataTable.$load("/fake/api/wslist.json", "workStationList");
-            }, 5000);
         }
     };
 });

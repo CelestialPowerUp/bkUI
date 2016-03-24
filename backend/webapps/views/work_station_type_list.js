@@ -1,4 +1,11 @@
-define(["views/modules/load_datatable"], function (loadDataTable) {
+define(["views/modules/base", "views/modules/load_datatable"], function (base, loadDataTable) {
+
+    function hideWorkStationTypeEdit() {
+        $("[view_id='workStationTypeEdit']").addClass("hell");
+        setTimeout(function () {
+            webix.$$("workStationTypeEdit").close();
+        }, 1000);
+    }
 
     var workStationTypeEditLayout = {
         view: "window",
@@ -17,6 +24,7 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
                 },
                 {
                     view: "form",
+                    id: "workStationTypeForm",
                     width: 400,
                     elements: [
                         {
@@ -41,25 +49,14 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
                             view: "button",
                             id: "okButton",
                             value: "确定",
-                            width: 100,
-                            click: function () {
-                                $("[view_id='workStationTypeEdit']").addClass("hell");
-                                setTimeout(function () {
-                                    webix.$$("workStationTypeEdit").close();
-                                }, 1000);
-                            }
+                            width: 100
                         },
                         {
                             view: "button",
                             id: "cancelButton",
                             value: "取消",
                             width: 100,
-                            click: function () {
-                                $("[view_id='workStationTypeEdit']").addClass("hell");
-                                setTimeout(function () {
-                                    webix.$$("workStationTypeEdit").close();
-                                }, 1000);
-                            }
+                            click: hideWorkStationTypeEdit
                         }
                     ]
                 }
@@ -67,14 +64,42 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
         }
     };
 
-    function showWorkStationTypeEdit(title) {
+    function showWorkStationTypeEdit(title, wsType) {
         workStationTypeEditLayout.head = title;
 
         var workStationTypeEdit = webix.ui(workStationTypeEditLayout);
 
         workStationTypeEdit.attachEvent("onShow", function () {
+            var params = wsType || {};
+
+            $$("workStationTypeForm").parse({
+                wsName: params.position_type
+            });
+
             setTimeout(function () {
                 $("[view_id='workStationTypeEdit']").removeClass("hell");
+
+                $$("okButton").attachEvent("onItemClick", function(){
+                    var url;
+
+                    if (params.id === undefined) {
+                        url = "/v1/api/position_type/save.json";
+                    } else {
+                        url = "/v1/api/position_type/update.json";
+                    }
+
+                    params.position_type = $$("workStationTypeForm").getValues().wsName.replace(/^\s*|\s*$/g, '');
+
+                    if (!params.position_type) {
+                        webix.message({type: "error", expire: 5000, text: "请输入工位类型!"});
+                        return;
+                    }
+
+                    base.postReq(url, params, function () {
+                        loadDataTable.$load("/v1/api/position_types?scope=all", "wsTypeList");
+                        hideWorkStationTypeEdit();
+                    });
+                });
             }, 0);
         });
 
@@ -89,8 +114,8 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
             paddingY: 20,
             width: 800,
             columns: [
-                {id: "rank", header: "ID", width: 100},
-                {id: "name", header: "工位类型", fillspace: true},
+                {id: "id", header: "ID", width: 100},
+                {id: "position_type", header: "工位类型", fillspace: true},
                 {
                     id: "operations",
                     header: "操作",
@@ -100,16 +125,12 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
                     "<span style='color: white; background-color: deepskyblue; border-radius: 2px; cursor: pointer; padding: 5px; margin-left: 10px;' class='deleteWorkStationType'>删除</span>"
                 }
             ],
-            data: [
-                {id: 1, name: "ACB", rank: 1},
-                {id: 2, name: "AC", rank: 2}
-            ],
             onClick: {
                 addWorkStationType: function (e, data) {
-                    showWorkStationTypeEdit("新增工位");
+                    showWorkStationTypeEdit("新增工位类型");
                 },
                 editWorkStationType: function (e, data) {
-                    showWorkStationTypeEdit("编辑工位");
+                    showWorkStationTypeEdit("编辑工位类型", webix.$$("wsTypeList").getItem(data.row));
                 },
                 deleteWorkStationType: function (e, data) {
                     webix.confirm({
@@ -120,7 +141,10 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
                         text: "确定要删除这个工位类型么?",
                         callback: function (result) {
                             if (result) {
-                                webix.alert({text: "删删删"});
+                                base.postReq("/v1/api/position_type/delete.json?id=" + data.row, {}, function () {
+                                    webix.message({type: "info", expire: 5000, text: "删除成功!"});
+                                    loadDataTable.$load("/v1/api/position_types?scope=all", "wsTypeList");
+                                });
                             }
                         }
                     });
@@ -128,8 +152,8 @@ define(["views/modules/load_datatable"], function (loadDataTable) {
             }
         },
         $oninit: function () {
-            webix.$$("title").parse({title: "工位管理", details: "工位类型列表"});
-            loadDataTable.$load("/v1/api/position_type", "wsTypeList");
+            $$("title").parse({title: "工位管理", details: "工位类型列表"});
+            loadDataTable.$load("/v1/api/position_types?scope=all", "wsTypeList");
         }
     }
 });
