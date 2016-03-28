@@ -6,7 +6,7 @@ define(["views/modules/base", "views/modules/ui_utils"], function (base, uiUtils
     };
 
     return {
-        $load: function (url, richselectId) {
+        $load: function (url, richselectId, transform) {
             uiUtils.$getByIds(richselectId, function ($$richselect) {
                 base.getReq(url, function (data) {
                     var list = $$richselect.getPopup().getList();
@@ -16,6 +16,7 @@ define(["views/modules/base", "views/modules/ui_utils"], function (base, uiUtils
                         for (var i = 0; i < data.length; i++) {
                             var obj = data[i];
                             obj.value = obj.name || obj.position_type;
+                            (transform || function () {})(obj);
                             list.add(obj);
                         }
                         $$richselect.define("value", list.getIdByIndex(0));
