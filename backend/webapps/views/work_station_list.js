@@ -1,7 +1,8 @@
 define(["views/modules/base",
     "views/modules/load_richselect",
     "views/modules/load_datatable",
-    "views/forms/work_station_edit"], function (base, loadRichSelect, loadDataTable, wsEdit) {
+    "views/forms/work_station_edit",
+    "views/modules/table_page_m"], function (base, loadRichSelect, loadDataTable, wsEdit, pagedTable) {
 
     var searchData = {
         "工位类型": "?filter=all&positionTypeId=",
@@ -23,7 +24,13 @@ define(["views/modules/base",
 
         var url = "/v1/api/positions" + searchData[searchType] + typeValue.id + end;
 
-        loadDataTable.$load(url, "workStationList");
+        loadDataTable.$load(url, "workStationList", function (obj) {
+            if (obj.start_time) {
+                obj.status = '服务开始于' + obj.start_time;
+            } else {
+                obj.status = '空闲中';
+            }
+        });
     };
 
     return {
@@ -100,10 +107,55 @@ define(["views/modules/base",
                             var item = this.getItem(data.row);
                             console.log(item);
 
+                            var orderDetail = function (pageNum, startTime) {
+                                var query = {
+                                    position_id: item.id,
+                                    page: pageNum,
+                                    size: 10,
+                                    start_time: startTime || new Date().toISOString().match(/(\d{4}-\d{2}-\d{2})/)[1]
+                                };
+                                var queryArray = [], keys = Object.keys(query);
+                                for (var i = 0; i < keys.length; i++) {
+                                    var key = keys[i];
+                                    console.log(key);
+                                    queryArray.push(key + '=' + query[key]);
+                                }
+                                loadDataTable.$loadPagedData('/v1/api/order_position.json?' + queryArray.join('&'), 'wsOrderList');
+                            };
+
                             var workStationOrders = webix.ui({
                                 view: "window",
                                 id: "workStationOrders",
-                                head: "订单详情",
+                                head: {
+                                    view: "toolbar",
+                                    height: 50,
+                                    cols: [
+                                        {
+                                            view: "label",
+                                            label: "订单详情",
+                                            width: 100
+                                        },
+                                        {
+                                            fillspace: true
+                                        },
+                                        {
+                                            view: "datepicker",
+                                            id: "wsOrderListStartTime",
+                                            value: new Date(),
+                                            format: "%Y-%m-%d",
+                                            label: "开始时间: ",
+                                            timepicker: false,
+                                            width: 300,
+                                            on: {
+                                                onChange: function (newv, oldv) {
+                                                    console.log("Value changed from: " + oldv + " to: " + newv);
+                                                    console.log(moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
+                                                    orderDetail(1, moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
                                 width: 1000,
                                 height: 600,
                                 position: "center",
@@ -111,8 +163,9 @@ define(["views/modules/base",
                                 css: "hell animation",
                                 body: {
                                     rows: [
-                                        {
+                                        pagedTable.$create_page_table('wsOrderListPage', {
                                             view: "datatable",
+                                            id: "wsOrderList",
                                             columns: [
                                                 {id: "id", header: "ID", width: 100},
                                                 {id: "orderId", header: "订单号", fillspace: true},
@@ -120,9 +173,9 @@ define(["views/modules/base",
                                                 {id: "endTime", header: "结束时间", width: 200},
                                                 {id: "video", header: "视频", width: 200}
                                             ]
-                                        },
+                                        }),
                                         {
-                                            width: 800,
+                                            width: 1000,
                                             margin: 20,
                                             paddingX: 20,
                                             cols: [
@@ -133,18 +186,6 @@ define(["views/modules/base",
                                                     view: "button",
                                                     id: "okButton",
                                                     value: "确定",
-                                                    width: 100,
-                                                    click: function () {
-                                                        $("[view_id='workStationOrders']").addClass("hell");
-                                                        setTimeout(function () {
-                                                            workStationOrders.close();
-                                                        }, 1000);
-                                                    }
-                                                },
-                                                {
-                                                    view: "button",
-                                                    id: "cancelButton",
-                                                    value: "取消",
                                                     width: 100,
                                                     click: function () {
                                                         $("[view_id='workStationOrders']").addClass("hell");
@@ -164,6 +205,9 @@ define(["views/modules/base",
                                 }, 0);
                             });
                             workStationOrders.show();
+                            console.log($$("wsOrderListStartTime").getValue());
+                            orderDetail(1);
+                            pagedTable.$add_page_callback(orderDetail);
                         },
                         editWorkStation: function (e, data) {
                             var item = this.getItem(data.row);
