@@ -107,12 +107,12 @@ define(["views/modules/base",
                             var item = this.getItem(data.row);
                             console.log(item);
 
-                            var orderDetail = function (pageNum) {
+                            var orderDetail = function (pageNum, startTime) {
                                 var query = {
                                     position_id: item.id,
                                     page: pageNum,
                                     size: 10,
-                                    start_time: new Date().toISOString().match(/(\d{4}-\d{2}-\d{2})/)[1]
+                                    start_time: startTime || new Date().toISOString().match(/(\d{4}-\d{2}-\d{2})/)[1]
                                 };
                                 var queryArray = [], keys = Object.keys(query);
                                 for (var i = 0; i < keys.length; i++) {
@@ -126,7 +126,36 @@ define(["views/modules/base",
                             var workStationOrders = webix.ui({
                                 view: "window",
                                 id: "workStationOrders",
-                                head: "订单详情",
+                                head: {
+                                    view: "toolbar",
+                                    height: 50,
+                                    cols: [
+                                        {
+                                            view: "label",
+                                            label: "订单详情",
+                                            width: 100
+                                        },
+                                        {
+                                            fillspace: true
+                                        },
+                                        {
+                                            view: "datepicker",
+                                            id: "wsOrderListStartTime",
+                                            value: new Date(),
+                                            format: "%Y-%m-%d",
+                                            label: "开始时间: ",
+                                            timepicker: false,
+                                            width: 300,
+                                            on: {
+                                                onChange: function (newv, oldv) {
+                                                    console.log("Value changed from: " + oldv + " to: " + newv);
+                                                    console.log(moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
+                                                    orderDetail(1, moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
+                                                }
+                                            }
+                                        }
+                                    ]
+                                },
                                 width: 1000,
                                 height: 600,
                                 position: "center",
@@ -134,11 +163,6 @@ define(["views/modules/base",
                                 css: "hell animation",
                                 body: {
                                     rows: [
-                                        {
-                                            view: "toolbar",
-                                            height: 50,
-                                            cols: []
-                                        },
                                         pagedTable.$create_page_table('wsOrderListPage', {
                                             view: "datatable",
                                             id: "wsOrderList",
@@ -181,7 +205,8 @@ define(["views/modules/base",
                                 }, 0);
                             });
                             workStationOrders.show();
-                            orderDetail(0);
+                            console.log($$("wsOrderListStartTime").getValue());
+                            orderDetail(1);
                             pagedTable.$add_page_callback(orderDetail);
                         },
                         editWorkStation: function (e, data) {
