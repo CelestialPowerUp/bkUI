@@ -7,11 +7,7 @@ define(["views/modules/base", "views/modules/ui_utils", "views/modules/table_pag
                     $$datatable.clearAll();
 
                     if (data.length) {
-                        for (var i = 0; i < data.length; i++) {
-                            var obj = data[i];
-                            (transform || function() {})(obj);
-                        }
-                        $$datatable.parse(data);
+                        $$datatable.parse(data.filter(transform || function(obj) { return obj; }));
                     } else {
                         webix.message({type: "error", expire: 5000, text: "没有找到数据!"});
                     }
@@ -29,11 +25,7 @@ define(["views/modules/base", "views/modules/ui_utils", "views/modules/table_pag
                     $$datatable.clearAll();
 
                     if (data.items.length) {
-                        for (var i = 0; i < data.items.length; i++) {
-                            var obj = data[i];
-                            (transform || function() {})(obj);
-                        }
-                        $$datatable.parse(data.items);
+                        $$datatable.parse(data.items.filter(transform || function(obj) { return obj; }));
                     } else {
                         webix.message({type: "error", expire: 5000, text: "没有找到数据!"});
                     }

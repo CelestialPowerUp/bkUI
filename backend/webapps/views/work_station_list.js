@@ -30,6 +30,8 @@ define(["views/modules/base",
             } else {
                 obj.status = '空闲中';
             }
+
+            return obj;
         });
     };
 
@@ -120,7 +122,17 @@ define(["views/modules/base",
                                     console.log(key);
                                     queryArray.push(key + '=' + query[key]);
                                 }
-                                loadDataTable.$loadPagedData('/v1/api/order_position.json?' + queryArray.join('&'), 'wsOrderList');
+                                loadDataTable.$loadPagedData('/v1/api/order_position.json?' + queryArray.join('&'), 'wsOrderList', function (obj) {
+                                    if (!obj.end_time) {
+                                        obj.end_time = "未结束";
+                                    }
+
+                                    if (!obj.view_data) {
+                                        obj.view_data = "暂不支持此功能";
+                                    }
+
+                                    return obj;
+                                });
                             };
 
                             var workStationOrders = webix.ui({
@@ -148,8 +160,6 @@ define(["views/modules/base",
                                             width: 300,
                                             on: {
                                                 onChange: function (newv, oldv) {
-                                                    console.log("Value changed from: " + oldv + " to: " + newv);
-                                                    console.log(moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
                                                     orderDetail(1, moment(newv).tz("Asia/Shanghai").format("YYYY-MM-DD"));
                                                 }
                                             }
@@ -168,10 +178,10 @@ define(["views/modules/base",
                                             id: "wsOrderList",
                                             columns: [
                                                 {id: "id", header: "ID", width: 100},
-                                                {id: "orderId", header: "订单号", fillspace: true},
-                                                {id: "startTime", header: "开始时间", width: 200},
-                                                {id: "endTime", header: "结束时间", width: 200},
-                                                {id: "video", header: "视频", width: 200}
+                                                {id: "order_id", header: "订单号", fillspace: true},
+                                                {id: "start_time", header: "开始时间", width: 200},
+                                                {id: "end_time", header: "结束时间", width: 200},
+                                                {id: "view_data", header: "视频", width: 200}
                                             ]
                                         }),
                                         {
