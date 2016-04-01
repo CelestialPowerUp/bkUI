@@ -25,9 +25,10 @@ define(["views/modules/base", "views/forms/work_station_edit"], function (base, 
                 base.postReq("/v1/api/position/save.json", {
                     "position_type_id": values.wsType,
                     "position_lable": values.wsName,
-                    "supplier_id": supplier.supplier_id
+                    "supplier_id": supplier.supplier_id,
+                    "lss_publish_address": values.lss_publish_address
                 }, function () {
-                    webix.message({type: "info", expire: 5000, text: "添加成功!"});
+                    webix.message({type: "info", expire: 5000, text: "添加成功! 请同时在摄像设备上更新数据! "});
                 });
             }
         }),
