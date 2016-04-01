@@ -7,7 +7,7 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                     name: "wsName",
                     label: "工位标识",
                     placeholder: "请输入工位标识",
-                    labelWidth: "100"
+                    labelWidth: 156
                 },
                 {
                     view: "richselect",
@@ -16,16 +16,14 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                     label: "工位类型",
                     options: [],
                     placeholder: "请选择工位类型",
-                    labelWidth: "100"
+                    labelWidth: 156
                 },
                 {
-                    view: "richselect",
-                    id: "wsEditStatus",
-                    name: "wsStatus",
-                    label: "工位状态",
-                    options: [],
-                    placeholder: "请选择工位状态",
-                    labelWidth: "100"
+                    view: "text",
+                    name: "lss_publish_address",
+                    label: "视频发布地址",
+                    placeholder: "请输入视频发布地址",
+                    labelWidth: 156
                 }
             ];
 

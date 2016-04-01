@@ -90,10 +90,11 @@ define(["views/modules/base",
                         {id: "position_lable", header: "工位标识", fillspace: true},
                         {id: "position_type_name", header: "工位类型", width: 300},
                         {id: "status", header: "工位状态", width: 300},
+                        {id: "lss_publish_address", header: "视频发布地址", width: 200},
                         {
                             id: "orders",
                             header: "订单详情",
-                            width: 300,
+                            width: 100,
                             template: "<span style='color: blueviolet; text-decoration: underline; cursor: pointer;' class='showOrders'>详情</span>"
                         },
                         {
@@ -257,9 +258,10 @@ define(["views/modules/base",
                                             "id": item.id,
                                             "supplier_id": item.supplier_id,
                                             "position_type_id": values.wsType,
-                                            "position_lable": values.wsName
+                                            "position_lable": values.wsName,
+                                            "lss_publish_address": values.lss_publish_address
                                         }, function () {
-                                            webix.message({type: "info", expire: 5000, text: "修改成功!"});
+                                            webix.message({type: "info", expire: 5000, text: "修改成功! 请同时在摄像设备上更新数据! "});
                                         });
                                     }
                                 })
