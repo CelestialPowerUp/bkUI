@@ -21,8 +21,9 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                 {
                     view: "text",
                     name: "lss_publish_address",
+                    disabled: true,
                     label: "视频发布地址",
-                    placeholder: "请输入视频发布地址",
+                    placeholder: "自动生成视频发布地址,不用编辑.",
                     labelWidth: 156
                 }
             ];
