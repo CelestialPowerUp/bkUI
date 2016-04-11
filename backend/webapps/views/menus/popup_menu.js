@@ -13,7 +13,7 @@ define(function(){
        body:{type: "clean", borderless:true,
            rows:[
                {
-                   id:"item_list",
+                   id:"pp_menu_item_list",
                    view: "list",
                    autoheight: true,
                    data: [],
@@ -34,9 +34,9 @@ define(function(){
    };
 
     var add_menus = function(menus){
-        $$("item_list").clearAll();
+        $$("pp_menu_item_list").clearAll();
         for(var a in menus){
-            $$("item_list").add(menus[a]);
+            $$("pp_menu_item_list").add(menus[a]);
         }
     }
 
