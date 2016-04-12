@@ -5,8 +5,8 @@ define(["views/modules/base",
     "views/modules/table_page_m"], function (base, loadRichSelect, loadDataTable, wsEdit, pagedTable) {
 
     var searchData = {
-        "工位类型": "?filter=all&positionTypeId=",
-        "工位状态": "?filter=all&freeOrWork="
+        "工位类型": "?filter=all&position_type_id=",
+        "工位状态": "?filter=all&free_or_work="
     };
 
     var search = function () {
@@ -14,7 +14,7 @@ define(["views/modules/base",
         var supplierList = $$suppliers.getPopup().getList();
         var supplier = supplierList.getItem($$suppliers.getValue());
 
-        var end = "&supplierId=" + supplier.supplier_id;
+        var end = "&supplier_id=" + supplier.supplier_id;
 
         var searchType = $$("richselectType").getValue();
 
