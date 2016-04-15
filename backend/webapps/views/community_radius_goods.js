@@ -56,7 +56,7 @@ define(["views/modules/base",
 		{id:"yac_product_id",header:"养爱车id",width:80},
 		{id:"yac_product_name", header:"养爱车名称",Width:100,fillspace:true},
 		{id:"yac_product_price", header:"养爱车价格",width:150,fillspace:false},
-		{header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='编辑' class='webix_icon fa-pencil'></span>"},
+		{header:"&nbsp;", width:35, template:"<span  style='cursor:pointer;' title='编辑' class='webix_icon fa-pencil'></span>"}
 	];
 
 	var table_ui = {
