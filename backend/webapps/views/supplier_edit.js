@@ -74,6 +74,7 @@ define(["views/modules/base", "views/webix/baidumap", "views/modules/upload"], f
         {
             view: "richselect", id: "supplier_mold", name: "supplier_mold", options: [
             {id: "community", value: "社区店"},
+            {id: "self_support", value: "自营店"},
             {id: "comprehensive", value: "综合店"}
         ], label: "服务类型", placeholder: "请选择服务类型", required: true, width: 350
         },
