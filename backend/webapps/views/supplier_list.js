@@ -36,40 +36,40 @@ define(["views/modules/base",
         "fa-list-ul":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商管理人员
-            if(item.supplier_mold==='community'){
+            if(item.supplier_mold!=='comprehensive'){
                 this.$scope.ui(supplier_product.$ui).show();
                 supplier_product.$init_data(item.supplier_id);
                 return;
             }
-            base.$msg.error("非社区店不支持该服务");
+            base.$msg.error("综合店不支持该服务");
         },
         "fa-credit-card":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑次卡商品
-            if(item.supplier_mold==='community'){
+            if(item.supplier_mold!=='comprehensive'){
                 this.$scope.show("/supplier_times_card_list:id="+item.supplier_id);
                 return;
             }
-            base.$msg.error("非社区店不支持该服务");
+            base.$msg.error("综合店不支持该服务");
         },
         "fa-user-md":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商管理人员
-            if(item.supplier_mold==='community'){
+            if(item.supplier_mold!=='comprehensive'){
                 this.$scope.show("/supplier_user_list:id="+item.supplier_id);
                 return;
             }
-            base.$msg.error("非社区店不支持该服务");
+            base.$msg.error("综合店不支持该服务");
         },
         "fa-gift":function(e, id, node){
             var item = $$("table_list").getItem(id);
             //编辑服务商管理人员
-            if(item.supplier_mold==='community'){
+            if(item.supplier_mold!=='comprehensive'){
                 this.$scope.ui(coupon_package.$ui).show();
                 coupon_package.$init_data(item.supplier_id);
                 return;
             }
-            base.$msg.error("非社区店不支持该服务");
+            base.$msg.error("综合店不支持该服务");
         }
     };
 
@@ -79,6 +79,8 @@ define(["views/modules/base",
         {id:"supplier_mold", header:"服务类型",width:80,fillspace:false,template:function(obj){
             if(obj.supplier_mold === 'community'){
                 return "<span class='status status1'>社区店</span>";
+            }else if(obj.supplier_mold === 'self_support'){
+                return "<span class='status status1'>自营店</span>";
             }else{
                 return "<span class='status status0'>综合店</span>";
             }}
