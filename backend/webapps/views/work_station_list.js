@@ -262,6 +262,7 @@ define(["views/modules/base",
                                             "lss_publish_address": values.lss_publish_address
                                         }, function () {
                                             webix.message({type: "info", expire: 5000, text: "修改成功! 请同时在摄像设备上更新数据! "});
+                                            search();
                                         });
                                     }
                                 })

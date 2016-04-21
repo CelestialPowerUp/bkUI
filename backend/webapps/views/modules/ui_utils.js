@@ -7,7 +7,7 @@ define([], function () {
                 var $$ui = webix.$$(arg);
 
                 if (!$$ui) {
-                    console.error(arg + " is not a webix ui id. ");
+                    console.warn(arg + " is not a webix ui id. ");
                     return;
                 }
 
