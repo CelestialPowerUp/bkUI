@@ -66,6 +66,7 @@ define(["views/modules/load_richselect"], function (loadRichSelect) {
                                         configs.onHide();
                                     } else {
                                         configs.okCallback();
+                                        configs.onHide();
                                     }
                                 }
                             },
