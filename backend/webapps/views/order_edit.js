@@ -790,9 +790,9 @@ define(["views/modules/base",
 			$$("add_user_define_product_button").disable();
 			$$("add_product_button").disable();
 		}
-		if(order.supplier_mold === 'community'){
-			$$("add_supplier_button").disable();
-		}
+		// if(order.supplier_mold === 'community'){
+		// 	$$("add_supplier_button").disable();
+		// }
 		if("applying,processing,part_completed,completed".indexOf(order.refund_status)>=0){
 			//显示退款处理的请求
 			$$("refund_tab").show();

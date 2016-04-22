@@ -85,8 +85,8 @@ define(["views/modules/base"],function(base){
 			}
 		};
 	
-	var init_data = function(checked_data){
-		base.getReq("meta_suppliers.json",function(data){
+	var init_data = function(checked_data, url){
+		base.getReq(url || "meta_suppliers.json",function(data){
 			for(var i=0;i<data.length;i++){
 				var parse_data = parse_suppliers(data[i],checked_data);
 				if(parse_data.$check){
