@@ -170,7 +170,7 @@ define(["models/order",
 
         this.$scope.ui(order_supplier.$ui).show();
         $$("supplier_table").unselect();
-        order_supplier.$init_data($$("supplier_table").serialize(), "/v2/api/supplier/adaption.json?longitude=" + lng + "&latitude=" + lat);
+        order_supplier.$init_data($$("supplier_table").serialize(), "/v2/api/supplier/adaption.json?filter=createOrder&longitude=" + lng + "&latitude=" + lat);
         order_supplier.$add_callback(function (checks) {
             $$("supplier_table").clearAll();
             $$("supplier_table").parse(checks);
@@ -475,7 +475,7 @@ define(["models/order",
             //服务方式
             {
                 view: "toolbar", css: "highlighted_header header5", height: 40, elements: [
-                {view: "label", align: "left", label: "服务类型", height: 30},
+                {view: "label", align: "left", label: "服务方式", height: 30},
                 {view: "label", id: "adaption_supplier_info"},
                 /*{view:"button",id:"add_supplier_button",label:"选择服务商",width:105,click:function(){
                  this.$scope.ui(supplier.$ui).show();
