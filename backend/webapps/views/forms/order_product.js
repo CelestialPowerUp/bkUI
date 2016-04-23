@@ -111,7 +111,7 @@ define(["views/modules/base"],function(base){
 								{ view:"text", name:"price",id:"price", label:"单价" ,disabled:true,keyPressTimeout:100,on:{
 									"onTimedKeyPress":function(){
 											count_total_price();
-										},
+									},
 									"onFocus":function(){
 										var product_name = $$("product_name").getValue();
 										if(product_name.indexOf("补差价")>=0 || product_name==="服务增项" || product_name === "汽车轮胎"){

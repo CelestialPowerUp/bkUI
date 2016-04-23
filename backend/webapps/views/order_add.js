@@ -525,12 +525,12 @@ define(["models/order",
                 type: {
                     width: 180,
                     height: 90,
-                    template: "<div class='strong_text'>#product_name#</div><div class='light_text'>服务费 #price#元</div>"
+                    template: "<div><div class='strong_text'>#product_name#</div><div class='light_text'>服务费 #price#元</div></div>"
                 },
                 on: {
                     "onItemClick": function (id, e, node) {
                         var item = this.getItem(id);
-
+                        console.log(item);
                     }
                 }
             },
@@ -805,7 +805,7 @@ define(["models/order",
         if (service_product === null) {
             base.$msg.error("请选择一个服务类型");
         }
-        delete service_product.id;
+        // delete service_product.id;  // TMD, 我人生中还从未用过javascript的delete关键字
         products.push(service_product);
         return products;
     }
